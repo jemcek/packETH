@@ -71,14 +71,16 @@ int crc32_table_init = 0;
 int ip_proto_used = 0; // 0 - none, 4 - ipv4, 6- IPv6, 806 - ARP
 int l4_proto_used = 0; // 0 - none, 6 - tcp. 17 - udp
 long li_packets_sent = 0;
+long li_packets_sent_lastsec = 0;
 long li_last_packets_sent = 0;
 long li_sentbytes = 0;
 int count10=0; 
 long sentstream[10];
+long desired_bw;
 
 /* structure that holds parameters for generator */
 struct params {
-	long del;
+	long long del;
 	double count;
 	long inc;
 	int type;
@@ -114,7 +116,6 @@ struct params {
 	struct ifreq ifr;
 } params1;		
 
-
 /* this function is called every second insiede the main gtk loop */
 int gtk_timer(GtkButton *button) {
 	
@@ -122,30 +123,71 @@ int gtk_timer(GtkButton *button) {
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *button7;
 	gint context_id;
 	char buff[200];
-	unsigned int pkts=0, mbps=0, linkutil=0;
+	unsigned int pkts=0;
+	float mbits, link_mbits;
+	float bw7, aw7;
 
 	statusbar = lookup_widget(GTK_WIDGET (button), "statusbar1");
 	context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Statusbar example");
 
 	/* stats for Gen-b window this we do only once a second */
 	if ((page == 1) && (count10 > 9)) {
-		pkts = li_packets_sent - li_last_packets_sent;
-	        mbps = pkts * number / 125; // 8 bits per byte / 1000 for kbit
-	        /* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
-	        linkutil = pkts * (number + 24) / 125;
+		pkts = li_packets_sent_lastsec;
+	        mbits = (float)(pkts * number) / 125000; // 8 bits per byte / 1000000 for kbit
+	        link_mbits = (float)(pkts * (number + 24)) / 125000;
+		bw7 = (float)desired_bw;
+		aw7 = mbits*1000;
 
-		snprintf(buff, 100, "  Sent %ld packets on %s (%d packets/s, %d kbit/s data rate, %d kbit/s link utilization)", li_packets_sent, iftext, pkts, mbps, linkutil);
-		gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		//printf("torej, tokle je number %d tokle je desired %f in tokle actual %f in tokle razlika %.2f\n", number, bw7, aw7, ((bw7 - aw7) / bw7));
+		//max speed option, no ok/nok warning
+		if (desired_bw == 0) {
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		//under 100kbit/s the error rate is to sensible no nok warning
+		else if (aw7 < 100) {
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		else if ( ((bw7 - aw7) / bw7)  > 0.1) {
+			snprintf(buff, 150, " BW error > 10%%!!! Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		else {
+			snprintf(buff, 120, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		
 	
-	        li_last_packets_sent = li_packets_sent;
+	        //li_last_packets_sent = li_packets_sent;
 		count10 = 0;
 	}	
 	/* stats for Gen-s window this we also do once a second */
 	else if ((page == 2) && (count10 > 9)) {
 		pkts = li_packets_sent - li_last_packets_sent;
+	        mbits = (float)(li_sentbytes) / 125000; // 8 bits per byte / 1000000 for mbit
+		bw7 = (float)desired_bw;
+		aw7 = mbits*1000;
 
-		snprintf(buff, 100, "  Sent %ld packets on %s (%d packets/s, %ld kbit/s)", li_packets_sent, iftext, pkts, li_sentbytes/125);
-		gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		//printf("tokle je desired %f in tokle actual %f in tokle razlika %.2f\n", bw7, aw7, ((bw7 - aw7) / bw7));
+
+		//under 100kbit/s the error rate is to sensible no nok warning
+		if (aw7 < 100) {
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.2f Mbit/s)", li_packets_sent, iftext, pkts, mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		else if ( ((bw7 - aw7) / bw7)  > 0.1) {
+			snprintf(buff, 150, "  Desired BW error > 10%%! Sent %ld packets on %s (%d packets/s, %.2f Mbit/s)", li_packets_sent, iftext, pkts, mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		else {
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.2f Mbit/s)", li_packets_sent, iftext, pkts, mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
 	
 	        li_last_packets_sent = li_packets_sent;
                 li_sentbytes=0;
@@ -169,6 +211,8 @@ int gtk_timer(GtkButton *button) {
         	gtk_widget_set_sensitive (button5, TRUE);
         	gtk_widget_set_sensitive (button6, TRUE);
         	gtk_widget_set_sensitive (button7, FALSE);
+
+
 		if (page == 1) {
 			snprintf(buff, 100, "  Sent %ld packets on %s ", li_packets_sent, iftext);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
@@ -195,15 +239,15 @@ int gtk_timer(GtkButton *button) {
 int send_packet(GtkButton *button, gpointer user_data)
 {
 	GtkWidget *statusbar, *notebk, *reltime, *en5, *en6;
-	GtkWidget *en1, *en2, *en3, *en4, *ckbt1, *ckbt2, *ckbt3, *ckbt5, *xoptm, *yoptm, *xmenu_item, *ymenu_item; 
-	GtkWidget *optm1, *optm2, *optm3, *xmenu, *ymenu, *stopbt, *toolbar;
+	GtkWidget *en1, *en2, *en3, *en4, *ckbt1, *ckbt2, *ckbt3, *ckbt4, *ckbt5, *xoptm, *yoptm, *xmenu_item, *ymenu_item; 
+	GtkWidget *optm1, *optm2, *optm3, *xmenu, *ymenu, *stopbt;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
         GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65;
-        GtkWidget *en219, *en220;
+        GtkWidget *en219, *en220, *en221, *rdbt80;
 
 	int c, i, m, length;
-	gchar *en1_t, *en2_t, *en3_t, *en4_t, *en5_t, *en6_t, *en219_t, *en220_t;
+	gchar *en1_t, *en2_t, *en3_t, *en4_t, *en5_t, *en6_t, *en219_t, *en220_t, *en221_t;
 	gint context_id;
 	char buff[100], buf2[80];
 	struct tm *ptr;
@@ -339,12 +383,15 @@ int send_packet(GtkButton *button, gpointer user_data)
 		en1 = lookup_widget(GTK_WIDGET (button), "entry109");
 		en2 = lookup_widget(GTK_WIDGET (button), "entry110");
 		en3 = lookup_widget(GTK_WIDGET (button), "entry206");
+	        en219 = lookup_widget (GTK_WIDGET (button), "entry219");
+	        en220 = lookup_widget (GTK_WIDGET (button), "entry220");
+		en221 = lookup_widget(GTK_WIDGET (button), "entry221");
 		ckbt1 = lookup_widget(GTK_WIDGET(button), "checkbutton35");
 		ckbt2 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
 		ckbt3 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
-		//ckbt4 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+		ckbt4 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
 		ckbt5 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
-		//ckbt6 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+		rdbt80 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
 
 		ckbt50 = lookup_widget (GTK_WIDGET (button), "checkbutton50");
 	        ckbt51 = lookup_widget (GTK_WIDGET (button), "checkbutton51");
@@ -362,8 +409,6 @@ int send_packet(GtkButton *button, gpointer user_data)
 	        ckbt63 = lookup_widget (GTK_WIDGET (button), "checkbutton63");
 	        ckbt64 = lookup_widget (GTK_WIDGET (button), "checkbutton64");
 	        ckbt65 = lookup_widget (GTK_WIDGET (button), "checkbutton65");
-	        en219 = lookup_widget (GTK_WIDGET (button), "entry219");
-	        en220 = lookup_widget (GTK_WIDGET (button), "entry220");
 
 		/* do we have to adjust any parameters while sending? */
 		params1.inc = 0;
@@ -438,6 +483,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		en1_t = (char *)gtk_entry_get_text(GTK_ENTRY(en1));
 		en2_t = (char *)gtk_entry_get_text(GTK_ENTRY(en2));
 		en3_t = (char *)gtk_entry_get_text(GTK_ENTRY(en3));
+		en221_t = (char *)gtk_entry_get_text(GTK_ENTRY(en221));
 
 		/* changing mac address */
 		if ( ((params1.inc & (1<<0)) ) && (number < 14) ) {
@@ -599,24 +645,29 @@ int send_packet(GtkButton *button, gpointer user_data)
 			if (check_digit(en3_t, strlen(en3_t), "Error: Bandwidth") == -1)
 					return -1;
 
-			params1.del = strtol(en3_t, (char **)NULL, 10);
+			params1.del = strtoll(en3_t, (char **)NULL, 10);
+
 		        if (GTK_TOGGLE_BUTTON(ckbt5)->active)  //Mbit/s
                                 params1.del = params1.del * 1000;
 
-			/* max bandwidth 40G == 40000M == 40000000Kbit/s */
-			if ( (params1.del > 40000000) || (params1.del < 1) ) {
+			/* max bandwidth 100G == 100000M == 100000000Kbit/s */
+			if ( (params1.del > 100000000) || (params1.del < 1) ) {
 				//printf("Error: Bandwidth\n");
-				error("Error: Bandwidth (1-40000000kbit/s (40G))");
+				error("Error: Bandwidth (1-100000000kbit/s (100G))");
 				return -1;
 			}
+			
+			desired_bw = (long)params1.del;
 
-
+			//printf("v  %lld\n", params1.del);
 			//convert kbit/s to delay between them...
 			if (number < 60) 
-				params1.del = 1000 * 60 * 8 / params1.del;
+				params1.del = (long long)(1000000 * 60 * 8) / params1.del;
 			else
-				params1.del = 1024 * 8 * number / params1.del;
+				//tmpL = 1000000.0 * (double)number * 8.0 / tmpL;
+				params1.del = (long long)(1000000 * (long long)number * 8) / params1.del;
 
+			//printf("v pcl %lld\n", params1.del);
 			//faster we can't do it... 1us is the resolution...
 			if (params1.del < 1)
 				params1.del = 1;
@@ -627,16 +678,57 @@ int send_packet(GtkButton *button, gpointer user_data)
 			if (check_digit(en2_t, strlen(en2_t), "Error: Delay between packets field") == -1)
 					return -1;
 
-			params1.del = strtol(en2_t, (char **)NULL, 10);
+			params1.del = strtoll(en2_t, (char **)NULL, 10);
 			/* max delay 999,999999 s */
 			if ( (params1.del > 999999999) || (params1.del < 1) ) {
 				//printf("Error: Delay between packets value\n");
 				error("Error: Delay between packets value (1-999999999)");
 				return -1;
 			}
+			if ((GTK_TOGGLE_BUTTON(rdbt80)->active)	) {
+				params1.del = params1.del * 1000;
+				if (number < 60)
+					desired_bw = (long)(1000000*60*8/params1.del); 
+				else
+					desired_bw = (long)(1000000*(long long)number*8/params1.del); 
+				//printf("v pcl %lld\n", params1.del);
+				//printf("v pcl %ld\n", desired_bw);
+			}
+			else {
+				if (number < 60)
+					desired_bw = (long)(1000000*60*8/params1.del); 
+				else
+					desired_bw = (long)(1000000*(long long)number*8/params1.del); 
+				//printf("v pcl %lld\n", params1.del);
+				//printf("v pcl %ld\n", desired_bw);
+			}
+			//printf("v pcl %lld\n", params1.del);
+                }
+		else if (GTK_TOGGLE_BUTTON(ckbt4)->active) {
+			/* there can be rubbish in this field */
+			if (check_digit(en221_t, strlen(en221_t), "Error: Packets per seconds field") == -1)
+					return -1;
+
+			params1.del = strtoll(en221_t, (char **)NULL, 10);
+			/* max delay 999,999999 s */
+			if ( (params1.del > 999999999) || (params1.del < 1) ) {
+				//printf("Error: Delay between packets value\n");
+				error("Error: Packets per seconds field (1-999999999)");
+				return -1;
+			}
+				params1.del = 1000000000 / params1.del ;
+				if (number < 60)
+					desired_bw = (long)(1000000*60*8/params1.del); 
+				else
+					desired_bw = (long)(1000000*(long long)number*8/params1.del); 
+				printf("v pps  %lld\n", params1.del);
+				printf("v pps %ld\n", desired_bw);
+			//printf("v pcl %lld\n", params1.del);
                 }
 		else {
+			//max speed
 			params1.del = 1;
+			desired_bw = 0;
 		}
 
 
@@ -700,7 +792,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		//abstime = lookup_widget(GTK_WIDGET (button), "radiobutton36");
 		reltime = lookup_widget(GTK_WIDGET (button), "radiobutton37");
-		toolbar = lookup_widget(GTK_WIDGET (button), "toolbar1");
+		//toolbar = lookup_widget(GTK_WIDGET (button), "toolbar1");
 		stopbt = lookup_widget(GTK_WIDGET (button), "Stop_button");
 		optm1 = lookup_widget(GTK_WIDGET (button), "radiobutton72");
 		optm11 = lookup_widget(GTK_WIDGET (button), "radiobutton73");
@@ -733,7 +825,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		if (check_digit(en2_t, strlen(en2_t), "Error: Delay between sequences field") == -1)
 				return -1;
 
-		params1.del = strtol(en2_t, (char **)NULL, 10);
+		params1.del = strtoll(en2_t, (char **)NULL, 10);
 		/* max delay 999,999999 s */
 		if ( (params1.del > 999999999) || (params1.del < 0) ) {
 			//printf("Error: Delay between sequences field\n");

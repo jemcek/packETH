@@ -5031,7 +5031,7 @@
 
 						  <child>
 						    <widget class="GtkTextView" id="text1">
-						      <property name="width_request">350</property>
+						      <property name="width_request">430</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
 						      <property name="editable">True</property>
@@ -6802,7 +6802,7 @@
 
 							  <child>
 							    <widget class="GtkTextView" id="text3">
-							      <property name="width_request">350</property>
+							      <property name="width_request">430</property>
 							      <property name="visible">True</property>
 							      <property name="can_focus">True</property>
 							      <property name="editable">True</property>
@@ -7863,7 +7863,7 @@
 
 							      <child>
 								<widget class="GtkTextView" id="text4">
-								  <property name="width_request">350</property>
+								  <property name="width_request">430</property>
 								  <property name="visible">True</property>
 								  <property name="can_focus">True</property>
 								  <property name="editable">True</property>
@@ -10830,7 +10830,7 @@
 
 						      <child>
 							<widget class="GtkTextView" id="text2">
-							  <property name="width_request">350</property>
+							  <property name="width_request">430</property>
 							  <property name="visible">True</property>
 							  <property name="can_focus">True</property>
 							  <property name="editable">True</property>
@@ -12795,7 +12795,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <property name="can_focus">True</property>
 				      <property name="editable">True</property>
 				      <property name="visibility">True</property>
-				      <property name="max_length">8</property>
+				      <property name="max_length">6</property>
 				      <property name="text" translatable="yes"></property>
 				      <property name="has_frame">True</property>
 				      <property name="invisible_char">•</property>
@@ -12864,7 +12864,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				    <widget class="GtkRadioButton" id="radiobutton81">
 				      <property name="visible">True</property>
 				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">delay        </property>
+				      <property name="label" translatable="yes">delay between</property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>
@@ -12883,7 +12883,103 @@ Set IP header length to 0x06, set TTL=1 </property>
 
 				  <child>
 				    <widget class="GtkEntry" id="entry110">
-				      <property name="width_request">75</property>
+				      <property name="width_request">92</property>
+				      <property name="visible">True</property>
+				      <property name="sensitive">False</property>
+				      <property name="can_focus">True</property>
+				      <property name="editable">True</property>
+				      <property name="visibility">True</property>
+				      <property name="max_length">9</property>
+				      <property name="text" translatable="yes"></property>
+				      <property name="has_frame">True</property>
+				      <property name="invisible_char">•</property>
+				      <property name="activates_default">False</property>
+				    </widget>
+				    <packing>
+				      <property name="padding">2</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkRadioButton" id="radiobutton85">
+				      <property name="visible">True</property>
+				      <property name="sensitive">False</property>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">us</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				      <property name="active">True</property>
+				      <property name="inconsistent">False</property>
+				      <property name="draw_indicator">True</property>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkRadioButton" id="radiobutton86">
+				      <property name="visible">True</property>
+				      <property name="sensitive">False</property>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">ns</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				      <property name="active">False</property>
+				      <property name="inconsistent">False</property>
+				      <property name="draw_indicator">True</property>
+				      <property name="group">radiobutton85</property>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
+				  </child>
+				</widget>
+				<packing>
+				  <property name="padding">10</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkHBox" id="hbox1514">
+				  <property name="visible">True</property>
+				  <property name="homogeneous">False</property>
+				  <property name="spacing">0</property>
+
+				  <child>
+				    <widget class="GtkRadioButton" id="radiobutton87">
+				      <property name="visible">True</property>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">packets per second</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				      <property name="active">False</property>
+				      <property name="inconsistent">False</property>
+				      <property name="draw_indicator">True</property>
+				      <property name="group">radiobutton80</property>
+				      <signal name="clicked" handler="on_radiobutton87_clicked" last_modification_time="Tue, 17 Feb 2015 14:03:45 GMT"/>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkEntry" id="entry221">
+				      <property name="width_request">88</property>
 				      <property name="visible">True</property>
 				      <property name="sensitive">False</property>
 				      <property name="can_focus">True</property>
@@ -12896,39 +12992,18 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <property name="activates_default">False</property>
 				    </widget>
 				    <packing>
-				      <property name="padding">5</property>
+				      <property name="padding">2</property>
 				      <property name="expand">False</property>
 				      <property name="fill">False</property>
 				    </packing>
 				  </child>
 
 				  <child>
-				    <widget class="GtkLabel" id="label388">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">  between (us)</property>
-				      <property name="use_underline">False</property>
-				      <property name="use_markup">False</property>
-				      <property name="justify">GTK_JUSTIFY_CENTER</property>
-				      <property name="wrap">False</property>
-				      <property name="selectable">False</property>
-				      <property name="xalign">0.5</property>
-				      <property name="yalign">0.5</property>
-				      <property name="xpad">0</property>
-				      <property name="ypad">0</property>
-				      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				      <property name="width_chars">-1</property>
-				      <property name="single_line_mode">False</property>
-				      <property name="angle">0</property>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">False</property>
-				      <property name="fill">True</property>
-				    </packing>
+				    <placeholder/>
 				  </child>
 				</widget>
 				<packing>
-				  <property name="padding">10</property>
+				  <property name="padding">3</property>
 				  <property name="expand">False</property>
 				  <property name="fill">False</property>
 				</packing>
@@ -12966,9 +13041,9 @@ Set IP header length to 0x06, set TTL=1 </property>
 				  </child>
 				</widget>
 				<packing>
-				  <property name="padding">3</property>
+				  <property name="padding">9</property>
 				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="fill">True</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -14139,38 +14214,17 @@ Adjust paremeters while sending</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkRadioButton" id="radiobutton74">
+			<widget class="GtkRadioButton" id="radiobutton77">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">burst 1</property>
+			  <property name="label" translatable="yes">continuous</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
+			  <property name="active">True</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <signal name="toggled" handler="on_radiobutton74_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:25 GMT"/>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">True</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkRadioButton" id="radiobutton75">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">burst 2</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			  <property name="group">radiobutton74</property>
-			  <signal name="toggled" handler="on_radiobutton75_toggled" last_modification_time="Mon, 20 Sep 2010 10:08:02 GMT"/>
+			  <signal name="toggled" handler="on_radiobutton77_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:51 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -14183,36 +14237,15 @@ Adjust paremeters while sending</property>
 			<widget class="GtkRadioButton" id="radiobutton76">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">burst 3</property>
+			  <property name="label" translatable="yes">burst</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <property name="group">radiobutton74</property>
+			  <property name="group">radiobutton77</property>
 			  <signal name="toggled" handler="on_radiobutton76_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:56 GMT"/>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">True</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkRadioButton" id="radiobutton77">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">continuous</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">True</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			  <property name="group">radiobutton74</property>
-			  <signal name="toggled" handler="on_radiobutton77_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:51 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -14232,8 +14265,48 @@ Adjust paremeters while sending</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <property name="group">radiobutton74</property>
+			  <property name="group">radiobutton77</property>
 			  <signal name="toggled" handler="on_radiobutton78_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:46 GMT"/>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">True</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkRadioButton" id="radiobutton74">
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">burst 1</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			  <property name="group">radiobutton77</property>
+			  <signal name="toggled" handler="on_radiobutton74_toggled" last_modification_time="Mon, 20 Sep 2010 10:07:25 GMT"/>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">True</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkRadioButton" id="radiobutton75">
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">burst 2</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			  <property name="group">radiobutton77</property>
+			  <signal name="toggled" handler="on_radiobutton75_toggled" last_modification_time="Mon, 20 Sep 2010 10:08:02 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -14531,7 +14604,7 @@ packets</property>
 				<widget class="GtkLabel" id="label256">
 				  <property name="visible">True</property>
 				  <property name="label" translatable="yes">Delay between
- (us)</property>
+ packets (ns)</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -14560,7 +14633,7 @@ packets</property>
 				<widget class="GtkLabel" id="label257">
 				  <property name="visible">True</property>
 				  <property name="label" translatable="yes">Delay to next
-(us)</property>
+stream (ns)</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -14615,13 +14688,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry131">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14639,13 +14712,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry132">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14663,13 +14736,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry133">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14687,13 +14760,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry134">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14711,13 +14784,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry135">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14735,13 +14808,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry136">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14759,13 +14832,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry137">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14783,13 +14856,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry138">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14807,13 +14880,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry141">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14831,13 +14904,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry142">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14855,13 +14928,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry143">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14879,13 +14952,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry144">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14903,13 +14976,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry145">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14927,13 +15000,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry146">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14951,13 +15024,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry147">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">10</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14975,13 +15048,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry148">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -14999,13 +15072,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry149">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -15023,13 +15096,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry150">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -15254,13 +15327,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry139">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -15278,13 +15351,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry140">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -15586,6 +15659,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton25_toggled" last_modification_time="Wed, 07 Jan 2015 12:04:25 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15607,6 +15681,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton26_toggled" last_modification_time="Wed, 07 Jan 2015 12:04:37 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15629,6 +15704,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton27_toggled" last_modification_time="Wed, 07 Jan 2015 12:04:44 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15651,6 +15727,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton28_toggled" last_modification_time="Wed, 07 Jan 2015 12:04:50 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15673,6 +15750,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton29_toggled" last_modification_time="Wed, 07 Jan 2015 12:04:57 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15695,6 +15773,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton30_toggled" last_modification_time="Wed, 07 Jan 2015 12:05:03 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15717,6 +15796,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton31_toggled" last_modification_time="Wed, 07 Jan 2015 12:05:10 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15739,6 +15819,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton32_toggled" last_modification_time="Wed, 07 Jan 2015 12:05:16 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15761,6 +15842,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton33_toggled" last_modification_time="Wed, 07 Jan 2015 12:05:23 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15783,6 +15865,7 @@ packets</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton34_toggled" last_modification_time="Wed, 07 Jan 2015 12:05:30 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">6</property>
@@ -15857,7 +15940,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -15881,7 +15964,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -15905,7 +15988,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -15929,7 +16012,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -15953,7 +16036,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -15977,7 +16060,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -16001,7 +16084,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -16025,7 +16108,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -16049,7 +16132,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -16073,7 +16156,7 @@ packets</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">6</property>
+				  <property name="max_length">5</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">●</property>
@@ -16346,7 +16429,7 @@ packets</property>
 			      <child>
 				<widget class="GtkLabel" id="label270">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Delay between cycles (us)</property>
+				  <property name="label" translatable="yes">Delay between cycles (ns)</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -16373,13 +16456,13 @@ packets</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry152">
-				  <property name="width_request">90</property>
+				  <property name="width_request">110</property>
 				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">9</property>
+				  <property name="max_length">11</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">•</property>
@@ -19351,6 +19434,7 @@ packets</property>
 </widget>
 
 <widget class="GtkDialog" id="about_dialog">
+  <property name="width_request">250</property>
   <property name="visible">True</property>
   <property name="title" translatable="yes">About</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
@@ -19424,7 +19508,7 @@ packets</property>
 	  <child>
 	    <widget class="GtkLabel" id="label275">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">packETH - 1.8</property>
+	      <property name="label" translatable="yes">packETH - 1.8.1</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -19450,9 +19534,9 @@ packets</property>
 	    <widget class="GtkLabel" id="label276">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">ethernet packet generator
-         Copyright2003 - 2014 
+         Copyright2003 - 2015 
            Miha Jemec          
-
+jemcek@gmail.com
 http://packeth.sourceforge.net/</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>

@@ -839,3 +839,51 @@ on_ipv6_set_random_source_address_1_activate
 void
 on_optionmenu23_clicked                (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_checkbutton25_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton26_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton27_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton28_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton29_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton30_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton31_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton32_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton33_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_checkbutton34_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_radiobutton87_activate              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton87_clicked               (GtkButton       *button,
+                                        gpointer         user_data);

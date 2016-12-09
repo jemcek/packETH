@@ -30,7 +30,7 @@ pixmap_DATA=$(pixmaps)
 DEFS= \
   -DPKGDATADIR=\"$(pkgdatadir)/\"
 
-LIBS=$(DEPS_LIBS)
+LIBS=$(DEPS_LIBS) -lm
 
 AM_CPPFLAGS = \
   -g \

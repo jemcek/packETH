@@ -770,7 +770,12 @@ create_window1 (void)
   GtkWidget *hbox1501;
   GtkWidget *radiobutton81;
   GtkWidget *entry110;
-  GtkWidget *label388;
+  GtkWidget *radiobutton85;
+  GSList *radiobutton85_group = NULL;
+  GtkWidget *radiobutton86;
+  GtkWidget *hbox1514;
+  GtkWidget *radiobutton87;
+  GtkWidget *entry221;
   GtkWidget *hbox114;
   GtkWidget *radiobutton82;
   GtkWidget *frame37;
@@ -841,12 +846,12 @@ create_window1 (void)
   GtkWidget *radiobutton62;
   GtkWidget *vseparator3;
   GtkWidget *label379;
-  GtkWidget *radiobutton74;
-  GSList *radiobutton74_group = NULL;
-  GtkWidget *radiobutton75;
-  GtkWidget *radiobutton76;
   GtkWidget *radiobutton77;
+  GSList *radiobutton77_group = NULL;
+  GtkWidget *radiobutton76;
   GtkWidget *radiobutton78;
+  GtkWidget *radiobutton74;
+  GtkWidget *radiobutton75;
   GtkWidget *frame41;
   GtkWidget *scrolledwindow9;
   GtkWidget *viewport2;
@@ -2514,7 +2519,7 @@ create_window1 (void)
   text1 = gtk_text_view_new ();
   gtk_widget_show (text1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow5), text1);
-  gtk_widget_set_size_request (text1, 350, -1);
+  gtk_widget_set_size_request (text1, 430, -1);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text1), GTK_WRAP_WORD);
 
   hbox58 = gtk_hbox_new (FALSE, 0);
@@ -3060,7 +3065,7 @@ create_window1 (void)
   text3 = gtk_text_view_new ();
   gtk_widget_show (text3);
   gtk_container_add (GTK_CONTAINER (scrolledwindow7), text3);
-  gtk_widget_set_size_request (text3, 350, -1);
+  gtk_widget_set_size_request (text3, 430, -1);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text3), GTK_WRAP_WORD);
 
   label192 = gtk_label_new (_("         "));
@@ -3351,7 +3356,7 @@ create_window1 (void)
   text4 = gtk_text_view_new ();
   gtk_widget_show (text4);
   gtk_container_add (GTK_CONTAINER (scrolledwindow8), text4);
-  gtk_widget_set_size_request (text4, 350, -1);
+  gtk_widget_set_size_request (text4, 430, -1);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text4), GTK_WRAP_WORD);
 
   label228 = gtk_label_new (_("       "));
@@ -4164,7 +4169,7 @@ create_window1 (void)
   text2 = gtk_text_view_new ();
   gtk_widget_show (text2);
   gtk_container_add (GTK_CONTAINER (scrolledwindow6), text2);
-  gtk_widget_set_size_request (text2, 350, -1);
+  gtk_widget_set_size_request (text2, 430, -1);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text2), GTK_WRAP_WORD);
 
   vbox32 = gtk_vbox_new (FALSE, 0);
@@ -4713,7 +4718,7 @@ create_window1 (void)
   gtk_widget_show (entry206);
   gtk_box_pack_start (GTK_BOX (hbox1502), entry206, FALSE, FALSE, 5);
   gtk_widget_set_size_request (entry206, 75, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry206), 8);
+  gtk_entry_set_max_length (GTK_ENTRY (entry206), 6);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry206), 8226);
 
   radiobutton83 = gtk_radio_button_new_with_mnemonic (NULL, _("Mbit/s"));
@@ -4733,7 +4738,7 @@ create_window1 (void)
   gtk_widget_show (hbox1501);
   gtk_box_pack_start (GTK_BOX (vbox60), hbox1501, FALSE, FALSE, 10);
 
-  radiobutton81 = gtk_radio_button_new_with_mnemonic (NULL, _("delay        "));
+  radiobutton81 = gtk_radio_button_new_with_mnemonic (NULL, _("delay between"));
   gtk_widget_show (radiobutton81);
   gtk_box_pack_start (GTK_BOX (hbox1501), radiobutton81, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton81), radiobutton80_group);
@@ -4741,20 +4746,48 @@ create_window1 (void)
 
   entry110 = gtk_entry_new ();
   gtk_widget_show (entry110);
-  gtk_box_pack_start (GTK_BOX (hbox1501), entry110, FALSE, FALSE, 5);
-  gtk_widget_set_size_request (entry110, 75, -1);
+  gtk_box_pack_start (GTK_BOX (hbox1501), entry110, FALSE, FALSE, 2);
+  gtk_widget_set_size_request (entry110, 92, -1);
   gtk_widget_set_sensitive (entry110, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry110), 8);
+  gtk_entry_set_max_length (GTK_ENTRY (entry110), 9);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry110), 8226);
 
-  label388 = gtk_label_new (_("  between (us)"));
-  gtk_widget_show (label388);
-  gtk_box_pack_start (GTK_BOX (hbox1501), label388, FALSE, TRUE, 0);
-  gtk_label_set_justify (GTK_LABEL (label388), GTK_JUSTIFY_CENTER);
+  radiobutton85 = gtk_radio_button_new_with_mnemonic (NULL, _("us"));
+  gtk_widget_show (radiobutton85);
+  gtk_box_pack_start (GTK_BOX (hbox1501), radiobutton85, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (radiobutton85, FALSE);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton85), radiobutton85_group);
+  radiobutton85_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton85));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton85), TRUE);
+
+  radiobutton86 = gtk_radio_button_new_with_mnemonic (NULL, _("ns"));
+  gtk_widget_show (radiobutton86);
+  gtk_box_pack_start (GTK_BOX (hbox1501), radiobutton86, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (radiobutton86, FALSE);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton86), radiobutton85_group);
+  radiobutton85_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton86));
+
+  hbox1514 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1514);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1514, FALSE, FALSE, 3);
+
+  radiobutton87 = gtk_radio_button_new_with_mnemonic (NULL, _("packets per second"));
+  gtk_widget_show (radiobutton87);
+  gtk_box_pack_start (GTK_BOX (hbox1514), radiobutton87, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton87), radiobutton80_group);
+  radiobutton80_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton87));
+
+  entry221 = gtk_entry_new ();
+  gtk_widget_show (entry221);
+  gtk_box_pack_start (GTK_BOX (hbox1514), entry221, FALSE, FALSE, 2);
+  gtk_widget_set_size_request (entry221, 88, -1);
+  gtk_widget_set_sensitive (entry221, FALSE);
+  gtk_entry_set_max_length (GTK_ENTRY (entry221), 8);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry221), 8226);
 
   hbox114 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox114);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox114, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox114, FALSE, TRUE, 9);
 
   radiobutton82 = gtk_radio_button_new_with_mnemonic (NULL, _("max speed"));
   gtk_widget_show (radiobutton82);
@@ -5120,36 +5153,34 @@ create_window1 (void)
   gtk_box_pack_start (GTK_BOX (hbox102), label379, TRUE, FALSE, 0);
   gtk_misc_set_alignment (GTK_MISC (label379), 0, 0.5);
 
-  radiobutton74 = gtk_radio_button_new_with_mnemonic (NULL, _("burst 1"));
-  gtk_widget_show (radiobutton74);
-  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton74, TRUE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton74), radiobutton74_group);
-  radiobutton74_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton74));
-
-  radiobutton75 = gtk_radio_button_new_with_mnemonic (NULL, _("burst 2"));
-  gtk_widget_show (radiobutton75);
-  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton75, TRUE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton75), radiobutton74_group);
-  radiobutton74_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton75));
-
-  radiobutton76 = gtk_radio_button_new_with_mnemonic (NULL, _("burst 3"));
-  gtk_widget_show (radiobutton76);
-  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton76, TRUE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton76), radiobutton74_group);
-  radiobutton74_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton76));
-
   radiobutton77 = gtk_radio_button_new_with_mnemonic (NULL, _("continuous"));
   gtk_widget_show (radiobutton77);
   gtk_box_pack_start (GTK_BOX (hbox102), radiobutton77, TRUE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton77), radiobutton74_group);
-  radiobutton74_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton77));
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton77), radiobutton77_group);
+  radiobutton77_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton77));
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton77), TRUE);
+
+  radiobutton76 = gtk_radio_button_new_with_mnemonic (NULL, _("burst"));
+  gtk_widget_show (radiobutton76);
+  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton76, TRUE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton76), radiobutton77_group);
+  radiobutton77_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton76));
 
   radiobutton78 = gtk_radio_button_new_with_mnemonic (NULL, _("random"));
   gtk_widget_show (radiobutton78);
   gtk_box_pack_start (GTK_BOX (hbox102), radiobutton78, TRUE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton78), radiobutton74_group);
-  radiobutton74_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton78));
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton78), radiobutton77_group);
+  radiobutton77_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton78));
+
+  radiobutton74 = gtk_radio_button_new_with_mnemonic (NULL, _("burst 1"));
+  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton74, TRUE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton74), radiobutton77_group);
+  radiobutton77_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton74));
+
+  radiobutton75 = gtk_radio_button_new_with_mnemonic (NULL, _("burst 2"));
+  gtk_box_pack_start (GTK_BOX (hbox102), radiobutton75, TRUE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton75), radiobutton77_group);
+  radiobutton77_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton75));
 
   frame41 = gtk_frame_new (NULL);
   gtk_widget_show (frame41);
@@ -5272,7 +5303,7 @@ create_window1 (void)
   gtk_label_set_justify (GTK_LABEL (label255), GTK_JUSTIFY_CENTER);
   gtk_misc_set_alignment (GTK_MISC (label255), 0, 0.5);
 
-  label256 = gtk_label_new (_("Delay between\n (us)"));
+  label256 = gtk_label_new (_("Delay between\n packets (ns)"));
   gtk_widget_show (label256);
   gtk_table_attach (GTK_TABLE (table4), label256, 3, 4, 3, 4,
                     (GtkAttachOptions) (0),
@@ -5280,7 +5311,7 @@ create_window1 (void)
   gtk_label_set_justify (GTK_LABEL (label256), GTK_JUSTIFY_CENTER);
   gtk_misc_set_alignment (GTK_MISC (label256), 0, 0.5);
 
-  label257 = gtk_label_new (_("Delay to next\n(us)"));
+  label257 = gtk_label_new (_("Delay to next\nstream (ns)"));
   gtk_widget_show (label257);
   gtk_table_attach (GTK_TABLE (table4), label257, 4, 5, 3, 4,
                     (GtkAttachOptions) (0),
@@ -5301,9 +5332,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry131, 3, 4, 4, 5,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry131, 90, -1);
+  gtk_widget_set_size_request (entry131, 110, -1);
   gtk_widget_set_sensitive (entry131, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry131), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry131), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry131), 8226);
 
   entry132 = gtk_entry_new ();
@@ -5311,9 +5342,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry132, 3, 4, 5, 6,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry132, 90, -1);
+  gtk_widget_set_size_request (entry132, 110, -1);
   gtk_widget_set_sensitive (entry132, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry132), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry132), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry132), 8226);
 
   entry133 = gtk_entry_new ();
@@ -5321,9 +5352,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry133, 3, 4, 6, 7,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry133, 90, -1);
+  gtk_widget_set_size_request (entry133, 110, -1);
   gtk_widget_set_sensitive (entry133, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry133), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry133), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry133), 8226);
 
   entry134 = gtk_entry_new ();
@@ -5331,9 +5362,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry134, 3, 4, 7, 8,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry134, 90, -1);
+  gtk_widget_set_size_request (entry134, 110, -1);
   gtk_widget_set_sensitive (entry134, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry134), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry134), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry134), 8226);
 
   entry135 = gtk_entry_new ();
@@ -5341,9 +5372,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry135, 3, 4, 8, 9,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry135, 90, -1);
+  gtk_widget_set_size_request (entry135, 110, -1);
   gtk_widget_set_sensitive (entry135, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry135), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry135), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry135), 8226);
 
   entry136 = gtk_entry_new ();
@@ -5351,9 +5382,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry136, 3, 4, 9, 10,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry136, 90, -1);
+  gtk_widget_set_size_request (entry136, 110, -1);
   gtk_widget_set_sensitive (entry136, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry136), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry136), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry136), 8226);
 
   entry137 = gtk_entry_new ();
@@ -5361,9 +5392,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry137, 3, 4, 10, 11,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry137, 90, -1);
+  gtk_widget_set_size_request (entry137, 110, -1);
   gtk_widget_set_sensitive (entry137, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry137), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry137), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry137), 8226);
 
   entry138 = gtk_entry_new ();
@@ -5371,9 +5402,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry138, 3, 4, 11, 12,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry138, 90, -1);
+  gtk_widget_set_size_request (entry138, 110, -1);
   gtk_widget_set_sensitive (entry138, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry138), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry138), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry138), 8226);
 
   entry141 = gtk_entry_new ();
@@ -5381,9 +5412,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry141, 4, 5, 4, 5,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry141, 90, -1);
+  gtk_widget_set_size_request (entry141, 110, -1);
   gtk_widget_set_sensitive (entry141, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry141), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry141), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry141), 8226);
 
   entry142 = gtk_entry_new ();
@@ -5391,9 +5422,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry142, 4, 5, 5, 6,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry142, 90, -1);
+  gtk_widget_set_size_request (entry142, 110, -1);
   gtk_widget_set_sensitive (entry142, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry142), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry142), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry142), 8226);
 
   entry143 = gtk_entry_new ();
@@ -5401,9 +5432,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry143, 4, 5, 6, 7,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry143, 90, -1);
+  gtk_widget_set_size_request (entry143, 110, -1);
   gtk_widget_set_sensitive (entry143, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry143), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry143), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry143), 8226);
 
   entry144 = gtk_entry_new ();
@@ -5411,9 +5442,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry144, 4, 5, 7, 8,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry144, 90, -1);
+  gtk_widget_set_size_request (entry144, 110, -1);
   gtk_widget_set_sensitive (entry144, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry144), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry144), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry144), 8226);
 
   entry145 = gtk_entry_new ();
@@ -5421,9 +5452,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry145, 4, 5, 8, 9,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry145, 90, -1);
+  gtk_widget_set_size_request (entry145, 110, -1);
   gtk_widget_set_sensitive (entry145, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry145), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry145), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry145), 8226);
 
   entry146 = gtk_entry_new ();
@@ -5431,9 +5462,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry146, 4, 5, 9, 10,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry146, 90, -1);
+  gtk_widget_set_size_request (entry146, 110, -1);
   gtk_widget_set_sensitive (entry146, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry146), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry146), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry146), 8226);
 
   entry147 = gtk_entry_new ();
@@ -5441,9 +5472,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry147, 4, 5, 10, 11,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry147, 90, -1);
+  gtk_widget_set_size_request (entry147, 110, -1);
   gtk_widget_set_sensitive (entry147, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry147), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry147), 10);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry147), 8226);
 
   entry148 = gtk_entry_new ();
@@ -5451,9 +5482,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry148, 4, 5, 11, 12,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry148, 90, -1);
+  gtk_widget_set_size_request (entry148, 110, -1);
   gtk_widget_set_sensitive (entry148, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry148), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry148), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry148), 8226);
 
   entry149 = gtk_entry_new ();
@@ -5461,9 +5492,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry149, 4, 5, 12, 13,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry149, 90, -1);
+  gtk_widget_set_size_request (entry149, 110, -1);
   gtk_widget_set_sensitive (entry149, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry149), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry149), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry149), 8226);
 
   entry150 = gtk_entry_new ();
@@ -5471,9 +5502,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry150, 4, 5, 13, 14,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry150, 90, -1);
+  gtk_widget_set_size_request (entry150, 110, -1);
   gtk_widget_set_sensitive (entry150, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry150), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry150), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry150), 8226);
 
   entry112 = gtk_entry_new ();
@@ -5562,9 +5593,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry139, 3, 4, 12, 13,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry139, 90, -1);
+  gtk_widget_set_size_request (entry139, 110, -1);
   gtk_widget_set_sensitive (entry139, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry139), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry139), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry139), 8226);
 
   entry140 = gtk_entry_new ();
@@ -5572,9 +5603,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry140, 3, 4, 13, 14,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry140, 90, -1);
+  gtk_widget_set_size_request (entry140, 110, -1);
   gtk_widget_set_sensitive (entry140, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry140), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry140), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry140), 8226);
 
   label268 = gtk_label_new (_("File:"));
@@ -5745,7 +5776,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry186, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry186), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry186), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry186), 9679);
 
   entry187 = gtk_entry_new ();
@@ -5754,7 +5785,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry187, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry187), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry187), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry187), 9679);
 
   entry188 = gtk_entry_new ();
@@ -5763,7 +5794,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry188, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry188), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry188), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry188), 9679);
 
   entry189 = gtk_entry_new ();
@@ -5772,7 +5803,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry189, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry189), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry189), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry189), 9679);
 
   entry190 = gtk_entry_new ();
@@ -5781,7 +5812,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry190, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry190), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry190), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry190), 9679);
 
   entry191 = gtk_entry_new ();
@@ -5790,7 +5821,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry191, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry191), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry191), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry191), 9679);
 
   entry192 = gtk_entry_new ();
@@ -5799,7 +5830,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry192, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry192), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry192), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry192), 9679);
 
   entry193 = gtk_entry_new ();
@@ -5808,7 +5839,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry193, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry193), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry193), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry193), 9679);
 
   entry194 = gtk_entry_new ();
@@ -5817,7 +5848,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (entry194, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry194), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry194), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry194), 9679);
 
   entry185 = gtk_entry_new ();
@@ -5826,7 +5857,7 @@ create_window1 (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 15, 0);
   gtk_widget_set_size_request (entry185, 80, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry185), 6);
+  gtk_entry_set_max_length (GTK_ENTRY (entry185), 5);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry185), 9679);
 
   hbox154 = gtk_hbox_new (FALSE, 0);
@@ -5911,7 +5942,7 @@ create_window1 (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  label270 = gtk_label_new (_("Delay between cycles (us)"));
+  label270 = gtk_label_new (_("Delay between cycles (ns)"));
   gtk_widget_show (label270);
   gtk_table_attach (GTK_TABLE (table4), label270, 2, 5, 0, 1,
                     (GtkAttachOptions) (0),
@@ -5924,9 +5955,9 @@ create_window1 (void)
   gtk_table_attach (GTK_TABLE (table4), entry152, 2, 5, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (entry152, 90, -1);
+  gtk_widget_set_size_request (entry152, 110, -1);
   gtk_widget_set_sensitive (entry152, FALSE);
-  gtk_entry_set_max_length (GTK_ENTRY (entry152), 9);
+  gtk_entry_set_max_length (GTK_ENTRY (entry152), 11);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry152), 8226);
 
   label3 = gtk_label_new (_("  seq gen"));
@@ -6323,6 +6354,9 @@ create_window1 (void)
   g_signal_connect ((gpointer) radiobutton81, "clicked",
                     G_CALLBACK (on_radiobutton81_activate),
                     NULL);
+  g_signal_connect ((gpointer) radiobutton87, "clicked",
+                    G_CALLBACK (on_radiobutton87_clicked),
+                    NULL);
   g_signal_connect ((gpointer) radiobutton82, "clicked",
                     G_CALLBACK (on_radiobutton82_activate),
                     NULL);
@@ -6344,20 +6378,20 @@ create_window1 (void)
   g_signal_connect ((gpointer) radiobutton62, "toggled",
                     G_CALLBACK (on_radiobutton62_toggled),
                     NULL);
+  g_signal_connect ((gpointer) radiobutton77, "toggled",
+                    G_CALLBACK (on_radiobutton77_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton76, "toggled",
+                    G_CALLBACK (on_radiobutton76_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton78, "toggled",
+                    G_CALLBACK (on_radiobutton78_toggled),
+                    NULL);
   g_signal_connect ((gpointer) radiobutton74, "toggled",
                     G_CALLBACK (on_radiobutton74_toggled),
                     NULL);
   g_signal_connect ((gpointer) radiobutton75, "toggled",
                     G_CALLBACK (on_radiobutton75_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) radiobutton76, "toggled",
-                    G_CALLBACK (on_radiobutton76_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) radiobutton77, "toggled",
-                    G_CALLBACK (on_radiobutton77_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) radiobutton78, "toggled",
-                    G_CALLBACK (on_radiobutton78_toggled),
                     NULL);
   g_signal_connect ((gpointer) button65, "clicked",
                     G_CALLBACK (on_button65_clicked),
@@ -6388,6 +6422,36 @@ create_window1 (void)
                     NULL);
   g_signal_connect ((gpointer) button74, "clicked",
                     G_CALLBACK (on_button74_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton25, "toggled",
+                    G_CALLBACK (on_checkbutton25_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton26, "toggled",
+                    G_CALLBACK (on_checkbutton26_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton27, "toggled",
+                    G_CALLBACK (on_checkbutton27_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton28, "toggled",
+                    G_CALLBACK (on_checkbutton28_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton29, "toggled",
+                    G_CALLBACK (on_checkbutton29_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton30, "toggled",
+                    G_CALLBACK (on_checkbutton30_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton31, "toggled",
+                    G_CALLBACK (on_checkbutton31_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton32, "toggled",
+                    G_CALLBACK (on_checkbutton32_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton33, "toggled",
+                    G_CALLBACK (on_checkbutton33_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton34, "toggled",
+                    G_CALLBACK (on_checkbutton34_toggled),
                     NULL);
   g_signal_connect ((gpointer) entry186, "changed",
                     G_CALLBACK (on_entry186_changed),
@@ -7167,7 +7231,11 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, hbox1501, "hbox1501");
   GLADE_HOOKUP_OBJECT (window1, radiobutton81, "radiobutton81");
   GLADE_HOOKUP_OBJECT (window1, entry110, "entry110");
-  GLADE_HOOKUP_OBJECT (window1, label388, "label388");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton85, "radiobutton85");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton86, "radiobutton86");
+  GLADE_HOOKUP_OBJECT (window1, hbox1514, "hbox1514");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton87, "radiobutton87");
+  GLADE_HOOKUP_OBJECT (window1, entry221, "entry221");
   GLADE_HOOKUP_OBJECT (window1, hbox114, "hbox114");
   GLADE_HOOKUP_OBJECT (window1, radiobutton82, "radiobutton82");
   GLADE_HOOKUP_OBJECT (window1, frame37, "frame37");
@@ -7237,11 +7305,11 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, radiobutton62, "radiobutton62");
   GLADE_HOOKUP_OBJECT (window1, vseparator3, "vseparator3");
   GLADE_HOOKUP_OBJECT (window1, label379, "label379");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton77, "radiobutton77");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton76, "radiobutton76");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton78, "radiobutton78");
   GLADE_HOOKUP_OBJECT (window1, radiobutton74, "radiobutton74");
   GLADE_HOOKUP_OBJECT (window1, radiobutton75, "radiobutton75");
-  GLADE_HOOKUP_OBJECT (window1, radiobutton76, "radiobutton76");
-  GLADE_HOOKUP_OBJECT (window1, radiobutton77, "radiobutton77");
-  GLADE_HOOKUP_OBJECT (window1, radiobutton78, "radiobutton78");
   GLADE_HOOKUP_OBJECT (window1, frame41, "frame41");
   GLADE_HOOKUP_OBJECT (window1, scrolledwindow9, "scrolledwindow9");
   GLADE_HOOKUP_OBJECT (window1, viewport2, "viewport2");
@@ -7370,7 +7438,6 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, button86, "button86");
   GLADE_HOOKUP_OBJECT (window1, label251, "label251");
   GLADE_HOOKUP_OBJECT (window1, statusbar1, "statusbar1");
-
 {
 GtkWidget *option_menu1;
 GtkWidget *option_menu3;
@@ -7406,7 +7473,6 @@ gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu15)->menu),
 gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu20)->menu),
 	      "deactivate", GTK_SIGNAL_FUNC (on_igmpmessage_type_clicked), NULL);
 }
-
 
   return window1;
 }
@@ -8439,16 +8505,13 @@ create_udp_payload_dialog (void)
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, hbox77, "hbox77");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, cancel_rtp_bt, "cancel_rtp_bt");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, rtp_ok_bt, "rtp_ok_bt");
-
-
-/* these lines you add at the end of the create_udp_payload_dialog */
-
 {
 GtkWidget *option_menu7;
 option_menu7 = lookup_widget (udp_payload_dialog, "optionmenu7");
 gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu7)->menu),
 	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu7_clicked), NULL);
 }
+
   return udp_payload_dialog;
 }
 
@@ -8465,6 +8528,7 @@ create_about_dialog (void)
   GtkWidget *button75;
 
   about_dialog = gtk_dialog_new ();
+  gtk_widget_set_size_request (about_dialog, 250, -1);
   gtk_window_set_title (GTK_WINDOW (about_dialog), _("About"));
   gtk_window_set_type_hint (GTK_WINDOW (about_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -8479,12 +8543,12 @@ create_about_dialog (void)
   gtk_widget_show (pixmap17);
   gtk_box_pack_start (GTK_BOX (vbox63), pixmap17, FALSE, FALSE, 15);
 
-  label275 = gtk_label_new (_("packETH - 1.8"));
+  label275 = gtk_label_new (_("packETH - 1.8.1"));
   gtk_widget_show (label275);
   gtk_box_pack_start (GTK_BOX (vbox63), label275, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label275), GTK_JUSTIFY_CENTER);
 
-  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2014 \n           Miha Jemec          \n\nhttp://packeth.sourceforge.net/"));
+  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2015 \n           Miha Jemec          \njemcek@gmail.com\nhttp://packeth.sourceforge.net/"));
   gtk_widget_show (label276);
   gtk_box_pack_start (GTK_BOX (vbox63), label276, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label276), GTK_JUSTIFY_CENTER);

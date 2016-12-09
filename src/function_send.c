@@ -41,6 +41,7 @@
 #include "function.h"
 
 #include <sys/time.h>
+#include <time.h>
 
 //#define 1 1.0
 //#define 128 
@@ -48,13 +49,15 @@
 extern int number;
 extern unsigned char packet[10000];
 extern gboolean stop_flag;
-extern long li_packets_sent;
 extern long li_sentbytes;
+extern long li_packets_sent;
+extern long li_last_packets_sent;
+extern long li_packets_sent_lastsec;
 extern long sentstream[10];
 char iftext[20];
 
 struct params  {
-        long del;
+        long long del;
         double count;
         long inc;
 	int type;
@@ -78,7 +81,7 @@ struct params  {
 	char xstart[4];
 	char ystart[4];
 	unsigned char pkttable[10][10000];
-        long int partable[10][6];
+        long long int partable[10][6];
 	int ipv4mask;
 	int ipv6mask;
 	int ip_proto_in_use;
@@ -165,8 +168,10 @@ int packet_go_on_the_link(unsigned char *pkt, int nr)
 void* sendbuilt (void *parameters)
 {
 	/* YYY check if li,... are long enough if inifinite number will be sent. Maybe put them into double */
-        long li, gap = 0, gap2 = 0, sentnumber = 0;
+        long li, sentnumber = 0;
+        long long gap = 0, gap1s = 0;
         struct timeval nowstr, first, last;
+	struct timespec first_ns, now_ns, last_ns, now1s_ns, last1s_ns;
         int i, c, odd=0, actualnumber/*, correctcks = 0*/;
 	//unsigned int mbps, pkts, link;
 	unsigned long xc=0, yc=0;
@@ -185,8 +190,15 @@ void* sendbuilt (void *parameters)
         gettimeofday(&last, NULL);
         gettimeofday(&nowstr, NULL);
 
+	clock_gettime(CLOCK_MONOTONIC, &first_ns);
+	clock_gettime(CLOCK_MONOTONIC, &now_ns);
+	clock_gettime(CLOCK_MONOTONIC, &last_ns);
+	clock_gettime(CLOCK_MONOTONIC, &now1s_ns);
+	clock_gettime(CLOCK_MONOTONIC, &last1s_ns);
+
         /* to send first packet immediatelly */
         gap = p->del;
+	//printf("toklej p->del %lld in tokle p->count %f\n", gap, p->count);
 
 	/* if packet is shorter than 60 bytes, we need real packet length for calculating checksum,
 	 * we use actualnumber for this */
@@ -222,28 +234,37 @@ void* sendbuilt (void *parameters)
 	/* -----------------------------------------------------*/
 	
 	/* we check with == -3 if the infinite option was choosed */
-        for(li = 0; ((p->count == -3) ? : li < p->count); li++) {
-                while (gap < p->del) {
-                        gettimeofday(&nowstr, NULL);
+        for(li = 0; ((p->count == -3) ? : li < p->count); ) {
 
-                        gap = (nowstr.tv_sec*1000000 + nowstr.tv_usec) -
-                                                (last.tv_sec*1000000 + last.tv_usec);
+	    clock_gettime(CLOCK_MONOTONIC, &now_ns);
+            gap = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last_ns.tv_sec*1000000000 + last_ns.tv_nsec);
+            gap1s = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last1s_ns.tv_sec*1000000000 + last1s_ns.tv_nsec);
+                
+	    /* every second we store how many packets were sent, we use this info in function:c to update the status bar */
+	    if (gap1s >= 1000000000) {
+		li_packets_sent_lastsec = li_packets_sent - li_last_packets_sent;
+		li_last_packets_sent = li_packets_sent;
+		last1s_ns.tv_sec = now_ns.tv_sec;
+                last1s_ns.tv_nsec = now_ns.tv_nsec;
+		gap1s = 0;
+	    }
 
-                        gap2 = nowstr.tv_sec - first.tv_sec;
+	    /* if stop button is pressed */
+            if (stop_flag == 1) {
+		close(p->fd);
+                return NULL;
+            }
 
-                        /* if the flag is set - the user clicked the stop button, we quit */
-                        if (stop_flag == 1) {
-				close(p->fd);
-                                return NULL;
-                        }
-                }
+	    /* if there is time to send, do it again... if p->del == 1 then send always (this means that max speed was choosen */
+  	    if ((gap >= p->del) || (p->del == 1)) {
 
 		c = sendto(p->fd, packet, number, 0, (struct sockaddr *)&p->sa, sizeof (p->sa));
+		li++;
 
 		//printf("There were %d bytes sent on the wire (in case of an error we get -1)\n", c);
 
-                last.tv_sec = nowstr.tv_sec;
-                last.tv_usec = nowstr.tv_usec;
+                last_ns.tv_sec = now_ns.tv_sec;
+                last_ns.tv_nsec = now_ns.tv_nsec;
                 gap = 0;
 
                 if (c > 0) {
@@ -567,7 +588,8 @@ void* sendbuilt (void *parameters)
                 		packet[p->icmpv6start+3] = (char)(icmpcksum%256);
 		}
 
-	}	
+	    }	
+        }
 
 
         //printf("  Sent all %ld packets on %s\n", sentnumber, iftext);
@@ -588,8 +610,11 @@ void* sendsequence (void *parameters)
 {
 
 	/* YYY check if li,... are long enough if inifinite number will be sent. Maybe put them into double */
-        long li2, li=0, gap = 0, sentnumber = 0, gap3 = 0, sentbytes = 0;
-        struct timeval nowstr, nowstr1, first, first1, last, last1;
+        long li2, li=0, sentnumber = 0;
+        long gap = 0, gap3 = 0;
+        struct timeval nowstr1, first, last, last1;
+	struct timespec first_ns, now_ns, last_ns;
+	struct timespec first_ns1, now_ns1, last_ns1;
         int j, c;
 	//struct sockaddr_ll sa;
         //struct ifreq ifr;
@@ -599,6 +624,10 @@ void* sendsequence (void *parameters)
         /* this is the time we started */
         gettimeofday(&first, NULL);
         gettimeofday(&last, NULL);
+
+	clock_gettime(CLOCK_MONOTONIC, &first_ns);
+        clock_gettime(CLOCK_MONOTONIC, &now_ns);
+        clock_gettime(CLOCK_MONOTONIC, &last_ns);
 
         /* to start first sequence immedialtelly */
         gap = p->del;
@@ -613,10 +642,17 @@ void* sendsequence (void *parameters)
 	   for (li = 1; p->count == -3 ? TRUE : li < p->count; li++) {
 		/* so wait the delay between sequences */
 		while (gap < p->del) {
-			gettimeofday(&nowstr, NULL);
-			gap = (nowstr.tv_sec*1000000 + nowstr.tv_usec) -
-						(last.tv_sec*1000000 + last.tv_usec);
+			//gettimeofday(&nowstr, NULL);
+			clock_gettime(CLOCK_MONOTONIC, &now_ns);
+			//gap = (nowstr.tv_sec*1000000 + nowstr.tv_usec) -
+			//			(last.tv_sec*1000000 + last.tv_usec);
+			gap = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) -
+						(last_ns.tv_sec*1000000000 + last_ns.tv_nsec);
 
+			if (stop_flag == 1) {
+				close(p->fd);
+				return NULL;
+			}
 		}
 		
 		/* so we waited the desired time between sequences, now we go through all ten fields
@@ -631,10 +667,14 @@ void* sendsequence (void *parameters)
 
 			/* now we are inside one sequence */
 			/* this is the time we started */
-			gettimeofday(&first1, NULL);
-			gettimeofday(&last1, NULL);
-			gettimeofday(&nowstr1, NULL);
+			//gettimeofday(&first1, NULL);
+			//gettimeofday(&last1, NULL);
+			//gettimeofday(&nowstr1, NULL);
 
+			clock_gettime(CLOCK_MONOTONIC, &first_ns1);
+        		clock_gettime(CLOCK_MONOTONIC, &now_ns1);
+        		clock_gettime(CLOCK_MONOTONIC, &last_ns1);
+			
 			/* to send first packet immedialtelly */
 			gap3 = p->partable[j][3];
 
@@ -642,25 +682,33 @@ void* sendsequence (void *parameters)
 			for (li2 = 0; li2 < p->partable[j][2]; li2++) {
 				/* wait enough time */
 				while (gap3 < p->partable[j][3]) {
-					gettimeofday(&nowstr1, NULL);
-					gap3 = (nowstr1.tv_sec*1000000 + nowstr1.tv_usec) -
-							(last1.tv_sec*1000000 + last1.tv_usec);
+					//gettimeofday(&nowstr1, NULL);
+        				clock_gettime(CLOCK_MONOTONIC, &now_ns1);
+					//gap3 = (nowstr1.tv_sec*1000000 + nowstr1.tv_usec) -
+					//		(last1.tv_sec*1000000 + last1.tv_usec);
+					gap3 = (now_ns1.tv_sec*1000000000 + now_ns1.tv_nsec) -
+							(last_ns1.tv_sec*1000000000 + last_ns1.tv_nsec);
 
+					if (stop_flag == 1) {
+						close(p->fd);
+						return NULL;
+					}
 				}
 
 				/* put the packet on the wire */
 				c = sendto(p->fd, p->pkttable[j], p->partable[j][1], 0, 
 								(struct sockaddr *)&p->sa, sizeof (p->sa));
 
-				last1.tv_sec = nowstr1.tv_sec;
-				last1.tv_usec = nowstr1.tv_usec;
+				last_ns1.tv_sec = now_ns1.tv_sec;
+				last_ns1.tv_nsec = now_ns1.tv_nsec;
 				gap3 = 0;
 
 				if (c > 0) {
 					sentstream[j]++;
 					sentnumber++;
 					li_packets_sent = sentnumber;
-					li_sentbytes = li_sentbytes + 24 + p->partable[j][1];
+					//li_sentbytes = li_sentbytes + 24 + p->partable[j][1];
+					li_sentbytes = li_sentbytes + p->partable[j][1];
 				}
 
 				if (sentnumber == p->count) {
@@ -669,7 +717,8 @@ void* sendsequence (void *parameters)
 					return NULL;
 				}
 
-				gettimeofday(&nowstr, NULL);
+				//gettimeofday(&nowstr, NULL);
+        			clock_gettime(CLOCK_MONOTONIC, &now_ns1);
 
 				/* if the flag is set - the user clicked the stop button, we quit */
 				if (stop_flag == 1) {
@@ -680,18 +729,26 @@ void* sendsequence (void *parameters)
 			}
 			
 			/* here we gonna wait the desired time before sending the next row */
-			gettimeofday(&last1, NULL);
+			//gettimeofday(&last1, NULL);	
+        		clock_gettime(CLOCK_MONOTONIC, &last_ns1);
 			gap3 = 0;
 
 			while (gap3 < p->partable[j][4]) {
 
-				gettimeofday(&nowstr1, NULL);
-				gap3 = (nowstr1.tv_sec*1000000 + nowstr1.tv_usec) -
-						(last1.tv_sec*1000000 + last1.tv_usec);
+				//gettimeofday(&nowstr1, NULL);
+        			clock_gettime(CLOCK_MONOTONIC, &now_ns1);
+				gap3 = (now_ns1.tv_sec*1000000000 + now_ns1.tv_nsec) -
+						(last_ns1.tv_sec*1000000000 + last_ns1.tv_nsec);
+
+				if (stop_flag == 1) {
+					close(p->fd);
+					return NULL;
+				}
 
 			}
 		}		
-	        gettimeofday(&last, NULL);
+	        //gettimeofday(&last, NULL);
+        	clock_gettime(CLOCK_MONOTONIC, &last_ns1);
                 gap = 0;
 	}
     }
@@ -740,6 +797,7 @@ void* sendsequence (void *parameters)
 			}
 		}
 	}
+	//printf("toklej p->del %lld \n", p->del);
 
 	for (;;) {
 		
@@ -770,7 +828,7 @@ void* sendsequence (void *parameters)
 			sentstream[rnd]++;
 			sentnumber++;
 			li_packets_sent = sentnumber;
-			li_sentbytes = li_sentbytes + 24 + pktlength[rnd];
+			li_sentbytes = li_sentbytes + pktlength[rnd];
 		}
 
 		if (sentnumber == p->count) {
@@ -790,10 +848,18 @@ void* sendsequence (void *parameters)
 			gettimeofday(&nowstr1, NULL);
 			gap3 = (nowstr1.tv_sec*1000000 + nowstr1.tv_usec) -
 					(last1.tv_sec*1000000 + last1.tv_usec);
+
+			if (stop_flag == 1) {
+				close(p->fd);
+				return NULL;
+			}
 		}
 	}
 
 	return NULL;
     }
+
+    stop_flag = 1;
+    return NULL;
 }
 

@@ -129,7 +129,8 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 	gchar *bt1_t, *bt2_t;
 	long count = 0, del = 0;
         int i = 0, timeflag = 0;
-        unsigned char pkttable[10][71];
+        //unsigned char pkttable[10][71];
+        char pkttable[10][71];
         long int partable[10][5];
 	char buff4[101];
 
