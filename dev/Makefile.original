@@ -1,0 +1,69 @@
+# packETH - ethernet packet generator
+# By Miha Jemec <m.jemec@iskratel.si>
+# Copyright 2003 Miha Jemec, Iskratel
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+# Makefile for building packETH
+
+SHELL = /bin/sh
+prefix = /usr/local
+includedir = /usr/src/include
+
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_PREFIX = /usr/local
+
+CC = gcc
+CPPFLAGS =  -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include 
+LDFLAGS = 
+CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
+#LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -lglib -lXi -lXext -lX11 -lm -lpthread -lgthread
+LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 -lpthread -lgthread-2.0
+
+SOURCES = \
+	main.c \
+	support.c support.h \
+	interface.c interface.h \
+	callbacks.c callbacks.h \
+	function.c function.h \
+	function_send.c function_send.h \
+	function_support.c \
+	loadpacket.c loadpacket.h \
+	savepacket.c savepacket.h \
+	headers.h
+
+OBJECTS =  main.o support.o interface.o callbacks.o function_send.o function.o loadpacket.o savepacket.o 
+
+PROGRAM = packETH
+
+COMPILE = $(CC) $(CFLAGS) $(CPPFLAGS)
+
+all: $(PROGRAM)
+
+$(PROGRAM): $(OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $@
+
+%.o: %.c
+	$(COMPILE) -c $<
+
+install: $(PROGRAM)
+	cp $(PROGRAM) $(INSTALL_PREFIX)/bin/$(PROGRAM)
+	if [ ! -d $(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM) ]; then mkdir -p $(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM); fi
+	cp pixmaps/* $(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM)
+
+clean:
+	rm -f $(OBJECTS) $(PROGRAM)
+

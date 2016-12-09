@@ -1,0 +1,7 @@
+1.7.x -> 1.8
+
+Completly rewritten Gen-b window, user can now select different options while sending per checkbuttons. Optionaly user can specify which checksums should be updated (ipv4, tcp, udp, icmp).
+
+Also the Gtk calls where now removed from the sending thread, what caused a lot of problems with stability on certain Linux distirbutions before. I hope now the whole program will be much more stable. 
+
+

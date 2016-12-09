@@ -1,0 +1,3 @@
+INSTALL: make
+
+usage: ./packETHcli -h
