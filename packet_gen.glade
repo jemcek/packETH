@@ -12714,6 +12714,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <property name="active">False</property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
+				      <signal name="clicked" handler="on_radiobutton89_clicked" last_modification_time="Tue, 28 Nov 2017 13:27:09 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -12792,6 +12793,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
 				      <property name="group">radiobutton89</property>
+				      <signal name="clicked" handler="on_radiobutton90_clicked" last_modification_time="Tue, 28 Nov 2017 13:27:19 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -12804,8 +12806,9 @@ Set IP header length to 0x06, set TTL=1 </property>
 				    <widget class="GtkEntry" id="entry222">
 				      <property name="width_request">99</property>
 				      <property name="visible">True</property>
+				      <property name="sensitive">False</property>
 				      <property name="can_focus">True</property>
-				      <property name="editable">True</property>
+				      <property name="editable">False</property>
 				      <property name="visibility">True</property>
 				      <property name="max_length">7</property>
 				      <property name="text" translatable="yes"></property>
@@ -12866,10 +12869,11 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>
-				      <property name="active">False</property>
+				      <property name="active">True</property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
 				      <property name="group">radiobutton89</property>
+				      <signal name="clicked" handler="on_radiobutton91_clicked" last_modification_time="Tue, 28 Nov 2017 13:27:27 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -12880,7 +12884,6 @@ Set IP header length to 0x06, set TTL=1 </property>
 
 				  <child>
 				    <widget class="GtkCheckButton" id="checkbutton35">
-				      <property name="visible">True</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes"> Infinite</property>
 				      <property name="use_underline">True</property>
@@ -12919,7 +12922,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 			      <child>
 				<widget class="GtkLabel" id="label420">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Speed</property>
+				  <property name="label" translatable="yes">Speed &amp; Bandwidth</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13043,7 +13046,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				    <widget class="GtkRadioButton" id="radiobutton81">
 				      <property name="visible">True</property>
 				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">delay between </property>
+				      <property name="label" translatable="yes">delay between</property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>
@@ -13230,7 +13233,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				<widget class="GtkRadioButton" id="radiobutton95">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
-				  <property name="label" translatable="yes">ramp </property>
+				  <property name="label" translatable="yes">ramp (Mbit/s)</property>
 				  <property name="use_underline">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
 				  <property name="focus_on_click">True</property>
@@ -13238,6 +13241,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
 				  <property name="group">radiobutton80</property>
+				  <signal name="clicked" handler="on_radiobutton95_clicked" last_modification_time="Tue, 28 Nov 2017 13:26:39 GMT"/>
 				</widget>
 				<packing>
 				  <property name="padding">5</property>
@@ -13249,6 +13253,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 			      <child>
 				<widget class="GtkHBox" id="hbox1519">
 				  <property name="visible">True</property>
+				  <property name="sensitive">False</property>
 				  <property name="homogeneous">False</property>
 				  <property name="spacing">0</property>
 
@@ -13261,8 +13266,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <child>
 					<widget class="GtkLabel" id="label412">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">start bw
-(Mbit/s)</property>
+					  <property name="label" translatable="yes">start</property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13286,12 +13290,12 @@ Set IP header length to 0x06, set TTL=1 </property>
 
 				      <child>
 					<widget class="GtkEntry" id="entry223">
-					  <property name="width_request">60</property>
+					  <property name="width_request">20</property>
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="editable">True</property>
 					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
+					  <property name="max_length">4</property>
 					  <property name="text" translatable="yes"></property>
 					  <property name="has_frame">True</property>
 					  <property name="invisible_char">•</property>
@@ -13305,7 +13309,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 				    </widget>
 				    <packing>
-				      <property name="padding">0</property>
+				      <property name="padding">5</property>
 				      <property name="expand">True</property>
 				      <property name="fill">True</property>
 				    </packing>
@@ -13320,8 +13324,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <child>
 					<widget class="GtkLabel" id="label413">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">stop bw
-(Mbit/s)</property>
+					  <property name="label" translatable="yes">end </property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13345,12 +13348,12 @@ Set IP header length to 0x06, set TTL=1 </property>
 
 				      <child>
 					<widget class="GtkEntry" id="entry224">
-					  <property name="width_request">60</property>
+					  <property name="width_request">20</property>
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="editable">True</property>
 					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
+					  <property name="max_length">4</property>
 					  <property name="text" translatable="yes"></property>
 					  <property name="has_frame">True</property>
 					  <property name="invisible_char">•</property>
@@ -13364,7 +13367,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 				    </widget>
 				    <packing>
-				      <property name="padding">0</property>
+				      <property name="padding">5</property>
 				      <property name="expand">True</property>
 				      <property name="fill">True</property>
 				    </packing>
@@ -13379,8 +13382,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <child>
 					<widget class="GtkLabel" id="label414">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">  step
-(Mbit/s)</property>
+					  <property name="label" translatable="yes">step</property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13404,12 +13406,12 @@ Set IP header length to 0x06, set TTL=1 </property>
 
 				      <child>
 					<widget class="GtkEntry" id="entry225">
-					  <property name="width_request">60</property>
+					  <property name="width_request">10</property>
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="editable">True</property>
 					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
+					  <property name="max_length">4</property>
 					  <property name="text" translatable="yes"></property>
 					  <property name="has_frame">True</property>
 					  <property name="invisible_char">•</property>
@@ -13423,7 +13425,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 				    </widget>
 				    <packing>
-				      <property name="padding">0</property>
+				      <property name="padding">5</property>
 				      <property name="expand">True</property>
 				      <property name="fill">True</property>
 				    </packing>
@@ -13438,8 +13440,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      <child>
 					<widget class="GtkLabel" id="label415">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Interval
-  (sec)</property>
+					  <property name="label" translatable="yes">Interval (sec)</property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13462,17 +13463,105 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 
 				      <child>
-					<widget class="GtkEntry" id="entry226">
-					  <property name="width_request">60</property>
+					<widget class="GtkHBox" id="hbox1521">
 					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">•</property>
-					  <property name="activates_default">False</property>
+					  <property name="homogeneous">False</property>
+					  <property name="spacing">0</property>
+
+					  <child>
+					    <widget class="GtkLabel" id="label423">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">    </property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkEntry" id="entry226">
+					      <property name="width_request">10</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="editable">True</property>
+					      <property name="visibility">True</property>
+					      <property name="max_length">6</property>
+					      <property name="text" translatable="yes"></property>
+					      <property name="has_frame">True</property>
+					      <property name="invisible_char">•</property>
+					      <property name="activates_default">False</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">True</property>
+					      <property name="fill">True</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkLabel" id="label424">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes"></property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkLabel" id="label425">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">      </property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -13482,7 +13571,7 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 				    </widget>
 				    <packing>
-				      <property name="padding">0</property>
+				      <property name="padding">2</property>
 				      <property name="expand">True</property>
 				      <property name="fill">True</property>
 				    </packing>
@@ -13500,107 +13589,223 @@ Set IP header length to 0x06, set TTL=1 </property>
 				  <property name="visible">True</property>
 				</widget>
 				<packing>
-				  <property name="padding">10</property>
+				  <property name="padding">15</property>
 				  <property name="expand">False</property>
 				  <property name="fill">True</property>
 				</packing>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton66">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="label" translatable="yes">variable size</property>
-				  <property name="use_underline">True</property>
-				  <property name="relief">GTK_RELIEF_NORMAL</property>
-				  <property name="focus_on_click">True</property>
-				  <property name="active">False</property>
-				  <property name="inconsistent">False</property>
-				  <property name="draw_indicator">True</property>
-				</widget>
-				<packing>
-				  <property name="padding">5</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkHBox" id="hbox1520">
+				<widget class="GtkVBox" id="vbox93">
 				  <property name="visible">True</property>
 				  <property name="homogeneous">False</property>
 				  <property name="spacing">0</property>
 
 				  <child>
-				    <widget class="GtkVBox" id="vbox89">
+				    <widget class="GtkCheckButton" id="checkbutton66">
 				      <property name="visible">True</property>
-				      <property name="homogeneous">False</property>
-				      <property name="spacing">0</property>
-
-				      <child>
-					<widget class="GtkLabel" id="label416">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">start size
- (bytes)</property>
-					  <property name="use_underline">False</property>
-					  <property name="use_markup">False</property>
-					  <property name="justify">GTK_JUSTIFY_LEFT</property>
-					  <property name="wrap">False</property>
-					  <property name="selectable">False</property>
-					  <property name="xalign">0.5</property>
-					  <property name="yalign">0.5</property>
-					  <property name="xpad">0</property>
-					  <property name="ypad">0</property>
-					  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-					  <property name="width_chars">-1</property>
-					  <property name="single_line_mode">False</property>
-					  <property name="angle">0</property>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">False</property>
-					  <property name="fill">False</property>
-					</packing>
-				      </child>
-
-				      <child>
-					<widget class="GtkEntry" id="entry227">
-					  <property name="width_request">60</property>
-					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">4</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">•</property>
-					  <property name="activates_default">False</property>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">False</property>
-					  <property name="fill">False</property>
-					</packing>
-				      </child>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">variable packet size (bytes)</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				      <property name="active">False</property>
+				      <property name="inconsistent">False</property>
+				      <property name="draw_indicator">True</property>
+				      <signal name="toggled" handler="on_checkbutton66_toggled" last_modification_time="Tue, 28 Nov 2017 14:47:30 GMT"/>
 				    </widget>
 				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">True</property>
-				      <property name="fill">True</property>
+				      <property name="padding">5</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
 				    </packing>
 				  </child>
 
 				  <child>
-				    <widget class="GtkVBox" id="vbox90">
+				    <widget class="GtkHBox" id="hbox1520">
 				      <property name="visible">True</property>
+				      <property name="sensitive">False</property>
 				      <property name="homogeneous">False</property>
 				      <property name="spacing">0</property>
 
 				      <child>
-					<widget class="GtkLabel" id="label417">
+					<widget class="GtkVBox" id="vbox89">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">stop size
- (bytes)</property>
+					  <property name="homogeneous">False</property>
+					  <property name="spacing">0</property>
+
+					  <child>
+					    <widget class="GtkLabel" id="label416">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">start</property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkEntry" id="entry227">
+					      <property name="width_request">60</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="editable">True</property>
+					      <property name="visibility">True</property>
+					      <property name="max_length">4</property>
+					      <property name="text" translatable="yes"></property>
+					      <property name="has_frame">True</property>
+					      <property name="invisible_char">•</property>
+					      <property name="activates_default">False</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+					</widget>
+					<packing>
+					  <property name="padding">5</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkVBox" id="vbox90">
+					  <property name="visible">True</property>
+					  <property name="homogeneous">False</property>
+					  <property name="spacing">0</property>
+
+					  <child>
+					    <widget class="GtkLabel" id="label417">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">stop </property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkEntry" id="entry228">
+					      <property name="width_request">60</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="editable">True</property>
+					      <property name="visibility">True</property>
+					      <property name="max_length">4</property>
+					      <property name="text" translatable="yes"></property>
+					      <property name="has_frame">True</property>
+					      <property name="invisible_char">•</property>
+					      <property name="activates_default">False</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+					</widget>
+					<packing>
+					  <property name="padding">5</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkVBox" id="vbox91">
+					  <property name="visible">True</property>
+					  <property name="homogeneous">False</property>
+					  <property name="spacing">0</property>
+
+					  <child>
+					    <widget class="GtkLabel" id="label418">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">step</property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkEntry" id="entry229">
+					      <property name="width_request">60</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="editable">True</property>
+					      <property name="visibility">True</property>
+					      <property name="max_length">4</property>
+					      <property name="text" translatable="yes"></property>
+					      <property name="has_frame">True</property>
+					      <property name="invisible_char">•</property>
+					      <property name="activates_default">False</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+					</widget>
+					<packing>
+					  <property name="padding">5</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkLabel" id="label426">
+					  <property name="visible">True</property>
+					  <property name="label" translatable="yes">    </property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13623,17 +13828,55 @@ Set IP header length to 0x06, set TTL=1 </property>
 				      </child>
 
 				      <child>
-					<widget class="GtkEntry" id="entry228">
-					  <property name="width_request">60</property>
+					<widget class="GtkVBox" id="vbox92">
 					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">4</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">•</property>
-					  <property name="activates_default">False</property>
+					  <property name="homogeneous">False</property>
+					  <property name="spacing">0</property>
+
+					  <child>
+					    <widget class="GtkLabel" id="label419">
+					      <property name="visible">True</property>
+					      <property name="label" translatable="yes">Interval (sec)</property>
+					      <property name="use_underline">False</property>
+					      <property name="use_markup">False</property>
+					      <property name="justify">GTK_JUSTIFY_LEFT</property>
+					      <property name="wrap">False</property>
+					      <property name="selectable">False</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					      <property name="width_chars">-1</property>
+					      <property name="single_line_mode">False</property>
+					      <property name="angle">0</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
+
+					  <child>
+					    <widget class="GtkEntry" id="entry230">
+					      <property name="width_request">60</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="editable">True</property>
+					      <property name="visibility">True</property>
+					      <property name="max_length">6</property>
+					      <property name="text" translatable="yes"></property>
+					      <property name="has_frame">True</property>
+					      <property name="invisible_char">•</property>
+					      <property name="activates_default">False</property>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -13641,25 +13884,11 @@ Set IP header length to 0x06, set TTL=1 </property>
 					  <property name="fill">False</property>
 					</packing>
 				      </child>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">True</property>
-				      <property name="fill">True</property>
-				    </packing>
-				  </child>
-
-				  <child>
-				    <widget class="GtkVBox" id="vbox91">
-				      <property name="visible">True</property>
-				      <property name="homogeneous">False</property>
-				      <property name="spacing">0</property>
 
 				      <child>
-					<widget class="GtkLabel" id="label418">
+					<widget class="GtkLabel" id="label427">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">  step
-(bytes)</property>
+					  <property name="label" translatable="yes">      </property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -13680,97 +13909,18 @@ Set IP header length to 0x06, set TTL=1 </property>
 					  <property name="fill">False</property>
 					</packing>
 				      </child>
-
-				      <child>
-					<widget class="GtkEntry" id="entry229">
-					  <property name="width_request">60</property>
-					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">4</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">•</property>
-					  <property name="activates_default">False</property>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">False</property>
-					  <property name="fill">False</property>
-					</packing>
-				      </child>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
-				      <property name="expand">True</property>
-				      <property name="fill">True</property>
-				    </packing>
-				  </child>
-
-				  <child>
-				    <widget class="GtkVBox" id="vbox92">
-				      <property name="visible">True</property>
-				      <property name="homogeneous">False</property>
-				      <property name="spacing">0</property>
-
-				      <child>
-					<widget class="GtkLabel" id="label419">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Interval
-  (sec)</property>
-					  <property name="use_underline">False</property>
-					  <property name="use_markup">False</property>
-					  <property name="justify">GTK_JUSTIFY_LEFT</property>
-					  <property name="wrap">False</property>
-					  <property name="selectable">False</property>
-					  <property name="xalign">0.5</property>
-					  <property name="yalign">0.5</property>
-					  <property name="xpad">0</property>
-					  <property name="ypad">0</property>
-					  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-					  <property name="width_chars">-1</property>
-					  <property name="single_line_mode">False</property>
-					  <property name="angle">0</property>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">False</property>
-					  <property name="fill">False</property>
-					</packing>
-				      </child>
-
-				      <child>
-					<widget class="GtkEntry" id="entry230">
-					  <property name="width_request">60</property>
-					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">•</property>
-					  <property name="activates_default">False</property>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">False</property>
-					  <property name="fill">False</property>
-					</packing>
-				      </child>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">True</property>
-				      <property name="fill">True</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
 				    </packing>
 				  </child>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
 				</packing>
 			      </child>
 			    </widget>

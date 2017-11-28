@@ -4727,22 +4727,33 @@ void
 on_radiobutton80_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkWidget *en1, *en2, *en3;
-	GtkWidget *rb1, *rb2, *rb3, *rb4;
+	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
+	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
-        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
+        hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
+        cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
+        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
+        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
+        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
+        rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
+        rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
+        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, TRUE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, FALSE);
-        gtk_widget_set_sensitive(rb1, TRUE);
+        gtk_widget_set_sensitive(hb1, FALSE);
+        gtk_widget_set_sensitive(hb2, TRUE);
         gtk_widget_set_sensitive(rb2, TRUE);
-        gtk_widget_set_sensitive(rb3, FALSE);
-        gtk_widget_set_sensitive(rb4, FALSE);
+        gtk_widget_set_sensitive(rb3, TRUE);
+        gtk_widget_set_sensitive(rb5, FALSE);
+        gtk_widget_set_sensitive(rb6, FALSE);
+        gtk_widget_set_sensitive(cb1, TRUE);
 	//gtk_entry_set_text(GTK_ENTRY(en2), "");
 
 
@@ -4753,24 +4764,33 @@ void
 on_radiobutton81_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
-
-	GtkWidget *en1, *en2, *en3;
-	GtkWidget *rb1, *rb2, *rb3, *rb4;
+	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
+	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
-        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
+        hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
+        cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
+        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
+        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
+        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
+        rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
+        rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
+        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, TRUE);
         gtk_widget_set_sensitive(en3, FALSE);
-        gtk_widget_set_sensitive(rb1, FALSE);
+        gtk_widget_set_sensitive(hb1, FALSE);
+        gtk_widget_set_sensitive(hb2, TRUE);
         gtk_widget_set_sensitive(rb2, FALSE);
-        gtk_widget_set_sensitive(rb3, TRUE);
-        gtk_widget_set_sensitive(rb4, TRUE);
-	//gtk_entry_set_text(GTK_ENTRY(en1), "");
+        gtk_widget_set_sensitive(rb3, FALSE);
+        gtk_widget_set_sensitive(rb5, TRUE);
+        gtk_widget_set_sensitive(rb6, TRUE);
+        gtk_widget_set_sensitive(cb1, TRUE);
 
 }
 
@@ -4779,23 +4799,34 @@ void
 on_radiobutton82_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
-
-	GtkWidget *en1, *en2, *en3;
-	GtkWidget *rb1, *rb2, *rb3, *rb4;
+	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
+	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
-        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
+        hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
+        cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
+        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
+        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
+        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
+        rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
+        rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
+        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, FALSE);
-        gtk_widget_set_sensitive(rb1, FALSE);
+        gtk_widget_set_sensitive(hb1, FALSE);
+        gtk_widget_set_sensitive(hb2, TRUE);
         gtk_widget_set_sensitive(rb2, FALSE);
         gtk_widget_set_sensitive(rb3, FALSE);
-        gtk_widget_set_sensitive(rb4, FALSE);
+        gtk_widget_set_sensitive(rb5, FALSE);
+        gtk_widget_set_sensitive(rb6, FALSE);
+        gtk_widget_set_sensitive(cb1, TRUE);
+
 }
 
 
@@ -4803,22 +4834,33 @@ void
 on_radiobutton87_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkWidget *en1, *en2, *en3;
-	GtkWidget *rb1, *rb2, *rb3, *rb4;
+	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
+	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
-        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
+        hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
+        cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
+        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
+        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
+        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
+        rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
+        rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
+        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, TRUE);
-        gtk_widget_set_sensitive(rb1, FALSE);
+        gtk_widget_set_sensitive(hb1, FALSE);
+        gtk_widget_set_sensitive(hb2, TRUE);
         gtk_widget_set_sensitive(rb2, FALSE);
         gtk_widget_set_sensitive(rb3, FALSE);
-        gtk_widget_set_sensitive(rb4, FALSE);
+        gtk_widget_set_sensitive(rb5, FALSE);
+        gtk_widget_set_sensitive(rb6, FALSE);
+        gtk_widget_set_sensitive(cb1, TRUE);
 
 }
 
@@ -5061,4 +5103,103 @@ on_checkbutton34_toggled               (GtkToggleButton *togglebutton,
 
 
 
+
+
+void
+on_radiobutton89_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *en1, *en2, *txt1, *txt2;
+        en1 = lookup_widget(GTK_WIDGET(button), "entry109");
+        en2 = lookup_widget(GTK_WIDGET(button), "entry222");
+        txt1 = lookup_widget(GTK_WIDGET(button), "label409");
+        txt2 = lookup_widget(GTK_WIDGET(button), "label408");
+        gtk_widget_set_sensitive(en1, TRUE);
+        gtk_widget_set_sensitive(en2, FALSE);
+        gtk_widget_set_sensitive(txt1, TRUE);
+        gtk_widget_set_sensitive(txt2, FALSE);
+}
+
+
+void
+on_radiobutton90_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *en1, *en2, *txt1, *txt2;
+        en1 = lookup_widget(GTK_WIDGET(button), "entry109");
+        en2 = lookup_widget(GTK_WIDGET(button), "entry222");
+        txt1 = lookup_widget(GTK_WIDGET(button), "label409");
+        txt2 = lookup_widget(GTK_WIDGET(button), "label408");
+        gtk_widget_set_sensitive(en1, FALSE);
+        gtk_widget_set_sensitive(en2, TRUE);
+        gtk_widget_set_sensitive(txt1, FALSE);
+        gtk_widget_set_sensitive(txt2, TRUE);
+}
+
+
+void
+on_radiobutton91_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *en1, *en2, *txt1, *txt2;
+        en1 = lookup_widget(GTK_WIDGET(button), "entry109");
+        en2 = lookup_widget(GTK_WIDGET(button), "entry222");
+        txt1 = lookup_widget(GTK_WIDGET(button), "label409");
+        txt2 = lookup_widget(GTK_WIDGET(button), "label408");
+        gtk_widget_set_sensitive(en1, FALSE);
+        gtk_widget_set_sensitive(en2, FALSE);
+        gtk_widget_set_sensitive(txt1, FALSE);
+        gtk_widget_set_sensitive(txt2, FALSE);
+
+}
+
+
+void
+on_radiobutton95_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
+	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+        en1 = lookup_widget(GTK_WIDGET(button), "entry206");
+        en2 = lookup_widget(GTK_WIDGET(button), "entry110");
+        en3 = lookup_widget(GTK_WIDGET(button), "entry221");
+        hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
+        hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
+        cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
+        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
+        rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
+        rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
+        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
+        rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
+        rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
+        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
+        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
+        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
+        gtk_widget_set_sensitive(en1, FALSE);
+        gtk_widget_set_sensitive(en2, FALSE);
+        gtk_widget_set_sensitive(en3, FALSE);
+        gtk_widget_set_sensitive(hb1, TRUE);
+        gtk_widget_set_sensitive(hb2, FALSE);
+        gtk_widget_set_sensitive(rb2, FALSE);
+        gtk_widget_set_sensitive(rb3, FALSE);
+        gtk_widget_set_sensitive(rb5, FALSE);
+        gtk_widget_set_sensitive(rb6, FALSE);
+        gtk_widget_set_sensitive(cb1, FALSE);
+
+}
+
+
+void
+on_checkbutton66_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+        GtkWidget *en1;
+        en1 = lookup_widget(GTK_WIDGET(togglebutton), "hbox1520");
+	if (GTK_TOGGLE_BUTTON(togglebutton)->active) {
+                gtk_widget_set_sensitive(en1, TRUE);
+        }
+        else 
+                gtk_widget_set_sensitive(en1, FALSE);
+
+}
 
