@@ -8828,12 +8828,12 @@ create_about_dialog (void)
   gtk_widget_show (pixmap17);
   gtk_box_pack_start (GTK_BOX (vbox63), pixmap17, FALSE, FALSE, 15);
 
-  label275 = gtk_label_new (_("packETH - 1.8.1"));
+  label275 = gtk_label_new (_("packETH - 1.9"));
   gtk_widget_show (label275);
   gtk_box_pack_start (GTK_BOX (vbox63), label275, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label275), GTK_JUSTIFY_CENTER);
 
-  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2015 \n           Miha Jemec          \njemcek@gmail.com\nhttp://packeth.sourceforge.net/"));
+  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2017 \n           Miha Jemec          \njemcek@gmail.com\nhttp://packeth.sourceforge.net/"));
   gtk_widget_show (label276);
   gtk_box_pack_start (GTK_BOX (vbox63), label276, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label276), GTK_JUSTIFY_CENTER);
