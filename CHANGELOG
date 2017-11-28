@@ -10,3 +10,6 @@ Using nano seconds resolution (if supported by the Linx Kernel version, otherwis
 
 Interface dialog now displays all available interfaces not only interfaces with IP address assigned (thanks to Alok Prasad for the patch)  
 
+1.8.1 -> 1.9
+
+Added options for additional stream control (speed ramp, size ramp)
