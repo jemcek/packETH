@@ -887,3 +887,23 @@ on_radiobutton87_activate              (GtkButton       *button,
 void
 on_radiobutton87_clicked               (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_radiobutton89_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton90_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton91_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton95_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_checkbutton66_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
