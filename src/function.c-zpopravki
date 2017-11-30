@@ -77,7 +77,6 @@ long li_sentbytes = 0;
 int count10=0; 
 long sentstream[10];
 long desired_bw;
-long sendtime = 0;
 
 /* structure that holds parameters for generator */
 struct params {
@@ -116,12 +115,10 @@ struct params {
 	int fd;
 	struct ifreq ifr;
         long duration;
-        long long ramp_start;
-        long long ramp_stop;
-        long long ramp_step;
+        int ramp_start;
+        int ramp_stop;
+        int ramp_step;
         int ramp_interval;
-        int ramp_mode; // 0 - no ramp, 1 - speed ramp increasing, -1 - speed ramp decreasing, 2 - size ramp increasing, -2 - size ramp decreasing
-	int ramp_multiplier;
 } params1;		
 
 /* this function is called every second insiede the main gtk loop */
@@ -149,13 +146,24 @@ int gtk_timer(GtkButton *button) {
 		//printf("torej, tokle je number %d tokle je desired %f in tokle actual %f in tokle razlika %.2f\n", number, bw7, aw7, ((bw7 - aw7) / bw7));
 		//max speed option, no ok/nok warning
 		if (desired_bw == 0) {
-			snprintf(buff, 150, " Sent %ld pkts on %s (%d pkts/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link util, test duration %lds)", 
-								li_packets_sent, iftext, pkts, mbits, link_mbits, sendtime);
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		//under 100kbit/s the error rate is to sensible no nok warning
+		else if (aw7 < 100) {
+			snprintf(buff, 150, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+		}
+		else if ( ((bw7 - aw7) / bw7)  > 0.1) {
+			snprintf(buff, 150, " BW error > 10%%!!! Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 		}
 		else {
-			snprintf(buff, 120, " Sent %ld pkts on %s (%d pkts/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link util, test duration %lds)", 
-								li_packets_sent, iftext, pkts, mbits, link_mbits, sendtime);
+			snprintf(buff, 120, "  Sent %ld packets on %s (%d packets/s, %.3f Mbit/s L2 data rate, %.3f Mbit/s link utilization)", 
+								li_packets_sent, iftext, pkts, mbits, link_mbits);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 		}
 		
@@ -211,7 +219,7 @@ int gtk_timer(GtkButton *button) {
 
 
 		if (page == 1) {
-			snprintf(buff, 100, "  Sent %ld packets on %s, test duration %lds ", li_packets_sent, iftext, sendtime);
+			snprintf(buff, 100, "  Sent %ld packets on %s ", li_packets_sent, iftext);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 		}
 		else if (page == 2) {
@@ -645,12 +653,11 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		}
 
-		/* Infinite -  just keep on sending till stop is pressed */
+		/* if the togglebutton is active, just keep on sending till stop is pressed */
 		if (GTK_TOGGLE_BUTTON(rdbt91)->active) {
 			params1.count = -3;
                         params1.duration = 0;
 		}
-		/* number of packets to send*/
 		else if (GTK_TOGGLE_BUTTON(rdbt89)->active) {
 			/* there can be rubbish in this field */
 			if (check_digit(en1_t, strlen(en1_t), "Error: Number of packets to send field") == -1)
@@ -665,10 +672,9 @@ int send_packet(GtkButton *button, gpointer user_data)
 			}
                         params1.duration = 0;
 		}
-		/* duration in seconds */
 		else {
 			/* there can be rubbish in this field */
-			if (check_digit(en222_t, strlen(en222_t), "Error: Duration of seconds to send field") == -1)
+			if (check_digit(en1_t, strlen(en222_t), "Error: Duration of seconds to send field") == -1)
         	                        return -1;
 
 			params1.duration = strtol(en222_t, (char **)NULL, 10);
@@ -681,10 +687,7 @@ int send_packet(GtkButton *button, gpointer user_data)
                         params1.count = -3;
 		}
 
-		// speed & bandwidth selection
-		// bandwidth
 		if (GTK_TOGGLE_BUTTON(ckbt2)->active) {
-			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			/* there can be rubbish in this field */
 			if (check_digit(en3_t, strlen(en3_t), "Error: Bandwidth") == -1)
 					return -1;
@@ -717,9 +720,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				params1.del = 1;
 
 		}
-		// delay between packets
 		else if (GTK_TOGGLE_BUTTON(ckbt3)->active) {
-			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			/* there can be rubbish in this field */
 			if (check_digit(en2_t, strlen(en2_t), "Error: Delay between packets field") == -1)
 					return -1;
@@ -750,9 +751,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			}
 			//printf("v pcl %lld\n", params1.del);
                 }
-		// packets per second
 		else if (GTK_TOGGLE_BUTTON(ckbt4)->active) {
-			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			/* there can be rubbish in this field */
 			if (check_digit(en221_t, strlen(en221_t), "Error: Packets per seconds field") == -1)
 					return -1;
@@ -764,72 +763,17 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Packets per seconds field (1-999999999)");
 				return -1;
 			}
-			params1.del = 1000000000 / params1.del ;
-			if (number < 60)
-				desired_bw = (long)(1000000*60*8/params1.del); 
-			else
-				desired_bw = (long)(1000000*(long long)number*8/params1.del); 
-			//printf("v pps  %lld\n", params1.del);
-			//printf("v pps %ld\n", desired_bw);
+				params1.del = 1000000000 / params1.del ;
+				if (number < 60)
+					desired_bw = (long)(1000000*60*8/params1.del); 
+				else
+					desired_bw = (long)(1000000*(long long)number*8/params1.del); 
+				printf("v pps  %lld\n", params1.del);
+				printf("v pps %ld\n", desired_bw);
 			//printf("v pcl %lld\n", params1.del);
-                }
-		// ramp
-		else if (GTK_TOGGLE_BUTTON(rdbt95)->active) {
-			params1.ramp_mode = 1;
-			/* there can be rubbish in this field */
-			if (check_digit(en223_t, strlen(en223_t), "Error: Bandwidth ramp start speed") == -1)  return -1;
-			if (check_digit(en224_t, strlen(en224_t), "Error: Bandwidth ramp stop speed") == -1)  return -1;
-			if (check_digit(en225_t, strlen(en225_t), "Error: Bandwidth ramp step speed") == -1)  return -1;
-			if (check_digit(en226_t, strlen(en226_t), "Error: Bandwidth ramp interval") == -1)  return -1;
-
-			params1.ramp_start = strtoll(en223_t, (char **)NULL, 10);
-			params1.ramp_stop = strtoll(en224_t, (char **)NULL, 10);
-			params1.ramp_step = strtoll(en225_t, (char **)NULL, 10);
-			params1.ramp_interval = strtoll(en226_t, (char **)NULL, 10);
-
-			if ( (params1.ramp_start > 9999) || (params1.ramp_start < 1) ) {
-				error("Error: Bandwidth ramp start speed (1Mbit/s - 9999Mbit/s)");
-				return -1;
-			}
-			if ( (params1.ramp_stop > 9999) || (params1.ramp_stop < 1) ) {
-				error("Error: Bandwidth ramp stop speed (1Mbit/s - 9999Mbit/s)");
-				return -1;
-			}
-			if ( (params1.ramp_start > 9999) || (params1.ramp_step < 1) ) {
-				error("Error: Bandwidth ramp step speed (1Mbit/s - 9999Mbit/s)");
-				return -1;
-			}
-			if ( (params1.ramp_interval > 999999) || (params1.ramp_interval < 1) ) {
-				error("Error: Bandwidth ramp interval (1 - 999999 sec)");
-				return -1;
-			}
-
-                        params1.ramp_start = params1.ramp_start * 1000;
-                        params1.ramp_stop  = params1.ramp_stop  * 1000;
-                        params1.ramp_step  = params1.ramp_step  * 1000;
-			/* how many times we have to increase/decrease speed */
-			params1.ramp_multiplier = (params1.ramp_stop - params1.ramp_start) / params1.ramp_step;
-
-			/* if this is a ramp down, we just make the step a negative value and that's it */
-			if (params1.ramp_multiplier < 0) {
-				params1.ramp_multiplier = params1.ramp_multiplier * (-1);
-				params1.ramp_step = params1.ramp_step * (-1);
-			}
-
-			if (number < 60) {
-				params1.del  = (long long)(1000000 * 60 * 8) / params1.ramp_start;
-                        }
-			else {
-				params1.del = (long long)(1000000 * (long long)number * 8) / params1.ramp_start;
-			}
-
-                        //printf("tokle je korakov %d in tokle je step %d in tokle je mode %d\n", params1.ramp_multiplier, params1.ramp_step, params1.ramp_mode);
-			//printf("v pcl %lld\n", params1.del);
-			//faster we can't do it... 1us is the resolution...
                 }
 		else {
 			//max speed
-			params1.ramp_mode = 0;
 			params1.del = 1;
 			desired_bw = 0;
 		}

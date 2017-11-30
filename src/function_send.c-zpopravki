@@ -54,7 +54,6 @@ extern long li_packets_sent;
 extern long li_last_packets_sent;
 extern long li_packets_sent_lastsec;
 extern long sentstream[10];
-extern long sendtime;
 char iftext[20];
 
 struct params  {
@@ -91,12 +90,10 @@ struct params  {
         int fd;
         struct ifreq ifr;
         long duration;
-        long long ramp_start;
-        long long ramp_stop;
-        long long ramp_step;
+        int ramp_start;
+        int ramp_stop;
+        int ramp_step;
         int ramp_interval;
-        int ramp_mode;
-	int ramp_multiplier;
 };
 /* end */
 
@@ -177,10 +174,10 @@ void* sendbuilt (void *parameters)
 {
 	/* YYY check if li,... are long enough if inifinite number will be sent. Maybe put them into double */
         long li, sentnumber = 0;
-        long long gap = 0, gap1s = 0, gap2s = 0, gap3s = 0;
+        long long gap = 0, gap1s = 0, gap2s = 0;
         struct timeval nowstr, first, last;
 	struct timespec first_ns, now_ns, last_ns, now1s_ns, last1s_ns;
-        int i, c, odd=0, actualnumber/*, correctcks = 0*/, step_counter = 0;
+        int i, c, odd=0, actualnumber/*, correctcks = 0*/;
 	//unsigned int mbps, pkts, link;
 	unsigned long xc=0, yc=0;
 	//struct sockaddr_ll sa;
@@ -241,7 +238,7 @@ void* sendbuilt (void *parameters)
 	/*               it is sending time                     */
 	/* -----------------------------------------------------*/
 	
-	/* we check with == -3 if the infinite option was choosed, otherwise send until number of packets number was reached */
+	/* we check with == -3 if the infinite option was choosed */
         for(li = 0; ((p->count == -3) ? : li < p->count); ) {
 
 	    clock_gettime(CLOCK_MONOTONIC, &now_ns);
@@ -256,33 +253,15 @@ void* sendbuilt (void *parameters)
                 last1s_ns.tv_nsec = now_ns.tv_nsec;
 		gap1s = 0;
                 gap2s++;
-                sendtime = gap2s;
-		gap3s++;
 	    }
-
-	    /* in ramp case, we need to adjust timers according to start speed and step */
-	    if ( ( p->ramp_mode == 1) )  {
-		/* if the interval is over, let's recalculate delay */
-		if (gap3s >= p->ramp_interval) {
-	            step_counter++;
-		    p->del = (long long)(1000000 * (long long)number * 8) / (p->ramp_start + (p->ramp_step * step_counter));
-		    p->ramp_multiplier--;
-		    gap3s = 0;
-		    //printf("v ramp_mode == 1 novi del %ld in multoplier %d\n", p->del, p->ramp_multiplier);
-		}	
-		// if this was the last rouind, then exit*/
-		if (p->ramp_multiplier < 0)
-		    stop_flag = 1;
-	    }
-
-            /* in case the duration option was choosed, then duration should be > 0 and
-               p->count should be -3 (infinite), but we chech if the seconds timeout */
-            if (( p->count == -3) && (p->duration <= gap2s) && (p->duration > 0)) {
-                stop_flag = 1;
-            }
 
 	    /* if stop button is pressed */
             if (stop_flag == 1) {
+		close(p->fd);
+                return NULL;
+            }
+
+            if (( p->count == -3) && (p->duration < gap2s) && (p->duration > 0)) {
 		close(p->fd);
                 return NULL;
             }
