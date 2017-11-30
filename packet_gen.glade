@@ -20385,7 +20385,7 @@ stream (ns)</property>
 	  <child>
 	    <widget class="GtkLabel" id="label275">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">packETH - 1.8.1</property>
+	      <property name="label" translatable="yes">packETH - 1.9</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -20411,7 +20411,7 @@ stream (ns)</property>
 	    <widget class="GtkLabel" id="label276">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">ethernet packet generator
-         Copyright2003 - 2015 
+         Copyright2003 - 2017
            Miha Jemec          
 jemcek@gmail.com
 http://packeth.sourceforge.net/</property>
