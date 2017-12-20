@@ -1,0 +1,12 @@
+1.7.x -> 1.8
+
+Completly rewritten Gen-b window, user can now select different options while sending per checkbuttons. Optionaly user can specify which checksums should be updated (ipv4, tcp, udp, icmp).
+
+Also the Gtk calls where now removed from the sending thread, what caused a lot of problems with stability on certain Linux distirbutions before. I hope now the whole program will be much more stable. 
+
+1.8 -> 1.8.1
+
+Using nano seconds resolution (if supported by the Linx Kernel version, otherwise micro seconds will be used). With nano seconds the desired bandwidth can be much closer to the actual one for all bandwidths selected. If the actual bandwidth differs from the desired one for more than 10% a warning is included in the status bar.
+
+Interface dialog now displays all available interfaces not only interfaces with IP address assigned (thanks to Alok Prasad for the patch)  
+

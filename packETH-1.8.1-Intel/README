@@ -1,0 +1,27 @@
+packETH-1.8 (C) 2003-2014 by Miha Jemec, <jemcek@gmail.com>
+Covered under the GPL.
+
+
+USAGE:
+
+The usage of the program should be pretty straightforward. As you will see, there are 4 main windows (first four buttons from the left side). I call them:
+- Builder - the page where you build the packet and send it once
+- Gen-b - generator for sending multiple number of packet currently build inside Builder
+- Gen-s - generator that allows you to select up to 10 previosly built packets and send them in different manner
+- Pcap window - open a tcpdump/wireshark capture file and put the selected packet into builder
+
+To send the packets you need the SuperUser rights.
+
+CLI version:
+Inside cli subdirectory you can find also the command line version of packETH called packETHcli. Just type "make" inside the subdir. 
+
+Type ./packETHcli -h  for more options.
+
+More information you can find on the packETH homepage: http://http://packeth.sourceforge.net/packeth/Home.html
+
+If you get into problems, please feel free to contact me.  
+
+Regards,
+
+Miha Jemec
+jemcek@gmail.com

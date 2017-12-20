@@ -1,7 +1,7 @@
 /*
  * packETH - ethernet packet generator
  * By Miha Jemec <jemcek@gmail.com>
- * Copyright 2003-2014 Miha Jemec
+ * Copyright 2003-2018 Miha Jemec
  *
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -115,14 +115,15 @@ struct params {
 	struct sockaddr_ll sa;
 	int fd;
 	struct ifreq ifr;
-        long duration;
-        long long ramp_start;
-        long long ramp_stop;
-        long long ramp_step;
-        int ramp_interval;
-        int ramp_mode; // 0 - no ramp, 1 - speed ramp increasing, -1 - speed ramp decreasing, 2 - size ramp increasing, -2 - size ramp decreasing
+	long duration;
+	long long ramp_start;
+	long long ramp_stop;
+	long long ramp_step;
+	int ramp_interval;
+	int ramp_mode; // 0 - no ramp, 1 - speed ramp increasing, -1 - speed ramp decreasing, 2 - size ramp increasing, -2 - size ramp decreasing
 	int ramp_multiplier;
-} params1;		
+	long long ramp_speed;
+} params1;              
 
 /* this function is called every second insiede the main gtk loop */
 int gtk_timer(GtkButton *button) {
@@ -141,8 +142,8 @@ int gtk_timer(GtkButton *button) {
 	/* stats for Gen-b window this we do only once a second */
 	if ((page == 1) && (count10 > 9)) {
 		pkts = li_packets_sent_lastsec;
-	        mbits = (float)(pkts * number) / 125000; // 8 bits per byte / 1000000 for kbit
-	        link_mbits = (float)(pkts * (number + 24)) / 125000;
+		mbits = (float)(pkts * number) / 125000; // 8 bits per byte / 1000000 for kbit
+		link_mbits = (float)(pkts * (number + 24)) / 125000;
 		bw7 = (float)desired_bw;
 		aw7 = mbits*1000;
 
@@ -160,13 +161,13 @@ int gtk_timer(GtkButton *button) {
 		}
 		
 	
-	        //li_last_packets_sent = li_packets_sent;
+		//li_last_packets_sent = li_packets_sent;
 		count10 = 0;
-	}	
+	}       
 	/* stats for Gen-s window this we also do once a second */
 	else if ((page == 2) && (count10 > 9)) {
 		pkts = li_packets_sent - li_last_packets_sent;
-	        mbits = (float)(li_sentbytes) / 125000; // 8 bits per byte / 1000000 for mbit
+		mbits = (float)(li_sentbytes) / 125000; // 8 bits per byte / 1000000 for mbit
 		bw7 = (float)desired_bw;
 		aw7 = mbits*1000;
 
@@ -186,10 +187,10 @@ int gtk_timer(GtkButton *button) {
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 		}
 	
-	        li_last_packets_sent = li_packets_sent;
-                li_sentbytes=0;
+		li_last_packets_sent = li_packets_sent;
+		li_sentbytes=0;
 		count10 = 0;
-	}	
+	}       
 
 	/* to get better response, we check this every 100ms */
 	if (stop_flag == 1) {
@@ -202,12 +203,12 @@ int gtk_timer(GtkButton *button) {
 		button7 = lookup_widget(GTK_WIDGET (button), "Stop_button");
 
 		gtk_widget_set_sensitive (button1, TRUE);
-       		gtk_widget_set_sensitive (button2, TRUE);
-        	gtk_widget_set_sensitive (button3, TRUE);
-        	gtk_widget_set_sensitive (button4, TRUE);
-        	gtk_widget_set_sensitive (button5, TRUE);
-        	gtk_widget_set_sensitive (button6, TRUE);
-        	gtk_widget_set_sensitive (button7, FALSE);
+		gtk_widget_set_sensitive (button2, TRUE);
+		gtk_widget_set_sensitive (button3, TRUE);
+		gtk_widget_set_sensitive (button4, TRUE);
+		gtk_widget_set_sensitive (button5, TRUE);
+		gtk_widget_set_sensitive (button6, TRUE);
+		gtk_widget_set_sensitive (button7, FALSE);
 
 
 		if (page == 1) {
@@ -240,11 +241,11 @@ int send_packet(GtkButton *button, gpointer user_data)
 	GtkWidget *optm1, *optm2, *optm3, *xmenu, *ymenu, *stopbt;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
-        GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66;
-        GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt82, *rdbt95, *rdbt89, *rdbt90, *rdbt91;
-        GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230;
+	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66;
+	GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt82, *rdbt95, *rdbt89, *rdbt90, *rdbt91;
+	GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230;
 
-	int c, i, m, length;
+	int c, i, m, length, ramp_submode;
 	gchar *en1_t, *en2_t, *en3_t, *en4_t, *en5_t, *en6_t, *en219_t, *en220_t, *en221_t;
 	gchar *en222_t, *en223_t, *en224_t, *en225_t, *en226_t, *en227_t, *en228_t, *en229_t, *en230_t;
 	gint context_id;
@@ -259,20 +260,20 @@ int send_packet(GtkButton *button, gpointer user_data)
 	statusbar = lookup_widget(GTK_WIDGET (button), "statusbar1");
 	context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Statusbar example");
 
- 	notebk = lookup_widget(GTK_WIDGET (button), "notebook1");
+	notebk = lookup_widget(GTK_WIDGET (button), "notebook1");
 
 	/* now we have to decide what happens when the send button is pressed */
 	page =  gtk_notebook_get_current_page(GTK_NOTEBOOK(notebk));
 	
 	/* do we have the rights to do that? */
-        if (getuid() && geteuid()) {
-        	snprintf(buff, 100, "  Sorry but you need the su rights");
-                gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
-                error("Sorry but you need the su rights!");
-                return -1;
-        }
+	if (getuid() && geteuid()) {
+		snprintf(buff, 100, "  Sorry but you need the su rights");
+		gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+		error("Sorry but you need the su rights!");
+		return -1;
+	}
 
-	if ( page == 0 ) { /* so we have the build notebook open, it means we send only one packet */	
+	if ( page == 0 ) { /* so we have the build notebook open, it means we send only one packet */   
 
 		if (make_packet(button, user_data) == -1) {
 			//printf("problems with making packet!\n");
@@ -293,7 +294,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		// thats how the packet looks like */
 		//for (i = 0; i < number; i++)
-		//	printf("%x ", packet[i]);
+		//      printf("%x ", packet[i]);
 		//printf("\nnumber je %d\n", number);
 
 		/* let's send the packet */
@@ -312,7 +313,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			strftime(buf2,80, "%H:%M:%S", ptr);
 			snprintf(buff, 100, " %s  -----> %d bytes sent on %s", buf2, c, iftext);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-		}	
+		}       
 
 		return 1;
 	}
@@ -328,49 +329,49 @@ int send_packet(GtkButton *button, gpointer user_data)
 		}
 
 		/* open socket in raw mode */
-        	params1.fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-        	if (params1.fd == -1) {
-                	//printf("Error: Could not open socket!\n");
-                   	snprintf(buff, 100, "  Problems with sending");
-                  	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-                    	error("Error: Could not open socket!");
-               		return -1;
-        	}		
+		params1.fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+		if (params1.fd == -1) {
+			//printf("Error: Could not open socket!\n");
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+			error("Error: Could not open socket!");
+			return -1;
+		}               
 
 		/* which interface would you like to use? */
-      		memset(&params1.ifr, 0, sizeof(params1.ifr));
-        	strncpy (params1.ifr.ifr_name, iftext, sizeof(params1.ifr.ifr_name) - 1);
-        	params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
+		memset(&params1.ifr, 0, sizeof(params1.ifr));
+		strncpy (params1.ifr.ifr_name, iftext, sizeof(params1.ifr.ifr_name) - 1);
+		params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
 
-        	/* does the interface exists? */
-        	if (ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr) == -1) {
-                	snprintf(buff, 100, "  Problems with sending");
-                	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-                	snprintf(buff, 100, "No such interface: %s", iftext);
-                	error(buff);
-                	close(params1.fd);
-                	return -1;
-        	}
+		/* does the interface exists? */
+		if (ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr) == -1) {
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+			snprintf(buff, 100, "No such interface: %s", iftext);
+			error(buff);
+			close(params1.fd);
+			return -1;
+		}
 
-        	/* is the interface up? */
-        	ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifr);
-        	if ( (params1.ifr.ifr_flags & IFF_UP) == 0) {
-                        snprintf(buff, 100, "  Problems with sending");
-                        gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-                        snprintf(buff, 100, "Interface %s is down", iftext);
-                        error(buff);
-                	close(params1.fd);
-                	return -1;
-        	}
+		/* is the interface up? */
+		ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifr);
+		if ( (params1.ifr.ifr_flags & IFF_UP) == 0) {
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+			snprintf(buff, 100, "Interface %s is down", iftext);
+			error(buff);
+			close(params1.fd);
+			return -1;
+		}
 
-        	/* just write in the structure again */
-        	ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr);
+		/* just write in the structure again */
+		ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr);
 
-        	/* well we need this to work, don't ask me what is it about */
-        	memset(&params1.sa, 0, sizeof (params1.sa));
-        	params1.sa.sll_family    = AF_PACKET;
-        	params1.sa.sll_ifindex   = params1.ifr.ifr_ifindex;
-        	params1.sa.sll_protocol  = htons(ETH_P_ALL);
+		/* well we need this to work, don't ask me what is it about */
+		memset(&params1.sa, 0, sizeof (params1.sa));
+		params1.sa.sll_family    = AF_PACKET;
+		params1.sa.sll_ifindex   = params1.ifr.ifr_ifindex;
+		params1.sa.sll_protocol  = htons(ETH_P_ALL);
 
 		button1 = lookup_widget(GTK_WIDGET (button), "Build_button");
 		button2 = lookup_widget(GTK_WIDGET (button), "Gen_button");
@@ -382,8 +383,8 @@ int send_packet(GtkButton *button, gpointer user_data)
 		en1 = lookup_widget(GTK_WIDGET (button),    "entry109");
 		en2 = lookup_widget(GTK_WIDGET (button),    "entry110");
 		en3 = lookup_widget(GTK_WIDGET (button),    "entry206");
-	        en219 = lookup_widget (GTK_WIDGET (button), "entry219");
-	        en220 = lookup_widget (GTK_WIDGET (button), "entry220");
+		en219 = lookup_widget (GTK_WIDGET (button), "entry219");
+		en220 = lookup_widget (GTK_WIDGET (button), "entry220");
 		en221 = lookup_widget(GTK_WIDGET (button),  "entry221");
 		en222 = lookup_widget(GTK_WIDGET (button),  "entry222");
 		en223 = lookup_widget(GTK_WIDGET (button),  "entry223");
@@ -407,90 +408,90 @@ int send_packet(GtkButton *button, gpointer user_data)
 		rdbt91 = lookup_widget(GTK_WIDGET(button), "radiobutton91");
 
 		ckbt50 = lookup_widget (GTK_WIDGET (button), "checkbutton50");
-	        ckbt51 = lookup_widget (GTK_WIDGET (button), "checkbutton51");
-	        ckbt52 = lookup_widget (GTK_WIDGET (button), "checkbutton52");
-	        ckbt53 = lookup_widget (GTK_WIDGET (button), "checkbutton53");
-	        ckbt54 = lookup_widget (GTK_WIDGET (button), "checkbutton54");
-	        ckbt55 = lookup_widget (GTK_WIDGET (button), "checkbutton55");
-	        ckbt56 = lookup_widget (GTK_WIDGET (button), "checkbutton56");
-	        ckbt57 = lookup_widget (GTK_WIDGET (button), "checkbutton57");
-	        ckbt58 = lookup_widget (GTK_WIDGET (button), "checkbutton58");
-	        ckbt59 = lookup_widget (GTK_WIDGET (button), "checkbutton59");
-	        ckbt60 = lookup_widget (GTK_WIDGET (button), "checkbutton60");
-	        ckbt61 = lookup_widget (GTK_WIDGET (button), "checkbutton61");
-	        ckbt62 = lookup_widget (GTK_WIDGET (button), "checkbutton62");
-	        ckbt63 = lookup_widget (GTK_WIDGET (button), "checkbutton63");
-	        ckbt64 = lookup_widget (GTK_WIDGET (button), "checkbutton64");
-	        ckbt65 = lookup_widget (GTK_WIDGET (button), "checkbutton65");
-	        ckbt66 = lookup_widget (GTK_WIDGET (button), "checkbutton66");
+		ckbt51 = lookup_widget (GTK_WIDGET (button), "checkbutton51");
+		ckbt52 = lookup_widget (GTK_WIDGET (button), "checkbutton52");
+		ckbt53 = lookup_widget (GTK_WIDGET (button), "checkbutton53");
+		ckbt54 = lookup_widget (GTK_WIDGET (button), "checkbutton54");
+		ckbt55 = lookup_widget (GTK_WIDGET (button), "checkbutton55");
+		ckbt56 = lookup_widget (GTK_WIDGET (button), "checkbutton56");
+		ckbt57 = lookup_widget (GTK_WIDGET (button), "checkbutton57");
+		ckbt58 = lookup_widget (GTK_WIDGET (button), "checkbutton58");
+		ckbt59 = lookup_widget (GTK_WIDGET (button), "checkbutton59");
+		ckbt60 = lookup_widget (GTK_WIDGET (button), "checkbutton60");
+		ckbt61 = lookup_widget (GTK_WIDGET (button), "checkbutton61");
+		ckbt62 = lookup_widget (GTK_WIDGET (button), "checkbutton62");
+		ckbt63 = lookup_widget (GTK_WIDGET (button), "checkbutton63");
+		ckbt64 = lookup_widget (GTK_WIDGET (button), "checkbutton64");
+		ckbt65 = lookup_widget (GTK_WIDGET (button), "checkbutton65");
+		ckbt66 = lookup_widget (GTK_WIDGET (button), "checkbutton66");
 
 		/* do we have to adjust any parameters while sending? */
 		params1.inc = 0;
 		//now set different bites for each parameter
 		// source mac
-		if ((GTK_TOGGLE_BUTTON(ckbt61)->active)	) params1.inc = params1.inc + 1;
+		if ((GTK_TOGGLE_BUTTON(ckbt61)->active) ) params1.inc = params1.inc + 1;
 		//source ipv4
-		if ((GTK_TOGGLE_BUTTON(ckbt50)->active)	) {
-				params1.inc = params1.inc + 2;
-				//check what user has inserted for mask
-				en219_t = (char *)gtk_entry_get_text(GTK_ENTRY(en219));
-                        	length = strlen(en219_t);
-                        	for(m=0; m<length; m++) {
-                                	if (isdigit(*(en219_t+m)) == 0) {
-                                		error("Error: Wrong IPv4 mask entry!");
-                                		return -1;
-                                	}
-                        	}
-                        	params1.ipv4mask = strtol(en219_t, (char **)NULL, 10);
-                        	if ( (params1.ipv4mask < 0) || (params1.ipv4mask > 32) ) {
-                                	error("Error: IPv4 mask must be between 0 and 32!");
-                                	return -1;
-                        	}
-		}		
+		if ((GTK_TOGGLE_BUTTON(ckbt50)->active) ) {
+			params1.inc = params1.inc + 2;
+			//check what user has inserted for mask
+			en219_t = (char *)gtk_entry_get_text(GTK_ENTRY(en219));
+			length = strlen(en219_t);
+			for(m=0; m<length; m++) {
+				if (isdigit(*(en219_t+m)) == 0) {
+					error("Error: Wrong IPv4 mask entry!");
+					return -1;
+				}
+			}
+			params1.ipv4mask = strtol(en219_t, (char **)NULL, 10);
+			if ( (params1.ipv4mask < 0) || (params1.ipv4mask > 32) ) {
+				error("Error: IPv4 mask must be between 0 and 32!");
+				return -1;
+			}
+		}               
 		//source ipv6
-		if ((GTK_TOGGLE_BUTTON(ckbt53)->active)	) {
-				params1.inc = params1.inc + 4;
-				//check what user has inserted for mask
-				en220_t = (char *)gtk_entry_get_text(GTK_ENTRY(en220));
-                        	length = strlen(en220_t);
-                        	for(m=0; m<length; m++) {
-                                	if (isdigit(*(en220_t+m)) == 0) {
-                                		error("Error: Wrong IPv6 mask entry!");
-                                		return -1;
-                                	}
-                        	}
-                        	params1.ipv6mask = strtol(en220_t, (char **)NULL, 10);
-                        	if ( (params1.ipv6mask < 0) || (params1.ipv6mask > 128) ) {
-                                	error("Error: IPv6 mask must be between 0 and 128!");
-                                	return -1;
-                        	}
-		}		
+		if ((GTK_TOGGLE_BUTTON(ckbt53)->active) ) {
+			params1.inc = params1.inc + 4;
+			//check what user has inserted for mask
+			en220_t = (char *)gtk_entry_get_text(GTK_ENTRY(en220));
+			length = strlen(en220_t);
+			for(m=0; m<length; m++) {
+				if (isdigit(*(en220_t+m)) == 0) {
+					error("Error: Wrong IPv6 mask entry!");
+					return -1;
+				}
+			}
+			params1.ipv6mask = strtol(en220_t, (char **)NULL, 10);
+			if ( (params1.ipv6mask < 0) || (params1.ipv6mask > 128) ) {
+				error("Error: IPv6 mask must be between 0 and 128!");
+				return -1;
+			}
+		}               
 		//source udp port
-		if (GTK_TOGGLE_BUTTON(ckbt52)->active)	params1.inc = params1.inc + 8;
+		if (GTK_TOGGLE_BUTTON(ckbt52)->active)  params1.inc = params1.inc + 8;
 		//source tcp port
-		if (GTK_TOGGLE_BUTTON(ckbt51)->active)	params1.inc = params1.inc + 16;
+		if (GTK_TOGGLE_BUTTON(ckbt51)->active)  params1.inc = params1.inc + 16;
 		//udp first payload byte
-		if (GTK_TOGGLE_BUTTON(ckbt54)->active)	params1.inc = params1.inc + 32;
+		if (GTK_TOGGLE_BUTTON(ckbt54)->active)  params1.inc = params1.inc + 32;
 		// rtp set nr and timestamp 10ms
-		if (GTK_TOGGLE_BUTTON(ckbt55)->active)	params1.inc = params1.inc + 64;
+		if (GTK_TOGGLE_BUTTON(ckbt55)->active)  params1.inc = params1.inc + 64;
 		// rtp set nr and timestamp 20ms
 		if (GTK_TOGGLE_BUTTON(ckbt56)->active)  params1.inc = params1.inc + 128;
 		// rtp set nr and timestamp 30ms
-		if (GTK_TOGGLE_BUTTON(ckbt57)->active)	params1.inc = params1.inc + 256;
+		if (GTK_TOGGLE_BUTTON(ckbt57)->active)  params1.inc = params1.inc + 256;
 		// change byte x
-		if (GTK_TOGGLE_BUTTON(ckbt58)->active)	params1.inc = params1.inc + 512;
+		if (GTK_TOGGLE_BUTTON(ckbt58)->active)  params1.inc = params1.inc + 512;
 		//change byte y
-		if (GTK_TOGGLE_BUTTON(ckbt59)->active)	params1.inc = params1.inc + 1024;
+		if (GTK_TOGGLE_BUTTON(ckbt59)->active)  params1.inc = params1.inc + 1024;
 		//arp reply random source ip and mac
-		if (GTK_TOGGLE_BUTTON(ckbt60)->active)	params1.inc = params1.inc + 2048;
+		if (GTK_TOGGLE_BUTTON(ckbt60)->active)  params1.inc = params1.inc + 2048;
 		// correct ipv4 checksum
-		if (GTK_TOGGLE_BUTTON(ckbt62)->active)	params1.inc = params1.inc + 4096;
+		if (GTK_TOGGLE_BUTTON(ckbt62)->active)  params1.inc = params1.inc + 4096;
 		// corrent icmp & icmpv6 checksums
-		if (GTK_TOGGLE_BUTTON(ckbt63)->active)	params1.inc = params1.inc + 8192;
+		if (GTK_TOGGLE_BUTTON(ckbt63)->active)  params1.inc = params1.inc + 8192;
 		// correct udp checksum
-		if (GTK_TOGGLE_BUTTON(ckbt64)->active)	params1.inc = params1.inc + 16384;
+		if (GTK_TOGGLE_BUTTON(ckbt64)->active)  params1.inc = params1.inc + 16384;
 		// correct tcp checksum
-		if (GTK_TOGGLE_BUTTON(ckbt65)->active)	params1.inc = params1.inc + 32768;
+		if (GTK_TOGGLE_BUTTON(ckbt65)->active)  params1.inc = params1.inc + 32768;
 
 		//printf("tokle je params1.inc %d\n", params1.inc);
 
@@ -511,7 +512,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* changing mac address */
 		if ( ((params1.inc & (1<<0)) ) && (number < 14) ) {
 				error("Error: Packets is not long enough to change MAC address");
-				return -1;	
+				return -1;      
 		}
 		/* changing ip source address */
 		if ( ((params1.inc & (1<<1)) ) && (number < (ipv4_start + 20)) && (ip_proto_used == 4) ) {
@@ -526,17 +527,17 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* source udp port */
 		if ( ((params1.inc & (1<<3)) ) && (number < (udp_start + 8)) && (l4_proto_used == 17)) {
 				error("Error: Packet isn't long enough to change UDP port");
-				return -1;	
+				return -1;      
 		}
 		/* tcp source port */
 		if ( ((params1.inc & (1<<4)) ) && (number < (tcp_start + 20)) && (l4_proto_used == 6) ) {
 				error("Error: Packet isn't long enough to change TCP port");
-				return -1;	
+				return -1;      
 		}
 		/* increase udp payload by one */
 		if ( ((params1.inc & (1<<5)) ) && (number < (udp_start + 9)) && (l4_proto_used == 17) ) {
 				error("Error: Packet is not long enough to increase UDP payload");
-				return -1;	
+				return -1;      
 		}
 		/* rtp values */
 		if ( ((params1.inc & (1<<6)) ) && (number < (udp_start + 14)) && (l4_proto_used == 17) ) {
@@ -561,24 +562,24 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* changing byte x */
 		if ( (params1.inc & (1<<9)) ) {
 			/* offset x field, is it ok */
- 			en5 = lookup_widget(GTK_WIDGET (button), "entry160");
+			en5 = lookup_widget(GTK_WIDGET (button), "entry160");
 			en5_t = (char *)gtk_entry_get_text(GTK_ENTRY(en5));
 			length = strlen(en5_t);
 			for(m=0; m<length; m++) {
-		                if (isdigit(*(en5_t+m)) == 0) {
-        	                error("Error: Wrong byte x entry!");
-        	                return -1;
-        	        	}
-       			}
+				if (isdigit(*(en5_t+m)) == 0) {
+				error("Error: Wrong byte x entry!");
+				return -1;
+				}
+			}
 			if ( (strtol(en5_t, (char **)NULL, 10) == 0) || 
 					(number < strtol(en5_t, (char **)NULL, 10)) ) {
 				error("Error: Wrong byte x offset!");
-				return -1;	
+				return -1;      
 			}
 			params1.xbyte = strtol(en5_t, (char **)NULL, 10);
 
 			/* option menu button for x byte */
- 			xoptm = lookup_widget(GTK_WIDGET (button), "optionmenu14");
+			xoptm = lookup_widget(GTK_WIDGET (button), "optionmenu14");
 			xmenu = GTK_OPTION_MENU(xoptm)->menu;
 			xmenu_item = gtk_menu_get_active (GTK_MENU (xmenu));
 			params1.xchange = g_list_index (GTK_MENU_SHELL (xmenu)->children, xmenu_item);
@@ -597,7 +598,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				}
 				if ( (strtol(en5_t, (char **)NULL, 10) == 0) ) { 
 					error("Error: Wrong byte x range!");
-					return -1;	
+					return -1;      
 				}
 				params1.xrange = strtol(en5_t, (char **)NULL, 10);
 			}
@@ -605,22 +606,22 @@ int send_packet(GtkButton *button, gpointer user_data)
 		}
 		/* changing byte y */
 		if ( (params1.inc & (1<<10)) ) {
- 			en6 = lookup_widget(GTK_WIDGET (button), "entry162");
+			en6 = lookup_widget(GTK_WIDGET (button), "entry162");
 			en6_t = (char *)gtk_entry_get_text(GTK_ENTRY(en6));
 			length = strlen(en6_t);
 			for(m=0; m<length; m++) {
-		                if (isdigit(*(en6_t+m)) == 0) {
-        	                error("Error: Wrong byte y entry!");
-        	                return -1;
-        	        	}
-       			}
+				if (isdigit(*(en6_t+m)) == 0) {
+				error("Error: Wrong byte y entry!");
+				return -1;
+				}
+			}
 			if ( (strtol(en6_t, (char **)NULL, 10) == 0) || 
 					(number < strtol(en6_t, (char **)NULL, 10)) ) {
 				error("Error: Wrong byte y offset!");
-				return -1;	
+				return -1;      
 			}
 			params1.ybyte = strtol(en6_t, (char **)NULL, 10);
- 			yoptm = lookup_widget(GTK_WIDGET (button), "optionmenu15");
+			yoptm = lookup_widget(GTK_WIDGET (button), "optionmenu15");
 			ymenu = GTK_OPTION_MENU(yoptm)->menu;
 			ymenu_item = gtk_menu_get_active (GTK_MENU (ymenu));
 			memcpy(params1.ystart, &packet[params1.ybyte-1], 4);
@@ -631,7 +632,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				en6_t = (char *)gtk_entry_get_text(GTK_ENTRY(en6));
 				if ( (strtol(en6_t, (char **)NULL, 10) == 0) )  {
 					error("Error: Wrong byte y range!");
-					return -1;	
+					return -1;      
 				}
 				length = strlen(en6_t);
 				for(m=0; m<length; m++) {
@@ -648,13 +649,13 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* Infinite -  just keep on sending till stop is pressed */
 		if (GTK_TOGGLE_BUTTON(rdbt91)->active) {
 			params1.count = -3;
-                        params1.duration = 0;
+			params1.duration = 0;
 		}
 		/* number of packets to send*/
 		else if (GTK_TOGGLE_BUTTON(rdbt89)->active) {
 			/* there can be rubbish in this field */
 			if (check_digit(en1_t, strlen(en1_t), "Error: Number of packets to send field") == -1)
-        	                        return -1;
+					return -1;
 
 			params1.count = strtol(en1_t, (char **)NULL, 10);
 			/* we allow to send 999999999 max */
@@ -663,13 +664,13 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Packets send number value (1 - 999999999)");
 				return -1;
 			}
-                        params1.duration = 0;
+			params1.duration = 0;
 		}
 		/* duration in seconds */
 		else {
 			/* there can be rubbish in this field */
 			if (check_digit(en222_t, strlen(en222_t), "Error: Duration of seconds to send field") == -1)
-        	                        return -1;
+					return -1;
 
 			params1.duration = strtol(en222_t, (char **)NULL, 10);
 			/* we allow max 9999999 seconds */
@@ -678,21 +679,24 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Seconds duration value (1 - 9999999)");
 				return -1;
 			}
-                        params1.count = -3;
+			params1.count = -3;
 		}
 
 		// speed & bandwidth selection
 		// bandwidth
 		if (GTK_TOGGLE_BUTTON(ckbt2)->active) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
+			ramp_submode = 0;
 			/* there can be rubbish in this field */
 			if (check_digit(en3_t, strlen(en3_t), "Error: Bandwidth") == -1)
 					return -1;
 
 			params1.del = strtoll(en3_t, (char **)NULL, 10);
 
-		        if (GTK_TOGGLE_BUTTON(ckbt5)->active)  //Mbit/s
-                                params1.del = params1.del * 1000;
+			if (GTK_TOGGLE_BUTTON(ckbt5)->active)  //Mbit/s
+				params1.del = params1.del * 1000;
+
+			params1.ramp_speed = params1.del;
 
 			/* max bandwidth 100G == 100000M == 100000000Kbit/s */
 			if ( (params1.del > 100000000) || (params1.del < 1) ) {
@@ -720,6 +724,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		// delay between packets
 		else if (GTK_TOGGLE_BUTTON(ckbt3)->active) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
+			ramp_submode = 1;
 			/* there can be rubbish in this field */
 			if (check_digit(en2_t, strlen(en2_t), "Error: Delay between packets field") == -1)
 					return -1;
@@ -731,7 +736,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Delay between packets value (1-999999999)");
 				return -1;
 			}
-			if ((GTK_TOGGLE_BUTTON(rdbt85)->active)	) {
+			if ((GTK_TOGGLE_BUTTON(rdbt85)->active) ) {
 				params1.del = params1.del * 1000;
 				if (number < 60)
 					desired_bw = (long)(1000000*60*8/params1.del); 
@@ -749,10 +754,11 @@ int send_packet(GtkButton *button, gpointer user_data)
 				//printf("v pcl %ld\n", desired_bw);
 			}
 			//printf("v pcl %lld\n", params1.del);
-                }
+		}
 		// packets per second
 		else if (GTK_TOGGLE_BUTTON(ckbt4)->active) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
+			ramp_submode = 2;
 			/* there can be rubbish in this field */
 			if (check_digit(en221_t, strlen(en221_t), "Error: Packets per seconds field") == -1)
 					return -1;
@@ -772,10 +778,11 @@ int send_packet(GtkButton *button, gpointer user_data)
 			//printf("v pps  %lld\n", params1.del);
 			//printf("v pps %ld\n", desired_bw);
 			//printf("v pcl %lld\n", params1.del);
-                }
+		}
 		// ramp
 		else if (GTK_TOGGLE_BUTTON(rdbt95)->active) {
 			params1.ramp_mode = 1;
+			ramp_submode = 3;
 			/* there can be rubbish in this field */
 			if (check_digit(en223_t, strlen(en223_t), "Error: Bandwidth ramp start speed") == -1)  return -1;
 			if (check_digit(en224_t, strlen(en224_t), "Error: Bandwidth ramp stop speed") == -1)  return -1;
@@ -795,7 +802,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Bandwidth ramp stop speed (1Mbit/s - 9999Mbit/s)");
 				return -1;
 			}
-			if ( (params1.ramp_start > 9999) || (params1.ramp_step < 1) ) {
+			if ( (params1.ramp_step > 9999) || (params1.ramp_step < 1) ) {
 				error("Error: Bandwidth ramp step speed (1Mbit/s - 9999Mbit/s)");
 				return -1;
 			}
@@ -804,9 +811,9 @@ int send_packet(GtkButton *button, gpointer user_data)
 				return -1;
 			}
 
-                        params1.ramp_start = params1.ramp_start * 1000;
-                        params1.ramp_stop  = params1.ramp_stop  * 1000;
-                        params1.ramp_step  = params1.ramp_step  * 1000;
+			params1.ramp_start = params1.ramp_start * 1000;
+			params1.ramp_stop  = params1.ramp_stop  * 1000;
+			params1.ramp_step  = params1.ramp_step  * 1000;
 			/* how many times we have to increase/decrease speed */
 			params1.ramp_multiplier = (params1.ramp_stop - params1.ramp_start) / params1.ramp_step;
 
@@ -818,23 +825,79 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 			if (number < 60) {
 				params1.del  = (long long)(1000000 * 60 * 8) / params1.ramp_start;
-                        }
+			}
 			else {
 				params1.del = (long long)(1000000 * (long long)number * 8) / params1.ramp_start;
 			}
 
-                        //printf("tokle je korakov %d in tokle je step %d in tokle je mode %d\n", params1.ramp_multiplier, params1.ramp_step, params1.ramp_mode);
+			//printf("tokle je korakov %d in tokle je step %d in tokle je mode %d\n", params1.ramp_multiplier, params1.ramp_step, params1.ramp_mode);
 			//printf("v pcl %lld\n", params1.del);
 			//faster we can't do it... 1us is the resolution...
-                }
+		}
 		else {
 			//max speed
 			params1.ramp_mode = 0;
+			ramp_submode = 4;
 			params1.del = 1;
 			desired_bw = 0;
 		}
 
+		// it the ramp for size is active
+		if ( (GTK_TOGGLE_BUTTON(ckbt66)->active) && !(GTK_TOGGLE_BUTTON(rdbt95)->active) ){
+			//which ramp submode is on? if this is bandwith, then delay between packets will chande with different mode
+			// all other submodes have same delay, so bandwidth will change due to longer/shorter packets
+			params1.ramp_mode = 2;
+			params1.ramp_mode = params1.ramp_mode + ramp_submode; //2 -means bw was chosse, >2 all other modes
+			/* there can be rubbish in this field */
+			if (check_digit(en227_t, strlen(en227_t), "Error: Size ramp start length") == -1)  return -1;
+			if (check_digit(en228_t, strlen(en228_t), "Error: Size ramp stop length") == -1)  return -1;
+			if (check_digit(en229_t, strlen(en229_t), "Error: Size ramp step length") == -1)  return -1;
+			if (check_digit(en230_t, strlen(en230_t), "Error: Size ramp interval") == -1)  return -1;
 
+			params1.ramp_start = strtoll(en227_t, (char **)NULL, 10);
+			params1.ramp_stop = strtoll(en228_t, (char **)NULL, 10);
+			params1.ramp_step = strtoll(en229_t, (char **)NULL, 10);
+			params1.ramp_interval = strtoll(en230_t, (char **)NULL, 10);
+
+			if ( (params1.ramp_start > 9000) || (params1.ramp_start < 60) ) {
+				error("Error: Size ramp start length (60 - 9000 bytes)");
+				return -1;
+			}
+			if ( (params1.ramp_stop > 9000) || (params1.ramp_stop < 60) ) {
+				error("Error: Size ramp stop length (60 - 9000 bytes)");
+				return -1;
+			}
+			if ( (params1.ramp_step > 9000) || (params1.ramp_step < 1) ) {
+				error("Error: Size ramp step length (1 - 9000 bytes)");
+				return -1;
+			}
+			if ( (params1.ramp_interval > 999999) || (params1.ramp_interval < 1) ) {
+				error("Error: Size ramp interval (1 - 999999 sec)");
+				return -1;
+			}
+
+			/* how many times we have to increase/decrease speed */
+			params1.ramp_multiplier = (params1.ramp_stop - params1.ramp_start) / params1.ramp_step;
+
+			/* if this is a ramp down, we just make the step a negative value and that's it */
+			if (params1.ramp_multiplier < 0) {
+				params1.ramp_multiplier = params1.ramp_multiplier * (-1);
+				params1.ramp_step = params1.ramp_step * (-1);
+			}
+
+			if (number < params1.ramp_start) {
+				error("Error: Built packet must be >= Size ramp start length!");
+				return -1;
+			}
+			if (number < params1.ramp_stop) {
+				error("Error: Built packet must be >= Size ramp stop length!");
+				return -1;
+			}
+
+			//printf("tokle je korakov %d in tokle je step %d in tokle je mode %d\n", params1.ramp_multiplier, params1.ramp_step, params1.ramp_mode);
+			//printf("v pcl %lld\n", params1.del);
+			//faster we can't do it... 1us is the resolution...
+		}
 
 		/* YYY if the built packet is shorter then 60 bytes, we add padding zero bytes 
 		 * to fill up the length till 60 (min ethrenet frame length). This bytes will be 
@@ -863,7 +926,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		//if (GTK_TOGGLE_BUTTON(reltime)->active) 
 			params1.timeflag = 1;
 		//else
-		//	params1.timeflag = 0;
+		//      params1.timeflag = 0;
 
 		gtk_widget_set_sensitive (button1, FALSE);
 		gtk_widget_set_sensitive (button2, FALSE);
@@ -964,9 +1027,9 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 			/* open file for reading */
 			if ( (file_p = fopen(en1_t, "r")) == NULL) {
-                                snprintf(buff4, 100, "Error: Can not open file for reading:%s", en1_t);
+				snprintf(buff4, 100, "Error: Can not open file for reading:%s", en1_t);
 				//printf("Error: Can not open file for reading %s\n", en1_t);
-                                error(buff4);
+				error(buff4);
 				return -1;
 			}
 
@@ -974,37 +1037,37 @@ int send_packet(GtkButton *button, gpointer user_data)
 			{
 			struct pcap_hdr fh;
 			struct pcaprec_hdr ph;
-        		char pkt_temp[100];
+			char pkt_temp[100];
 			int freads;
 
-		        /* first we read the pcap file header */
-        		freads = fread(pkt_temp, sizeof(fh), 1, file_p);
-        		/* if EOF, exit */
-        		if (freads == 0)
-                		return 1;
+			/* first we read the pcap file header */
+			freads = fread(pkt_temp, sizeof(fh), 1, file_p);
+			/* if EOF, exit */
+			if (freads == 0)
+				return 1;
 
-       			 memcpy(&fh, pkt_temp, 24);
+			 memcpy(&fh, pkt_temp, 24);
 
-       			 /* if magic number in NOK, exit */
-       			 if (fh.magic != PCAP_MAGIC)
-        		        return -1;
+			 /* if magic number in NOK, exit */
+			 if (fh.magic != PCAP_MAGIC)
+				return -1;
 
-                	/* next the  pcap packet header */
-                	freads = fread(pkt_temp, sizeof(ph), 1, file_p);
+			/* next the  pcap packet header */
+			freads = fread(pkt_temp, sizeof(ph), 1, file_p);
 
-                	/* if EOF, exit */
-                	if (freads == 0)
-                	        return 1;
+			/* if EOF, exit */
+			if (freads == 0)
+				return 1;
 
-                	/* copy the 16 bytes into ph structure */
-                	memcpy(&ph, pkt_temp, 16);
+			/* copy the 16 bytes into ph structure */
+			memcpy(&ph, pkt_temp, 16);
 
-                	/* and the packet itself, but only up to the capture length */
-                	freads = fread(&params1.pkttable[i][0], ph.incl_len, 1, file_p);
+			/* and the packet itself, but only up to the capture length */
+			freads = fread(&params1.pkttable[i][0], ph.incl_len, 1, file_p);
 
-                	/* if EOF, exit */
-                	if (freads == 0)
-                	        return 1;
+			/* if EOF, exit */
+			if (freads == 0)
+				return 1;
 
 			fclose(file_p);
 			params1.partable[i][1] = ph.incl_len;
@@ -1014,34 +1077,34 @@ int send_packet(GtkButton *button, gpointer user_data)
 			snprintf(buff4, 100, "entry%d", 121+i);
 			en2 = lookup_widget(GTK_WIDGET (button), buff4);
 			en2_t = (char *)gtk_entry_get_text(GTK_ENTRY(en2));
-                        snprintf(buff4, 100, "Error: Number of packets field in row %d", i+1);
-                        if (check_digit(en2_t,strlen(en2_t), buff4) == -1)
-                                        return -1;
+			snprintf(buff4, 100, "Error: Number of packets field in row %d", i+1);
+			if (check_digit(en2_t,strlen(en2_t), buff4) == -1)
+					return -1;
 
-                        params1.partable[i][2] = strtol(en2_t, (char **)NULL, 10);
-                        /* we allow to send 9999999 max */
-                        if ( (params1.partable[i][2] > 9999999) || (params1.partable[i][2] < 0) ) {
-                                snprintf(buff4, 100, "Error: number of packets value in row %d", i+1);
-                                //printf("Error: number of packets value in row %d\n", i+1);
-                                error(buff4);
-                        	return -1;
-                        }
+			params1.partable[i][2] = strtol(en2_t, (char **)NULL, 10);
+			/* we allow to send 9999999 max */
+			if ( (params1.partable[i][2] > 9999999) || (params1.partable[i][2] < 0) ) {
+				snprintf(buff4, 100, "Error: number of packets value in row %d", i+1);
+				//printf("Error: number of packets value in row %d\n", i+1);
+				error(buff4);
+				return -1;
+			}
 
 			if (params1.random == 0) {
 				/* delay between packets */
 				snprintf(buff4, 100, "entry%d", 131+i);
 				en3 = lookup_widget(GTK_WIDGET (button), buff4);
 				en3_t = (char *)gtk_entry_get_text(GTK_ENTRY(en3));
-                	        snprintf(buff4, 100, "Error: Delay between packets field in row %d", i+1);
-                	        if (check_digit(en3_t,strlen(en3_t), buff4) == -1)
-                	                        return -1;
+				snprintf(buff4, 100, "Error: Delay between packets field in row %d", i+1);
+				if (check_digit(en3_t,strlen(en3_t), buff4) == -1)
+						return -1;
 
 				params1.partable[i][3] = strtol(en3_t, (char **)NULL, 10);
 				/* max delay 999,999999 s */
 				if ( (params1.partable[i][3] > 999999999) || (params1.partable[i][3] < 0) ) {
-                	                snprintf(buff4, 100, "Error: delay between value in row %d", i+1);
-                	                //printf("Error: delay between value in row %d\n", i+1);
-                	                error(buff4);
+					snprintf(buff4, 100, "Error: delay between value in row %d", i+1);
+					//printf("Error: delay between value in row %d\n", i+1);
+					error(buff4);
 					return -1;
 				}
 			
@@ -1049,16 +1112,16 @@ int send_packet(GtkButton *button, gpointer user_data)
 				snprintf(buff4, 100, "entry%d", 141+i);
 				en4 = lookup_widget(GTK_WIDGET (button), buff4);
 				en4_t = (char *)gtk_entry_get_text(GTK_ENTRY(en4));
-                        	snprintf(buff4, 100, "Error: Delay to next value in row %d", i+1);
-                        	if (check_digit(en4_t,strlen(en4_t), buff4) == -1)
-                        	                return -1;
+				snprintf(buff4, 100, "Error: Delay to next value in row %d", i+1);
+				if (check_digit(en4_t,strlen(en4_t), buff4) == -1)
+						return -1;
 
 				params1.partable[i][4] = strtol(en4_t, (char **)NULL, 10);
 				/* max delay 999,999999 s */
 				if ( (params1.partable[i][4] > 999999999) || (params1.partable[i][4] < 0) ) {
-                        	        snprintf(buff4, 100, "Error: delay to next value in row %d", i+1);
-                        	        //printf("Error: delay to next value in row %d\n", i+1);
-                        	        error(buff4);
+					snprintf(buff4, 100, "Error: delay to next value in row %d", i+1);
+					//printf("Error: delay to next value in row %d\n", i+1);
+					error(buff4);
 					return -1;
 				}
 			}
@@ -1066,8 +1129,8 @@ int send_packet(GtkButton *button, gpointer user_data)
 				params1.partable[i][3] = 0;
 				params1.partable[i][4] = 0;
 				
-			}	
-		}	
+			}       
+		}       
 
 		en1_t = (char *)gtk_entry_get_text(GTK_ENTRY(optm2));
 		en3_t = (char *)gtk_entry_get_text(GTK_ENTRY(optm22));
@@ -1079,7 +1142,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			/* there can be rubbish in this field */
 			if (check_digit(en1_t, strlen(en1_t), 
 							"Error: Number of cycles to send field") == -1)
-        	                        return -1;
+					return -1;
 
 			params1.count = strtod(en1_t, (char **)NULL);
 			/* we allow to send 9999999 max */
@@ -1089,7 +1152,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				return -1;
 			}
 			for (i=0; i<10; i++)
-                        	tmp = tmp + params1.partable[i][2]; 
+				tmp = tmp + params1.partable[i][2]; 
 			params1.count = params1.count * tmp;
 		}
 		// number of packets
@@ -1097,7 +1160,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			/* there can be rubbish in this field */
 			if (check_digit(en3_t, strlen(en3_t), 
 							"Error: Number of total packets field") == -1)
-        	                        return -1;
+					return -1;
 
 			params1.count = strtod(en3_t, (char **)NULL);
 			/* we allow to send 9999999999 max */
@@ -1124,49 +1187,49 @@ int send_packet(GtkButton *button, gpointer user_data)
 		}
 
 		/* open socket in raw mode */
-        	params1.fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-        	if (params1.fd == -1) {
-                	//printf("Error: Could not open socket!\n");
-                   	snprintf(buff, 100, "  Problems with sending");
-                  	gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
-                    	error("Error: Could not open socket!");
-               		return -1;
-        	}		
+		params1.fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+		if (params1.fd == -1) {
+			//printf("Error: Could not open socket!\n");
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			error("Error: Could not open socket!");
+			return -1;
+		}               
 
 		/* which interface would you like to use? */
-      		memset(&params1.ifr, 0, sizeof(params1.ifr));
-        	strncpy (params1.ifr.ifr_name, iftext, sizeof(params1.ifr.ifr_name) - 1);
-        	params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
+		memset(&params1.ifr, 0, sizeof(params1.ifr));
+		strncpy (params1.ifr.ifr_name, iftext, sizeof(params1.ifr.ifr_name) - 1);
+		params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
 
-        	/* does the interface exists? */
-        	if (ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr) == -1) {
-                	snprintf(buff, 100, "  Problems with sending");
-                	gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
-                	snprintf(buff, 100, "No such interface: %s", iftext);
-                	error(buff);
-                	close(params1.fd);
-                	return -1;
-        	}
+		/* does the interface exists? */
+		if (ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr) == -1) {
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			snprintf(buff, 100, "No such interface: %s", iftext);
+			error(buff);
+			close(params1.fd);
+			return -1;
+		}
 
-        	/* is the interface up? */
-        	ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifr);
-        	if ( (params1.ifr.ifr_flags & IFF_UP) == 0) {
-                        snprintf(buff, 100, "  Problems with sending");
-                        gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
-                        snprintf(buff, 100, "Interface %s is down", iftext);
-                        error(buff);
-                	close(params1.fd);
-                	return -1;
-        	}
+		/* is the interface up? */
+		ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifr);
+		if ( (params1.ifr.ifr_flags & IFF_UP) == 0) {
+			snprintf(buff, 100, "  Problems with sending");
+			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			snprintf(buff, 100, "Interface %s is down", iftext);
+			error(buff);
+			close(params1.fd);
+			return -1;
+		}
 
-        	/* just write in the structure again */
-        	ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr);
+		/* just write in the structure again */
+		ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr);
 
-        	/* well we need this to work, don't ask me what is it about */
-        	memset(&params1.sa, 0, sizeof (params1.sa));
-        	params1.sa.sll_family    = AF_PACKET;
-        	params1.sa.sll_ifindex   = params1.ifr.ifr_ifindex;
-        	params1.sa.sll_protocol  = htons(ETH_P_ALL);
+		/* well we need this to work, don't ask me what is it about */
+		memset(&params1.sa, 0, sizeof (params1.sa));
+		params1.sa.sll_family    = AF_PACKET;
+		params1.sa.sll_ifindex   = params1.ifr.ifr_ifindex;
+		params1.sa.sll_protocol  = htons(ETH_P_ALL);
 
 		gtk_widget_set_sensitive (button1, FALSE);
 		gtk_widget_set_sensitive (button2, FALSE);
@@ -1242,7 +1305,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 			//printf("tole je auto %d tole pa number %d\n", autolength, number);
 			packet[autolength] = (unsigned char)((number - (autolength + 2))/256);
 			packet[autolength+1] = (unsigned char)((number - (autolength + 2))%256);
-		}	
+		}       
 		
 		return 1;
 	}
@@ -1277,7 +1340,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 			//printf("tole je auto %d tole pa number %d\n", autolength, number);
 			packet[autolength] = (unsigned char)((number - (autolength + 2))/256);
 			packet[autolength+1] = (unsigned char)((number - (autolength + 2))%256);
-		}	
+		}       
 		return 1;
 	}
 	
@@ -1295,7 +1358,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 		length = gtk_text_buffer_get_char_count(buffer);
 		GtkTextIter start,end;
 		gtk_text_buffer_get_bounds(buffer,&start,&end);
-		text = gtk_text_buffer_get_text(buffer,&start,&end,FALSE);	
+		text = gtk_text_buffer_get_text(buffer,&start,&end,FALSE);      
 	
 		if (get_network_payload(button, user_data, length, max, text) == -1) {
 			//printf("Error: problem with payload on network layer\n");
@@ -1309,7 +1372,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 			//printf("tole je auto %d tole pa number %d\n", autolength, number);
 			packet[autolength] = (unsigned char)((number - (autolength + 2))/256);
 			packet[autolength+1] = (unsigned char)((number - (autolength + 2))%256);
-		}	
+		}       
 	}
 	else {  /* none of above -> something is wrong! */
 		//printf("Error: problem with network layer button\n");
@@ -1370,7 +1433,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	ip_proto_used = 6;
 
 	/* source ip address */
-        ipv6_start = number;
+	ipv6_start = number;
 
 	/*start parsing the ipv6 header */
 	strncpy(&tmp[0], version_t, 1);
@@ -1380,7 +1443,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	
 	if (char2x(tmp) == -1) {
 		error("Error: ipv6 version or tos field");
-                return -1;
+		return -1;
 	}
 
 	packet[number] = (unsigned char)char2x(tmp);
@@ -1388,7 +1451,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	
 	if (char2x(tmp2) == -1) {
 		error("Error: ipv6 tos field or flow label");
-                return -1;
+		return -1;
 	}
 
 	packet[number] = (unsigned char)char2x(tmp2);
@@ -1396,7 +1459,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 
 	if (char2x(tmp2+2) == -1) {
 		error("Error: flow label");
-                return -1;
+		return -1;
 	}
 
 	packet[number] = (unsigned char)char2x(tmp2+2);
@@ -1404,7 +1467,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 
 	if (char2x(tmp2+4) == -1) {
 		error("Error: ipv6 tos field or flow label");
-                return -1;
+		return -1;
 	}
 
 	packet[number] = (unsigned char)char2x(tmp2+4);
@@ -1420,23 +1483,23 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 		length_start = 0; /* if length start is 0, then we leave it in the end */
 		if ( (atol(plength_t) < 0) || (atol(plength_t) > 65535) ) {
 			error("Error: ipv6 total length range");
-                	return -1;
+			return -1;
 		}
 
 		/* there can be rubbish in this field */
 		if (check_digit(plength_t, strlen(plength_t), 
 					"Error: ipv6 total length field values") == -1)
-                                return -1;
+				return -1;
 
 		packet[number] = (char)(atol(plength_t)/256);
-		number++;	
+		number++;       
 		packet[number] = (char)(atol(plength_t)%256);
-		number++;	
+		number++;       
 	}
 
 	if (char2x(next_t) == -1) {
 		error("Error: ipv6 next header field");
-                return -1;
+		return -1;
 	}
 
 	packet[number] = (unsigned char)char2x(next_t);
@@ -1445,15 +1508,15 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	/* hop limit */
 	if ( (atoi(hop_t) < 0) || (atoi(hop_t) > 255) ) {
 		error("Error: ipv6 hop limit range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(hop_t, strlen(hop_t), "Error: ipv6 hop limit field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(hop_t, strlen(hop_t), "Error: ipv6 hop limit field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atoi(hop_t));
-	number++;	
+	number++;       
 
 	// now the source address
 	if (check_ipv6_address(src_t, 1) == -1) {
@@ -1482,7 +1545,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	for (i=0; i< (x_length/2); i++) {
 		if (char2x(ext_t) == -1) {
 			error("Error: extension header!");
-	                return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(ext_t);
 		number++;
@@ -1506,20 +1569,20 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
-	}	
+	}       
 	
 	else if (GTK_TOGGLE_BUTTON(icmp6_bt)->active) {
 		if (icmpv6_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
-	}	
+	}       
 	
 	else if (GTK_TOGGLE_BUTTON(usedef_bt)->active) {
 			
 		pay_text_e = lookup_widget(GTK_WIDGET (button), "text2");
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pay_text_e));
-		pay_length = gtk_text_buffer_get_char_count(buffer);	
+		pay_length = gtk_text_buffer_get_char_count(buffer);    
 		GtkTextIter start,end;
 		//gtk_text_buffer_get_start_iter(buffer,start);
 		//gtk_text_buffer_get_end_iter(buffer,end);
@@ -1538,7 +1601,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 			g_free(pay_text);
 			return -1;
 		}
-                else
+		else
 			g_free(pay_text);
 	}
 
@@ -1622,7 +1685,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	if (char2x(tmp) == -1) {
 		//printf("Error: ipv4 version or header length field\n");
 		error("Error: ipv4 version or header length field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(tmp);
 	number++;
@@ -1631,7 +1694,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	if (char2x(tos_t) == -1) {
 		//printf("Error: ipv4 tos field\n");
 		error("Error: ipv4 tos field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(tos_t);
 	number++;
@@ -1650,25 +1713,25 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		if ( (atol(total_length_t) < 0) || (atol(total_length_t) > 65535) ) {
 			//printf("Error: ipv4 total length range\n");
 			error("Error: ipv4 total length range");
-                	return -1;
+			return -1;
 		}
 
 		/* there can be rubbish in this field */
 		if (check_digit(total_length_t, strlen(total_length_t), 
 					"Error: ipv4 total length field values") == -1)
-                                return -1;
+				return -1;
 
 		packet[number] = (char)(atol(total_length_t)/256);
-		number++;	
+		number++;       
 		packet[number] = (char)(atol(total_length_t)%256);
-		number++;	
+		number++;       
 	}
 	
 	/* identification */
 	if (char2x(identification_t) == -1) {
 		//printf("Error: ipv4 identification field\n");
 		error("Error: ipv4 identification field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(identification_t);
 	number++;
@@ -1676,7 +1739,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	if (char2x(identification_t) == -1) {
 		//printf("Error: ipv4 identification field\n");
 		error("Error: ipv4 identification field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(identification_t);
 	number++;
@@ -1696,12 +1759,12 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 
 	/* there can be rubbish in this field */
 	if (check_digit(flags_t, strlen(flags_t), "Error: ipv4 flags values") == -1)
-                                return -1;
+				return -1;
 
 	/* there can be rubbish in this field */
-        if (check_digit(frag_offset_t, strlen(frag_offset_t), 
+	if (check_digit(frag_offset_t, strlen(frag_offset_t), 
 					"Error: ipv4 fragmentation offset field values ") == -1)
-                                return -1;
+				return -1;
 
 	/* this is the correct int value now 
 	 * we need to store it as 2 byte hex value */
@@ -1718,29 +1781,29 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	if ( (atoi(ttl_t) < 0) || (atoi(ttl_t) > 255) ) {
 		//printf("Error: ipv4 ttl range\n");
 		error("Error: ipv4 ttl range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(ttl_t, strlen(ttl_t), "Error: ipv4 ttl field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(ttl_t, strlen(ttl_t), "Error: ipv4 ttl field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atoi(ttl_t));
-	number++;	
+	number++;       
 
 	/* protocol field */
 	if ( (atoi(protocol_t) < 0) || (atoi(protocol_t) > 255) ) {
 		//printf("Error: ipv4 protocol range\n");
 		error("Error: ipv4 protocol range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(protocol_t, strlen(protocol_t), "Error: ipv4 protocol field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(protocol_t, strlen(protocol_t), "Error: ipv4 protocol field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atoi(protocol_t));
-	number++;	
+	number++;       
 
 	pseudo_header_sum = (guint32)(packet[number-1]);
 	
@@ -1761,14 +1824,14 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		if (char2x(header_cks_t) == -1) {
 			//printf("Error: ipv4 header checksum field\n");
 			error("Error: ipv4 header checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(header_cks_t);
 		header_cks_t++; header_cks_t++; number++;
 		if (char2x(header_cks_t) == -1) {
 			//printf("Error: ipv4 header checksum field\n");
 			error("Error: ipv4 header checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(header_cks_t);
 		number++;
@@ -1791,7 +1854,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		}
 		tmp[j] = '\0';
 		packet[number] = (unsigned char)(atoi(tmp));
-		number++;		
+		number++;               
 	}
 
 	/* destination ip address */
@@ -1812,7 +1875,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		}
 		tmp[j] = '\0';
 		packet[number] = (unsigned char)(atoi(tmp));
-		number++;		
+		number++;               
 	}
 
 	/* this is checksum for protocol field plus IP source and destination 
@@ -1840,7 +1903,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		if (char2x(options_t) == -1) {
 			//printf("Error: ipv4 options field\n");
 			error("Error: ipv4 options field");
-       		        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(options_t);
 		number++; options_t++; options_t++;
@@ -1862,27 +1925,27 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
-	}	
+	}       
 	
 	else if (GTK_TOGGLE_BUTTON(icmp_bt)->active) {
 		if (icmp_get(button, user_data) == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
-	}	
+	}       
 	
 	else if (GTK_TOGGLE_BUTTON(igmp_bt)->active) {
 		if (igmp_get(button, user_data) == -1) {
 			//printf("Error: Problem with IGMP information\n");
 			return -1;
 		}
-	}	
+	}       
 
 	else if (GTK_TOGGLE_BUTTON(usedef_bt)->active) {
 			
 		pay_text_e = lookup_widget(GTK_WIDGET (button), "text2");
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pay_text_e));
-		pay_length = gtk_text_buffer_get_char_count(buffer);	
+		pay_length = gtk_text_buffer_get_char_count(buffer);    
 		GtkTextIter start,end;
 		//gtk_text_buffer_get_start_iter(buffer,start);
 		//gtk_text_buffer_get_end_iter(buffer,end);
@@ -1901,7 +1964,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 			g_free(pay_text);
 			return -1;
 		}
-                else
+		else
 			g_free(pay_text);
 	}
 
@@ -1959,39 +2022,39 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	cks_start = number;
 	/* we need this one for knowing where the udp payload starts
 	 * we need this one when sending the packets out and modifing some values */
-	udp_start = number;	
+	udp_start = number;     
 	
 	/* source port */
 	if ( (atoi(srcport_t) < 0) || (atoi(srcport_t) > 65535) ) {
 		//printf("Error: Udp source port range\n");
 		error("Error: Udp source port range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(srcport_t, strlen(srcport_t), "Error: Udp srcport field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(srcport_t, strlen(srcport_t), "Error: Udp srcport field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atol(srcport_t)/256);
-	number++;	
+	number++;       
 	packet[number] = (char)(atol(srcport_t)%256);
-	number++;	
+	number++;       
 	
 	/* destination port */
 	if ( (atoi(dstport_t) < 0) || (atoi(dstport_t) > 65535) ) {
 		//printf("Error: Udp destination port range\n");
 		error("Error: Udp destination port range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(dstport_t, strlen(dstport_t), "Error: Udp destination port field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(dstport_t, strlen(dstport_t), "Error: Udp destination port field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atol(dstport_t)/256);
-	number++;	
+	number++;       
 	packet[number] = (char)(atol(dstport_t)%256);
-	number++;	
+	number++;       
 	
 	/* udp length */
 	if (GTK_TOGGLE_BUTTON(length_bt)->active) {
@@ -2005,17 +2068,17 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		if ( (atoi(length_t) < 0) || (atoi(length_t) > 65535) ) {
 			//printf("Error: Udp length range\n");
 			error("Error: Udp length range");
-        	        return -1;
+			return -1;
 		}
 	
-	        /* there can be rubbish in this field */
-        	if (check_digit(length_t, strlen(length_t), "Error: Udp length field values") == -1)
-                                return -1;
+		/* there can be rubbish in this field */
+		if (check_digit(length_t, strlen(length_t), "Error: Udp length field values") == -1)
+				return -1;
 
 		packet[number] = (char)(atol(length_t)/256);
-		number++;	
+		number++;       
 		packet[number] = (char)(atol(length_t)%256);
-		number++;	
+		number++;       
 	}
 	
 	/* udp checksum */
@@ -2033,14 +2096,14 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		if (char2x(checksum_t) == -1) {
 			//printf("Error: udp checksum field\n");
 			error("Error: udp checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(checksum_t);
 		checksum_t++; checksum_t++; number++;
 		if (char2x(checksum_t) == -1) {
 			//printf("Error: udp checksum field\n");
 			error("Error: udp checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(checksum_t);
 		number++;
@@ -2052,7 +2115,7 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	if (GTK_TOGGLE_BUTTON(payload_bt)->active) {
 		
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(payload));
-                payload_length = gtk_text_buffer_get_char_count(buffer);
+		payload_length = gtk_text_buffer_get_char_count(buffer);
 		GtkTextIter start,end;
 		gtk_text_buffer_get_bounds(buffer,&start,&end);
 		//gtk_text_buffer_get_start_iter(buffer,&start);
@@ -2061,16 +2124,16 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		//g_free(start);
 		//g_free(end);
 		//payload_t = (char *) malloc(payload_length + 1);
-                //payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
+		//payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
 		
 		if (get_network_payload(button, user_data, payload_length, 
 						9900, payload_t) == -1) {
 			//printf("Error: Problem with udp payload\n");
-                        g_free(payload_t);
+			g_free(payload_t);
 			return -1;
 		}
-                else
-                        g_free(payload_t);
+		else
+			g_free(payload_t);
 
 		cks_stop = number;
 	}
@@ -2095,14 +2158,14 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		/* we don't care it that means, if you manually insert the length
 		 * than the auto checksum button won't help you 
 		 * it would be better if the value would be correct either */
-	       	
+		
 		/* this if for udp length  */
 		udpcksum = (guint32)(cks_stop - cks_start);
 		/* pseudo header (ip part) + udplength + nr of cicles over guint16 */
 		udpcksum = pseudo_header_sum + udpcksum;
 		/* if the length is odd we have to add a pad byte */
 		if( (cks_stop - cks_start)%2 != 0)
-                               odd = 1;
+			       odd = 1;
 		/* previos value + part from udp checksum */
 		udpcksum = udpcksum + get_checksum32(cks_start, cks_stop+odd);
 		while (udpcksum >> 16)
@@ -2175,109 +2238,109 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 	
 	/* we need this one for knowing where the tcp part starts
 	 * we need this one when sending the packets out and modifing some values */
-	tcp_start = number;	
+	tcp_start = number;     
 		
 	/* source port */
 	if ( (atoi(srcport_t) < 0) || (atoi(srcport_t) > 65535) ) {
 		//printf("Error: tcp source port range\n");
 		error("Error: tcp source port range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(srcport_t, strlen(srcport_t), "Error: tcp srcport field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(srcport_t, strlen(srcport_t), "Error: tcp srcport field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atol(srcport_t)/256);
-        number++;
-        packet[number] = (char)(atol(srcport_t)%256);
-        number++;
+	number++;
+	packet[number] = (char)(atol(srcport_t)%256);
+	number++;
 	
 	/* destination port */
 	if ( (atoi(dstport_t) < 0) || (atoi(dstport_t) > 65535) ) {
 		//printf("Error: tcp destination port range\n");
 		error("Error: tcp destination port range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(dstport_t, strlen(dstport_t), "Error: tcp destination port field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(dstport_t, strlen(dstport_t), "Error: tcp destination port field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atol(dstport_t)/256);
-        number++;
-        packet[number] = (char)(atol(dstport_t)%256);
-        number++;
+	number++;
+	packet[number] = (char)(atol(dstport_t)%256);
+	number++;
 
 	/* sequence number */
 	if ( strtoull(sequence_number_t, (char **)NULL, 10) > 0xFFFFFFFF ) {
 		//printf("Error: tcp sequence number range\n");
 		error("Error: tcp sequence number range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(sequence_number_t, strlen(sequence_number_t), 
+	/* there can be rubbish in this field */
+	if (check_digit(sequence_number_t, strlen(sequence_number_t), 
 						"Error: tcp sequence number field values") == -1)
-                                return -1;
+				return -1;
 
 	seqnr = strtoul(sequence_number_t, (char **)NULL, 10);
 	packet[number] = (char)(seqnr/16777216);
-        number++;
-        packet[number] = (char)(seqnr/65536);
-        number++;
-        packet[number] = (char)(seqnr/256);
-        number++;
-        packet[number] = (char)(seqnr%256);
-        number++;
+	number++;
+	packet[number] = (char)(seqnr/65536);
+	number++;
+	packet[number] = (char)(seqnr/256);
+	number++;
+	packet[number] = (char)(seqnr%256);
+	number++;
 
 	/* acknowledgment number */
 	if ( strtoull(ack_number_t, (char **)NULL, 10) > 0xFFFFFFFF) {
 		//printf("Error: tcp ack number range\n");
 		error("Error: tcp ack number range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(ack_number_t, strlen(ack_number_t), "Error: tcp ack number field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(ack_number_t, strlen(ack_number_t), "Error: tcp ack number field values") == -1)
+				return -1;
 
 	acknr = strtoul(ack_number_t, (char **)NULL, 10);
 	packet[number] = (char)(acknr/16777216);
-        number++;
-        packet[number] = (char)(acknr/65536);
-        number++;
-        packet[number] = (char)(acknr/256);
-        number++;
-        packet[number] = (char)(acknr%256);
-        number++;
+	number++;
+	packet[number] = (char)(acknr/65536);
+	number++;
+	packet[number] = (char)(acknr/256);
+	number++;
+	packet[number] = (char)(acknr%256);
+	number++;
 
-	/* header length */	
+	/* header length */     
 	if ( (atoi(header_length_t) < 0) || (atoi(header_length_t) > 60) ) {
 		//printf("Error: tcp header_length range\n");
 		error("Error: tcp header_length range");
-                return -1;
+		return -1;
 	}
 
 	/* since we insert value as int, when dividing it with 4 there must remain 0 */
 	if ( atoi(header_length_t) % 4 !=  0) {
 		//printf("Error: tcp header_length range\n");
 		error("Error: Wrong tcp header length value          \n(length mod 4 must be 0)");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(header_length_t, strlen(header_length_t), 
+	/* there can be rubbish in this field */
+	if (check_digit(header_length_t, strlen(header_length_t), 
 						"Error: tcp header_length field values") == -1)
-                                return -1;
+				return -1;
 
 	packet[number] = (char)((atoi(header_length_t)*4));
-	number++;	
+	number++;       
 
 	/* flags */
 	if (GTK_TOGGLE_BUTTON(flag_cwr)->active) {
 		flag_value = flag_value + 128;
-	}	
+	}       
 	if (GTK_TOGGLE_BUTTON(flag_ecn)->active) {
 		flag_value = flag_value + 64;
 	}
@@ -2300,23 +2363,23 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 		flag_value = flag_value + 1;
 	}
 	packet[number] = (char)flag_value;
-	number++;	
+	number++;       
 	
-	/* window size */	
+	/* window size */       
 	if ( (atoi(window_size_t) < 0) || (atoi(window_size_t) > 65535) ) {
 		//printf("Error: tcp window size range\n");
 		error("Error: tcp window size range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(window_size_t, strlen(window_size_t), "Error: tcp window size field values") == -1)
-                                return -1;
+	/* there can be rubbish in this field */
+	if (check_digit(window_size_t, strlen(window_size_t), "Error: tcp window size field values") == -1)
+				return -1;
 
 	packet[number] = (char)(atol(window_size_t)/256);
-	number++;	
+	number++;       
 	packet[number] = (char)(atol(window_size_t)%256);
-	number++;	
+	number++;       
 
 	/* tcp checksum */
 	if (GTK_TOGGLE_BUTTON(checksum_bt)->active) {
@@ -2333,35 +2396,35 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 		if (char2x(checksum_t) == -1) {
 			//printf("Error: tcp checksum field\n");
 			error("Error: tcp checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(checksum_t);
 		checksum_t++; checksum_t++; number++;
 		if (char2x(checksum_t) == -1) {
 			//printf("Error: tcp checksum field\n");
 			error("Error: tcp checksum field");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(checksum_t);
 		number++;
 	}
 		
-	/* urgent pointer */	
+	/* urgent pointer */    
 	if ( (atoi(urgent_pointer_t) < 0) || (atoi(urgent_pointer_t) > 65535) ) {
 		//printf("Error: tcp urgent pointer range\n");
 		error("Error: tcp urgent pointer range");
-                return -1;
+		return -1;
 	}
 
-        /* there can be rubbish in this field */
-        if (check_digit(urgent_pointer_t, strlen(urgent_pointer_t), 
+	/* there can be rubbish in this field */
+	if (check_digit(urgent_pointer_t, strlen(urgent_pointer_t), 
 						"Error: tcp urgent pointer field values") == -1)
-                                return -1;
+				return -1;
 
 	packet[number] = (char)(atol(urgent_pointer_t)/256);
-	number++;	
+	number++;       
 	packet[number] = (char)(atol(urgent_pointer_t)%256);
-	number++;	
+	number++;       
 
 	/* tcp options */
 	if ( (strlen(options_t)%8) != 0) {
@@ -2381,17 +2444,17 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 		if (char2x(options_t) == -1) {
 			//printf("Error: tcp options field\n");
 			error("Error: tcp options field");
-       		        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(options_t);
 		number++; options_t++; options_t++;
 	}
 
-	/* tcp payload */	
+	/* tcp payload */       
 	if (GTK_TOGGLE_BUTTON(payload_bt)->active) {
 		
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(payload));
-                payload_length = gtk_text_buffer_get_char_count(buffer);
+		payload_length = gtk_text_buffer_get_char_count(buffer);
 		GtkTextIter start,end;
 		//gtk_text_buffer_get_start_iter(buffer,start);
 		//gtk_text_buffer_get_end_iter(buffer,end);
@@ -2400,17 +2463,17 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 		//g_free(start);
 		//g_free(end);
 		//payload_t = (char *) malloc(payload_length + 1);
-                //payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
+		//payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
 		
 		/* YYY 1514-number is not ok in case we use 802.1q!!! */
 		if (get_network_payload(button, user_data, payload_length, 
 						9900-number, payload_t) == -1) {
 			//printf("Error: Problem with tcp payload\n");
-                        g_free(payload_t);
+			g_free(payload_t);
 			return -1;
 		}
-                else
-                        g_free(payload_t);
+		else
+			g_free(payload_t);
 
 		cks_stop = number;
 	}
@@ -2423,14 +2486,14 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 
 	/* and finally compute the tcp checksum if auto was enabled */
 	if (checksum_start > 0) {
-	       	
+		
 		/* this if for length  */
 		tcpcksum = (guint32)(cks_stop - cks_start);
 		/* pseudo header (ip part) + tcplength + nr of cicles over guint16 */
 		tcpcksum = pseudo_header_sum + tcpcksum;
 		/* if length is odd we have to add a pad byte */
 		if( (cks_stop - cks_start)%2 != 0)
-                                odd = 1;
+				odd = 1;
 		/* previos value + part from tcp checksum */
 		tcpcksum = tcpcksum + get_checksum32(cks_start, cks_stop+odd);
 		while (tcpcksum >> 16)
@@ -2460,8 +2523,8 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	GtkWidget *maxresptime, *checksum, *cks_bt, *groupaddress, *resv, *nosf, *sourceaddresses;
 
 	gchar *type_t;
-	gchar *maxresptime_t, *checksum_t, *groupaddress_t;	
-	gchar *resv_t, *nosf_t, *sourceaddresses_t;	
+	gchar *maxresptime_t, *checksum_t, *groupaddress_t;     
+	gchar *resv_t, *nosf_t, *sourceaddresses_t;     
 	
 	int igmp_start, igmp_stop, checksum_start, payload_length;
 	guint16 igmpcksum;
@@ -2477,7 +2540,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	if (char2x(type_t) == -1) {
 		//printf("Error: igmp type field\n");
 		error("Error: igmp type field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(type_t);
 	number++;
@@ -2501,7 +2564,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	packet[number] = (unsigned char)char2x(maxresptime_t);
 	number++;
 			
-	/* checksum */	
+	/* checksum */  
 	if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
 		checksum_start = number;
 		packet[number] = (unsigned char)0;
@@ -2532,8 +2595,8 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	menux = lookup_widget(GTK_WIDGET(button), "optionmenu20");
 
 	menu = GTK_OPTION_MENU(menux)->menu;
-        menu_item = gtk_menu_get_active (GTK_MENU (menu));
-        menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+	menu_item = gtk_menu_get_active (GTK_MENU (menu));
+	menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
 
 	/* IGMP V3 query */
 	if (menu_index == 1) {
@@ -2557,7 +2620,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 			}
 			tmp[j] = '\0';
 			packet[number] = (unsigned char)(atoi(tmp));
-			number++;		
+			number++;               
 		}
 			
 		resv = lookup_widget(GTK_WIDGET(button), "entry171");
@@ -2691,7 +2754,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 
 	}
 	/* for all the other types */
-	else	{
+	else    {
 		/* group address */
 		groupaddress = lookup_widget(GTK_WIDGET(button), "entry175");
 		groupaddress_t = (char *)gtk_entry_get_text(GTK_ENTRY(groupaddress));
@@ -2712,7 +2775,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 			}
 			tmp[j] = '\0';
 			packet[number] = (unsigned char)(atoi(tmp));
-			number++;		
+			number++;               
 		}
 
 		igmp_stop = number;
@@ -2727,7 +2790,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 			packet[checksum_start] = (char)(igmpcksum/256);
 			packet[checksum_start+1] =  (char)(igmpcksum%256);
 		}
-	}	
+	}       
 	
 	return 1;
 }
@@ -2736,10 +2799,10 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 	
 	GtkWidget *type; 
 	GtkWidget *code, *checksum, *cks_bt, *identifier, *seq_nr, *unused;
-        GtkWidget *data_bt, *data, *datalen;
+	GtkWidget *data_bt, *data, *datalen;
 
 	gchar *type_t;
-	gchar *code_t, *checksum_t, *identifier_t, *seq_nr_t, *data_t, *data_t_len, *unused_t;	
+	gchar *code_t, *checksum_t, *identifier_t, *seq_nr_t, *data_t, *data_t_len, *unused_t;  
 	
 	int checksum_start, payload_length;
 	guint32 icmpcksum;
@@ -2754,7 +2817,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 	if (char2x(type_t) == -1) {
 		//printf("Error: icmp type field\n");
 		error("Error: icmp type field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(type_t);
 	number++;
@@ -2784,12 +2847,12 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(code_t) == -1) {
 				//printf("Error: icmp reply code field\n");
 				error("Error: icmp reply code field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(code_t);
 			number++;
 			
-			/* checksum */	
+			/* checksum */  
 			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
@@ -2804,14 +2867,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp reply checksum field\n");
 					error("Error: icmp reply checksum field");
-        	        		return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				checksum_t++; checksum_t++; number++;
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp reply checksum field\n");
 					error("Error: icmp reply checksum field");
-        		        	return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				number++;
@@ -2821,14 +2884,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(identifier_t) == -1) {
 				//printf("Error: icmp reply identifier field\n");
 				error("Error: icmp reply identifier field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(identifier_t);
 			identifier_t++; identifier_t++; number++;
 			if (char2x(identifier_t) == -1) {
 				//printf("Error: icmp reply identifier field\n");
 				error("Error: icmp reply identifier field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(identifier_t);
 			number++;
@@ -2837,14 +2900,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(seq_nr_t) == -1) {
 				//printf("Error: icmp reply identifier field\n");
 				error("Error: icmp reply identifier field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(seq_nr_t);
 			seq_nr_t++; seq_nr_t++; number++;
 			if (char2x(seq_nr_t) == -1) {
 				//printf("Error: icmp reply identifier field\n");
 				error("Error: icmp reply identifier field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(seq_nr_t);
 			number++;
@@ -2855,25 +2918,25 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 				if (strlen(data_t) != 2) {
 					error("Error: Wrong icmp data pattern");
 					return -1;
-				}	
+				}       
 				if (char2x(data_t) == -1) {
 					error("Error: Wrong icmp data pattern");
-		                	return -1;
+					return -1;
 				}
 				
 				if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
-                        		error("Error: ICMP data length");
-                        		return -1;
-                		}
+					error("Error: ICMP data length");
+					return -1;
+				}
 
-                		/* there can be rubbish in this field */
-                		if (check_digit(data_t_len, strlen(data_t_len),
-                                        "Error: icmp data") == -1)
-                                	return -1;
+				/* there can be rubbish in this field */
+				if (check_digit(data_t_len, strlen(data_t_len),
+					"Error: icmp data") == -1)
+					return -1;
 				
-				for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {		
+				for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {             
 					packet[number] = (unsigned char)char2x(data_t);
-					number++;				
+					number++;                               
 
 				}
 
@@ -2913,19 +2976,19 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			seq_nr_t = (char *)gtk_entry_get_text(GTK_ENTRY(seq_nr));
 			data_t = (char *)gtk_entry_get_text(GTK_ENTRY(data));
 			datalen = lookup_widget(GTK_WIDGET(button), "entry211");
-                        data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
+			data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
 
 			
 			/* code */
 			if (char2x(code_t) == -1) {
 				//printf("Error: icmp request code field\n");
 				error("Error: icmp request code field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(code_t);
 			number++;
 			
-			/* checksum */	
+			/* checksum */  
 			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
@@ -2940,14 +3003,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp request checksum field\n");
 					error("Error: icmp request checksum field");
-        	        		return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				checksum_t++; checksum_t++; number++;
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp request checksum field\n");
 					error("Error: icmp request checksum field");
-        			        return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				number++;
@@ -2957,14 +3020,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(identifier_t) == -1) {
 				//printf("Error: icmp request identifier field\n");
 				error("Error: icmp request identifier field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(identifier_t);
 			identifier_t++; identifier_t++; number++;
 			if (char2x(identifier_t) == -1) {
 				//printf("Error: icmp request identifier field\n");
 				error("Error: icmp request identifier field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(identifier_t);
 			number++;
@@ -2973,14 +3036,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(seq_nr_t) == -1) {
 				//printf("Error: icmp request identifier field\n");
 				error("Error: icmp request identifier field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(seq_nr_t);
 			seq_nr_t++; seq_nr_t++; number++;
 			if (char2x(seq_nr_t) == -1) {
 				//printf("Error: icmp request identifier field\n");
 				error("Error: icmp request identifier field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(seq_nr_t);
 			number++;
@@ -2989,29 +3052,29 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (GTK_TOGGLE_BUTTON(data_bt)->active) {
 				
 				if (strlen(data_t) != 2) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
-                                if (char2x(data_t) == -1) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
+				if (char2x(data_t) == -1) {
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
 
-                                if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
-                                        error("Error: ICMP data length");
-                                        return -1;
-                                }
+				if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
+					error("Error: ICMP data length");
+					return -1;
+				}
 
-                                /* there can be rubbish in this field */
-                                if (check_digit(data_t_len, strlen(data_t_len),
-                                        "Error: icmp data") == -1)
-                                        return -1;
+				/* there can be rubbish in this field */
+				if (check_digit(data_t_len, strlen(data_t_len),
+					"Error: icmp data") == -1)
+					return -1;
 
-                                for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
-                                        packet[number] = (unsigned char)char2x(data_t);
-                                        number++;
+				for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
+					packet[number] = (unsigned char)char2x(data_t);
+					number++;
 
-                                }
+				}
 
 
 				icmp_stop = number;
@@ -3048,18 +3111,18 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			unused_t = (char *)gtk_entry_get_text(GTK_ENTRY(unused));
 			data_t = (char *)gtk_entry_get_text(GTK_ENTRY(data));
 			datalen = lookup_widget(GTK_WIDGET(button), "entry210");
-                        data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
+			data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
 			
 			/* code */
 			if (char2x(code_t) == -1) {
 				//printf("Error: icmp destination unreacheable code field\n");
 				error("Error: icmp destination unreacheable code field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(code_t);
 			number++;
 			
-			/* checksum */	
+			/* checksum */  
 			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
@@ -3074,14 +3137,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp destination unreacheable checksum field\n");
 					error("Error: icmp destination unreacheable checksum field");
-        	        		return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				checksum_t++; checksum_t++; number++;
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp destination unreacheable checksum field\n");
 					error("Error: icmp destination unreacheable checksum field");
-        		        	return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				number++;
@@ -3091,28 +3154,28 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (char2x(unused_t) == -1) {
 				//printf("Error: icmp destination unreacheable unused field\n");
 				error("Error: icmp destination unreacheable unused field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(unused_t);
 			unused_t++; unused_t++; number++;
 			if (char2x(unused_t) == -1) {
 				//printf("Error: icmp destination unreacheable unused field\n");
 				error("Error: icmp destination unreacheable unused field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(unused_t);
 			unused_t++; unused_t++; number++;
 			if (char2x(unused_t) == -1) {
 				//printf("Error: icmp destination unreacheable unused field\n");
 				error("Error: icmp destination unreacheable unused field");
-        		        return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(unused_t);
 			unused_t++; unused_t++; number++;
 			if (char2x(unused_t) == -1) {
 				//printf("Error: icmp destination unreacheable unused field\n");
 				error("Error: icmp destination unreacheable unused field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(unused_t);
 			number++;
@@ -3121,29 +3184,29 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			if (GTK_TOGGLE_BUTTON(data_bt)->active) {
 				
 				if (strlen(data_t) != 2) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
-                                if (char2x(data_t) == -1) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
+				if (char2x(data_t) == -1) {
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
 
-                                if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
-                                        error("Error: ICMP data length");
-                                        return -1;
-                                }
+				if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
+					error("Error: ICMP data length");
+					return -1;
+				}
 
-                                /* there can be rubbish in this field */
-                                if (check_digit(data_t_len, strlen(data_t_len),
-                                        "Error: icmp data") == -1)
-                                        return -1;
+				/* there can be rubbish in this field */
+				if (check_digit(data_t_len, strlen(data_t_len),
+					"Error: icmp data") == -1)
+					return -1;
 
-                                for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
-                                        packet[number] = (unsigned char)char2x(data_t);
-                                        number++;
+				for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
+					packet[number] = (unsigned char)char2x(data_t);
+					number++;
 
-                                }
+				}
 
 
 				icmp_stop = number;
@@ -3175,18 +3238,18 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			checksum_t = (char *)gtk_entry_get_text(GTK_ENTRY(checksum));
 			data_t = (char *)gtk_entry_get_text(GTK_ENTRY(data));
 			datalen = lookup_widget(GTK_WIDGET(button), "entry209");
-                        data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
+			data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
 			
 			/* code */
 			if (char2x(code_t) == -1) {
 				//printf("Error: icmp other code field\n");
 				error("Error: icmp other code field");
-		                return -1;
+				return -1;
 			}
 			packet[number] = (unsigned char)char2x(code_t);
 			number++;
 			
-			/* checksum */	
+			/* checksum */  
 			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
@@ -3201,14 +3264,14 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp destination unreacheable checksum field\n");
 					error("Error: icmp destination unreacheable checksum field");
-        	        		return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				checksum_t++; checksum_t++; number++;
 				if (char2x(checksum_t) == -1) {
 					//printf("Error: icmp destination unreacheable checksum field\n");
 					error("Error: icmp destination unreacheable checksum field");
-        		        	return -1;
+					return -1;
 				}
 				packet[number] = (unsigned char)char2x(checksum_t);
 				number++;
@@ -3216,29 +3279,29 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			
 			/* data */
 				if (strlen(data_t) != 2) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
-                                if (char2x(data_t) == -1) {
-                                        error("Error: Wrong icmp data pattern");
-                                        return -1;
-                                }
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
+				if (char2x(data_t) == -1) {
+					error("Error: Wrong icmp data pattern");
+					return -1;
+				}
 
-                                if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
-                                        error("Error: ICMP data length");
-                                        return -1;
-                                }
+				if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
+					error("Error: ICMP data length");
+					return -1;
+				}
 
-                                /* there can be rubbish in this field */
-                                if (check_digit(data_t_len, strlen(data_t_len),
-                                        "Error: icmp data") == -1)
-                                        return -1;
+				/* there can be rubbish in this field */
+				if (check_digit(data_t_len, strlen(data_t_len),
+					"Error: icmp data") == -1)
+					return -1;
 
-                                for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
-                                        packet[number] = (unsigned char)char2x(data_t);
-                                        number++;
+				for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
+					packet[number] = (unsigned char)char2x(data_t);
+					number++;
 
-                                }
+				}
 
 
 			icmp_stop = number;
@@ -3269,20 +3332,20 @@ int arp_get(GtkButton *button, gpointer user_data)
 	int i, j;
 	gchar tmp[4];
 
-	hwtype = lookup_widget(GTK_WIDGET(button), "A_hwtype");	
-	prottype = lookup_widget(GTK_WIDGET(button), "A_prottype");	
-	hwsize = lookup_widget(GTK_WIDGET(button), "A_hwsize");	
-	protsize = lookup_widget(GTK_WIDGET(button), "A_protsize");	
+	hwtype = lookup_widget(GTK_WIDGET(button), "A_hwtype"); 
+	prottype = lookup_widget(GTK_WIDGET(button), "A_prottype");     
+	hwsize = lookup_widget(GTK_WIDGET(button), "A_hwsize"); 
+	protsize = lookup_widget(GTK_WIDGET(button), "A_protsize");     
 	
-        rbt10 = lookup_widget(GTK_WIDGET(button), "radiobutton10");	
-	rbt11 = lookup_widget(GTK_WIDGET(button), "radiobutton11");	
-	rbt17 = lookup_widget(GTK_WIDGET(button), "radiobutton17");	
-	en81 = lookup_widget(GTK_WIDGET(button), "entry81");	
+	rbt10 = lookup_widget(GTK_WIDGET(button), "radiobutton10");     
+	rbt11 = lookup_widget(GTK_WIDGET(button), "radiobutton11");     
+	rbt17 = lookup_widget(GTK_WIDGET(button), "radiobutton17");     
+	en81 = lookup_widget(GTK_WIDGET(button), "entry81");    
 
-	sendermac = lookup_widget(GTK_WIDGET(button), "A_sendermac");	
-	senderip = lookup_widget(GTK_WIDGET(button), "A_senderip");	
-	targetmac = lookup_widget(GTK_WIDGET(button), "A_targetmac");	
-	targetip = lookup_widget(GTK_WIDGET(button), "A_targetip");	
+	sendermac = lookup_widget(GTK_WIDGET(button), "A_sendermac");   
+	senderip = lookup_widget(GTK_WIDGET(button), "A_senderip");     
+	targetmac = lookup_widget(GTK_WIDGET(button), "A_targetmac");   
+	targetip = lookup_widget(GTK_WIDGET(button), "A_targetip");     
 
 	hwtype_t = (char *)gtk_entry_get_text(GTK_ENTRY(hwtype));
 	prottype_t = (char *)gtk_entry_get_text(GTK_ENTRY(prottype));
@@ -3301,14 +3364,14 @@ int arp_get(GtkButton *button, gpointer user_data)
 	if (char2x(hwtype_t) == -1) {
 		//printf("Error: hwtype field\n");
 		error("Error: hwtype field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(hwtype_t);
 	hwtype_t++; hwtype_t++; number++;
 	if (char2x(hwtype_t) == -1) {
 		//printf("Error: hwtype field\n");
 		error("Error: hwtype field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(hwtype_t);
 	number++;
@@ -3317,14 +3380,14 @@ int arp_get(GtkButton *button, gpointer user_data)
 	if (char2x(prottype_t) == -1) {
 		//printf("Error: prottype field\n");
 		error("Error: prottype field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(prottype_t);
 	prottype_t++; prottype_t++; number++;
 	if (char2x(prottype_t) == -1) {
 		//printf("Error: prottype field\n");
 		error("Error: prottype field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(prottype_t);
 	number++;
@@ -3333,7 +3396,7 @@ int arp_get(GtkButton *button, gpointer user_data)
 	if (char2x(hwsize_t) == -1) {
 		//printf("Error: hwsize field\n");
 		error("Error: hwsize field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(hwsize_t);
 	number++;
@@ -3342,7 +3405,7 @@ int arp_get(GtkButton *button, gpointer user_data)
 	if (char2x(protsize_t) == -1) {
 		//printf("Error: protsize field\n");
 		error("Error: protsize field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(protsize_t);
 	number++;
@@ -3365,14 +3428,14 @@ int arp_get(GtkButton *button, gpointer user_data)
 		if (char2x(en81_t) == -1) {
 			//printf("Error: entry arp opcode\n");
 			error("Error: entry arp opcode");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(en81_t);
 		en81_t++; en81_t++; number++;
 		if (char2x(en81_t) == -1) {
 			//printf("Error: entry arp opcode\n");
 			error("Error: entry arp opcode");
-        	        return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(en81_t);
 		number++;
@@ -3426,7 +3489,7 @@ int arp_get(GtkButton *button, gpointer user_data)
 		}
 		tmp[j] = '\0';
 		packet[number] = (unsigned char)(atoi(tmp));
-		number++;		
+		number++;               
 	}
 	
 	/* target mac */
@@ -3447,7 +3510,7 @@ int arp_get(GtkButton *button, gpointer user_data)
 		}
 		tmp[j] = '\0';
 		packet[number] = (unsigned char)(atoi(tmp));
-		number++;		
+		number++;               
 	}
 	
 	return 1;
@@ -3465,7 +3528,7 @@ int get_network_payload(GtkButton *button, gpointer user_data, int length, int m
 	for (i=0; i < length; i++, ptr++) {
 		if (isspace(*ptr) != 0) { /* prazne znake ne upostevam */
 			continue;
-		}	
+		}       
 		stevec++;
 	}
 
@@ -3482,7 +3545,7 @@ int get_network_payload(GtkButton *button, gpointer user_data, int length, int m
 			entry++;
 			i++;
 			continue;
-		}	
+		}       
 		if (stevec > max) {
 			//printf("Error: Network layer payload lengtht to long\n");
 			error("Error: Network layer payload lengtht to long");
@@ -3494,9 +3557,9 @@ int get_network_payload(GtkButton *button, gpointer user_data, int length, int m
 			return -1;
 		}
 		packet[number] = (unsigned char)char2x(entry);
-		number++; i++; i++; entry++; entry++; stevec++;; 	
+		number++; i++; i++; entry++; entry++; stevec++;;        
 	}
-	return 1;	
+	return 1;       
 }
 
 
@@ -3516,7 +3579,7 @@ int link_level_get(GtkButton *button, gpointer user_data)
 		error("Error: mac address field");
 		return -1;
 	}
-        number = 12;
+	number = 12;
 
 	/* is 802.1q active - do we need to add 4 or 8 bytes? */
 	if (GTK_TOGGLE_BUTTON(_801q_cbt)->active) {
@@ -3539,14 +3602,14 @@ int link_level_get(GtkButton *button, gpointer user_data)
 		if (char2x(ethtype_t) == -1) {
 			//printf("Error: ethernet type field\n");
 			error("Error: ethernet type field");
-	                return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(ethtype_t);
 		ethtype_t++; ethtype_t++; number++;
 		if (char2x(ethtype_t) == -1) {
 			//printf("Error: ethernet type field\n");
 			error("Error: ethernet type field");
-	                return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(ethtype_t);
 		number++;
@@ -3573,24 +3636,24 @@ int get_8023(GtkButton *button)
 	/* do we need to calculate the length field or will be suplied manually */
 	autolength_bt = lookup_widget(GTK_WIDGET (button), "checkbutton2");
 	if (GTK_TOGGLE_BUTTON(autolength_bt)->active) {
-                autolength = number;
+		autolength = number;
 		packet[number] = 0x0; number++; packet[number] = 0x0; number++;
 	}
-        else {
-                autolength = 0;
+	else {
+		autolength = 0;
 		ethlength_e = lookup_widget(GTK_WIDGET (button), "entry5");
 		ethlength_t = (char *)gtk_entry_get_text(GTK_ENTRY(ethlength_e));
 		if (char2x(ethlength_t) == -1) {
 			//printf("Error: 802.3 length field\n");
 			error("Error: 802.3 length field");
-	                return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(ethlength_t);
 		ethlength_t++; ethlength_t++; number++;
 		if (char2x(ethlength_t) == -1) {
 			//printf("Error: 802.3 length field\n");
 			error("Error: 802.3 length field");
-	                return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(ethlength_t);
 		number++;
@@ -3606,7 +3669,7 @@ int get_8023(GtkButton *button)
 	if (char2x(Ldsap_t) == -1) {
 		//printf("Error: 802.3 ldsap field\n");
 		error("Error: 802.3 ldsap field");
-	               return -1;
+		       return -1;
 	}
 	packet[number] = (unsigned char)char2x(Ldsap_t);
 	number++;
@@ -3615,7 +3678,7 @@ int get_8023(GtkButton *button)
 	if (char2x(Lssap_t) == -1) {
 		//printf("Error: 802.3 lssap field\n");
 		error("Error: 802.3 lssap field");
-	               return -1;
+		       return -1;
 	}
 	packet[number] = (unsigned char)char2x(Lssap_t);
 	number++;
@@ -3624,7 +3687,7 @@ int get_8023(GtkButton *button)
 	if (char2x(Lctrl_t) == -1) {
 		//printf("Error: 802.3 Ctrl field\n");
 		error("Error: 802.3 Ctrl field");
-	               return -1;
+		       return -1;
 	}
 	packet[number] = (unsigned char)char2x(Lctrl_t);
 	number++;
@@ -3638,7 +3701,7 @@ int get_8023(GtkButton *button)
 		if (char2x(Loui_t) == -1) {
 			//printf("Error: 802.3 oui field\n");
 			error("Error: 802.3 oui field");
-	               	return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(Loui_t);
 		number++; Loui_t++, Loui_t++;
@@ -3646,7 +3709,7 @@ int get_8023(GtkButton *button)
 		if (char2x(Loui_t) == -1) {
 			//printf("Error: 802.3 oui field\n");
 			error("Error: 802.3 oui field");
-	               	return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(Loui_t);
 		number++; Loui_t++, Loui_t++;
@@ -3654,7 +3717,7 @@ int get_8023(GtkButton *button)
 		if (char2x(Loui_t) == -1) {
 			//printf("Error: 802.3 oui field\n");
 			error("Error: 802.3 oui field");
-	               	return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(Loui_t);
 		number++; 
@@ -3663,7 +3726,7 @@ int get_8023(GtkButton *button)
 		if (char2x(Lpid_t) == -1) {
 			//printf("Error: 802.3 snap pid field\n");
 			error("Error: 802.3 snap pid field");
-	               	return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(Lpid_t);
 		number++; Lpid_t++; Lpid_t++;
@@ -3671,14 +3734,14 @@ int get_8023(GtkButton *button)
 		if (char2x(Lpid_t) == -1) {
 			//printf("Error: 802.3 snap pid field\n");
 			error("Error: 802.3 snap pid field");
-	               	return -1;
+			return -1;
 		}
 		packet[number] = (unsigned char)char2x(Lpid_t);
 		number++; 
 
 		return 1;
 	}
-        else 
+	else 
 		return 1;
 }
 
@@ -3697,57 +3760,57 @@ int get_8021q(GtkButton *button)
 	if (GTK_TOGGLE_BUTTON(QinQ_bt)->active) {
 		QinQpvid = lookup_widget(GTK_WIDGET (button), "optionmenu21");
 		QinQ = lookup_widget(GTK_WIDGET (button), "entry165");
-                
+		
 		menu = GTK_OPTION_MENU(QinQpvid)->menu;
-        	menu_item = gtk_menu_get_active (GTK_MENU (menu));
-        	menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+		menu_item = gtk_menu_get_active (GTK_MENU (menu));
+		menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
 
 		switch (menu_index) {
 			case 0: {
 				packet[number] = (unsigned char)char2x("81");
 				number++;
-                		packet[number] = (unsigned char)char2x("00");
+				packet[number] = (unsigned char)char2x("00");
 				number++;
 				break;
 			}
 			case 1: {
 				packet[number] = (unsigned char)char2x("91");
 				number++;
-                		packet[number] = (unsigned char)char2x("00");
+				packet[number] = (unsigned char)char2x("00");
 				number++;
 				break;
 			}
 			case 2: {
 				packet[number] = (unsigned char)char2x("92");
 				number++;
-                		packet[number] = (unsigned char)char2x("00");
+				packet[number] = (unsigned char)char2x("00");
 				number++;
 				break;
 			}
 			case 3: {
 				packet[number] = (unsigned char)char2x("88");
 				number++;
-                		packet[number] = (unsigned char)char2x("a8");
+				packet[number] = (unsigned char)char2x("a8");
 				number++;
 				break;
 			}
 		}
 
 		QinQ_t = (char *)gtk_entry_get_text(GTK_ENTRY(QinQ));
-                if (char2x(QinQ_t) == -1) {
-                        //printf("Error: VLAN QinQ type field\n");
-                        error("Error: VLAN QinQ field");
-                        return -1;
-                }
-                packet[number] = (unsigned char)char2x(QinQ_t);
-                QinQ_t++; QinQ_t++; number++;
-                if (char2x(QinQ_t) == -1) {
-                        //printf("Error: VLAN QinQ type field\n");
-                        error("Error: VLAN QinQ field");
-                        return -1;
-                }
-                packet[number] = (unsigned char)char2x(QinQ_t);
-                number++;
+		if (char2x(QinQ_t) == -1) {
+			//printf("Error: VLAN QinQ type field\n");
+			error("Error: VLAN QinQ field");
+			return -1;
+		}
+		packet[number] = (unsigned char)char2x(QinQ_t);
+		QinQ_t++; QinQ_t++; number++;
+		if (char2x(QinQ_t) == -1) {
+			//printf("Error: VLAN QinQ type field\n");
+			error("Error: VLAN QinQ field");
+			return -1;
+		}
+		packet[number] = (unsigned char)char2x(QinQ_t);
+		number++;
 
 	}
 
@@ -3762,22 +3825,22 @@ int get_8021q(GtkButton *button)
 	if (char2x(vlan_t) == -1) {
 		//printf("Error: 802.1q type field\n");
 		error("Error: 802.1q type field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(vlan_t);
 	vlan_t++; vlan_t++; number++;
 	if (char2x(vlan_t) == -1) {
 		//printf("Error: 802.1q type field\n");
 		error("Error: 802.1q type field");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(vlan_t);
-	number++;	
+	number++;       
 	
 	/* next we need the priority */
 	menu = GTK_OPTION_MENU(priority_m)->menu;
-        menu_item = gtk_menu_get_active (GTK_MENU (menu));
-        menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+	menu_item = gtk_menu_get_active (GTK_MENU (menu));
+	menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
 
 	/* what about CFI bit? */
 	if (GTK_TOGGLE_BUTTON(cfi1_rbt)->active)
@@ -3795,7 +3858,7 @@ int get_8021q(GtkButton *button)
 	if (char2x(tmp) == -1) {
 		//printf("Error: 802.1q: priority & cfi field & 1 byte vlan id\n");
 		error("Error: 802.1q: priority & cfi field & 1 byte vlan id");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(tmp);
 
@@ -3804,7 +3867,7 @@ int get_8021q(GtkButton *button)
 	if (char2x(vlanid_t) == -1) {
 		//printf("Error: 802.1q vlanid \n");
 		error("Error: 802.1q vlanid ");
-                return -1;
+		return -1;
 	}
 	packet[number] = (unsigned char)char2x(vlanid_t);
 	number++;
@@ -3899,15 +3962,15 @@ int check_ipv6_address(gchar *ptr, int insert)
 	for(j=0; j<8; j++)
 		memset(paket[j], 48, (gchar)4);
 
-	//length of provided ipv6 adress including :	
-	dolzina = strlen(ptr);	
+	//length of provided ipv6 adress including :    
+	dolzina = strlen(ptr);  
 
-	//lets start from the left side until the end or until :: is found	
+	//lets start from the left side until the end or until :: is found      
 	for(stevec=0, j=0, i=0; stevec < dolzina ; stevec++, ptr++) {
 
 		//only hex digit and : is allowed
-        	if ( (isxdigit(*ptr) == 0) && (*ptr != ':') )
-			return -1;	
+		if ( (isxdigit(*ptr) == 0) && (*ptr != ':') )
+			return -1;      
 
 		//if we get to : we need some movement :)
 		if ( (*ptr == ':') ) {
@@ -3973,8 +4036,8 @@ int check_ipv6_address(gchar *ptr, int insert)
 	for(stevec=0; ((dolzina-stevec) > 0) && dolzina<39 && enojno<7 ; stevec++, ptr--) {
 
 		//only hex digit and : is allowed
-        	if ( (isxdigit(*ptr) == 0) && (*ptr != ':') )
-			return -1;	
+		if ( (isxdigit(*ptr) == 0) && (*ptr != ':') )
+			return -1;      
 
 		if ( (*ptr == ':') ) {
 			i=0;
@@ -4094,29 +4157,29 @@ signed int char2x(char *p)
     unsigned char x=0;
 
     if ( (*p >= '0') && (*p <= '9')) {
-        x = ((*p) - 48) * 16;
+	x = ((*p) - 48) * 16;
     }
     else if ((*p >= 'A') && (*p <= 'F')) {
-        x = ((*p) - 55) * 16;
+	x = ((*p) - 55) * 16;
     }
     else if ((*p >= 'a') && (*p <= 'f')) {
-        x = ((*p) - 87) * 16;
+	x = ((*p) - 87) * 16;
     }
     else {
-        return -1;
+	return -1;
     }
     p++;
     if ( (*p >= '0') && (*p <= '9')) {
-        x = x + ((*p) - 48);
+	x = x + ((*p) - 48);
     }
     else if ((*p >= 'A') && (*p <= 'F')) {
-        x = x + ((*p) - 55);
+	x = x + ((*p) - 55);
     }
     else if ((*p >= 'a') && (*p <= 'f')) {
-        x = x + ((*p) - 87);
+	x = x + ((*p) - 87);
     }
     else {
-        return -1;
+	return -1;
     }
     return (int)x;
 }
@@ -4126,15 +4189,15 @@ char c4(int value)
 {
 	switch(value) {
 		case 0: return '0';
-		case 1:	return '1';
-		case 2:	return '2';
-		case 3:	return '3';
-		case 4:	return '4';
-		case 5:	return '5';
-		case 6:	return '6';
-		case 7:	return '7';
-		case 8:	return '8';
-		case 9:	return '9';
+		case 1: return '1';
+		case 2: return '2';
+		case 3: return '3';
+		case 4: return '4';
+		case 5: return '5';
+		case 6: return '6';
+		case 7: return '7';
+		case 8: return '8';
+		case 9: return '9';
 		case 10: return 'A';
 		case 11: return 'B';
 		case 12: return 'C';
@@ -4142,7 +4205,7 @@ char c4(int value)
 		case 14: return 'E';
 		case 15: return 'F';
 		default: return '0';
-	}	
+	}       
 }
 
 
@@ -4157,7 +4220,7 @@ char *c8(char *s, unsigned char x) {
 int insert_frequency(int codec, int frequency, int length, GtkWidget *payload_entry, gint amp_index) 
 {
 	double  fs = 8000;      /* vzorcna frekvenca */
-   	double amp;      /* amplituda */
+	double amp;      /* amplituda */
 	double  ph = 0;         /* zacetna faza */
 	double delta_ph;
 	double sample;       /* 16 bit variable */
@@ -4171,11 +4234,11 @@ int insert_frequency(int codec, int frequency, int length, GtkWidget *payload_en
 	amp = 5000 + amp_index * 7500 + amp_index * amp_index * 2500;
 
 	while(length) {
-        	sample = amp*sin(ph);
-        	ph = ph + delta_ph;
-        	while (ph > (2*M_PI)) {
-        	    ph = ph - (2*M_PI);
-        	}
+		sample = amp*sin(ph);
+		ph = ph + delta_ph;
+		while (ph > (2*M_PI)) {
+		    ph = ph - (2*M_PI);
+		}
 	
 		if (codec == 1) 
 			c8(ptr, linear2alaw((gint16)sample));
@@ -4184,8 +4247,8 @@ int insert_frequency(int codec, int frequency, int length, GtkWidget *payload_en
 		ptr++;
 		ptr++;
 
-        	length--;
-    	}
+		length--;
+	}
 
 	*ptr = '\0';
 
@@ -4199,81 +4262,81 @@ int insert_frequency(int codec, int frequency, int length, GtkWidget *payload_en
 unsigned char linear2alaw(int pcm_val)  /* 2's complement (16-bit range) */
 {
 	static short seg_aend[8] = {0x1F, 0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF};
-        int             mask; 
-        int             seg;  
-        unsigned char   aval;
+	int             mask; 
+	int             seg;  
+	unsigned char   aval;
 
-        pcm_val = pcm_val >> 3;
+	pcm_val = pcm_val >> 3;
 
-        if (pcm_val >= 0) {
-                mask = 0xD5;            /* sign (7th) bit = 1 */
-        } else {
-                mask = 0x55;            /* sign bit = 0 */
-                pcm_val = -pcm_val - 1;
-        }
+	if (pcm_val >= 0) {
+		mask = 0xD5;            /* sign (7th) bit = 1 */
+	} else {
+		mask = 0x55;            /* sign bit = 0 */
+		pcm_val = -pcm_val - 1;
+	}
 
-        /* Convert the scaled magnitude to segment number. */
-        seg = search(pcm_val, seg_aend, 8);
+	/* Convert the scaled magnitude to segment number. */
+	seg = search(pcm_val, seg_aend, 8);
 
-        /* Combine the sign, segment, and quantization bits. */
+	/* Combine the sign, segment, and quantization bits. */
 
-        if (seg >= 8)           /* out of range, return maximum value. */
-                return (unsigned char) (0x7F ^ mask);
-        else {
-                aval = (unsigned char) seg << 4;
-                if (seg < 2)
-                        aval |= (pcm_val >> 1) & 0xf;
-                else
-                        aval |= (pcm_val >> seg) & 0xf;
+	if (seg >= 8)           /* out of range, return maximum value. */
+		return (unsigned char) (0x7F ^ mask);
+	else {
+		aval = (unsigned char) seg << 4;
+		if (seg < 2)
+			aval |= (pcm_val >> 1) & 0xf;
+		else
+			aval |= (pcm_val >> seg) & 0xf;
 		return (aval ^ mask);
-        }
+	}
 }
 
 
 unsigned char linear2ulaw(short pcm_val)  /* 2's complement (16-bit range) */
 {
 	static short seg_uend[8] = {0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF};
-        short           mask;
-        short           seg;
-        unsigned char   uval;
+	short           mask;
+	short           seg;
+	unsigned char   uval;
 
-        /* Get the sign and the magnitude of the value. */
-        pcm_val = pcm_val >> 2;
-        if (pcm_val < 0) {
-                pcm_val = -pcm_val;
-                mask = 0x7F;
-        } else {
-                mask = 0xFF;
-        }
-        if ( pcm_val > 8159 ) pcm_val = 8159;           /* clip the magnitude */
-        pcm_val += (0x84 >> 2);
+	/* Get the sign and the magnitude of the value. */
+	pcm_val = pcm_val >> 2;
+	if (pcm_val < 0) {
+		pcm_val = -pcm_val;
+		mask = 0x7F;
+	} else {
+		mask = 0xFF;
+	}
+	if ( pcm_val > 8159 ) pcm_val = 8159;           /* clip the magnitude */
+	pcm_val += (0x84 >> 2);
 
-        /* Convert the scaled magnitude to segment number. */
-        seg = search(pcm_val, seg_uend, 8);
+	/* Convert the scaled magnitude to segment number. */
+	seg = search(pcm_val, seg_uend, 8);
 
-        /*
-         * Combine the sign, segment, quantization bits;
-         * and complement the code word.
-         */
-        if (seg >= 8)           /* out of range, return maximum value. */
-                return (unsigned char) (0x7F ^ mask);
-        else {
-                uval = (unsigned char) (seg << 4) | ((pcm_val >> (seg + 1)) & 0xF);
-                return (uval ^ mask);
-        }
+	/*
+	 * Combine the sign, segment, quantization bits;
+	 * and complement the code word.
+	 */
+	if (seg >= 8)           /* out of range, return maximum value. */
+		return (unsigned char) (0x7F ^ mask);
+	else {
+		uval = (unsigned char) (seg << 4) | ((pcm_val >> (seg + 1)) & 0xF);
+		return (uval ^ mask);
+	}
 
 }
 
 
 short search(int val, short *table, int size)
 {
-        int i;
+	int i;
 
-        for (i = 0; i < size; i++) {
-                if (val <= *table++)
-                        return (i);
-        }
-        return (size);
+	for (i = 0; i < size; i++) {
+		if (val <= *table++)
+			return (i);
+	}
+	return (size);
 }
 
 
@@ -4283,20 +4346,20 @@ int check_digit(char *field, int length, char *text)
 	
 	/* we check if the field contains only numbers and is not empty */
 	if (length == 0) {
-               	//printf("%s\n", text);
-               	error(text);
+		//printf("%s\n", text);
+		error(text);
 		return -1;
 	}
 
 	for(i=0; i < length; i++, field++) {
-        	if (isdigit(*field) == 0) {
-                	//printf("%s\n", text);
-                	error(text);
-                	return -1;
-		}	
+		if (isdigit(*field) == 0) {
+			//printf("%s\n", text);
+			error(text);
+			return -1;
+		}       
 	}
 	return 1;
-}	
+}       
 
 
 int check_hex(char *field, int length, char *text)
@@ -4304,11 +4367,11 @@ int check_hex(char *field, int length, char *text)
 	int i;
 
 	for(i=0; i < length; i++, field++) {
-        	if (isxdigit(*field) == 0) {
-                	//printf("%s\n", text);
-                	error(text);
-                	return -1;
-		}	
+		if (isxdigit(*field) == 0) {
+			//printf("%s\n", text);
+			error(text);
+			return -1;
+		}       
 	}
 	return 1;
 }
@@ -4318,7 +4381,7 @@ int check_hex(char *field, int length, char *text)
 /* YYY add to ignore the comments  */
 int check_if_file_is_packet(FILE *file_p)
 {
-	int c, i=0;	
+	int c, i=0;     
 	gboolean first = 1;
 
 	while ( (c = fgetc( file_p )) != EOF ) {
@@ -4344,7 +4407,7 @@ int check_if_file_is_packet(FILE *file_p)
 	}
 	
 	/* 1514 or 1518, how to enable the vlan checking */
-	if ( (i%2 != 0) || (i > 3536) )	{
+	if ( (i%2 != 0) || (i > 3536) ) {
 		//printf("Error: File length is not ok\n");
 		error("Error: File length is not ok");
 		return -1;
@@ -4361,10 +4424,10 @@ void statusbar_text(GtkButton *button, char *text) {
 	char buff[101];
 
 	statusbar = lookup_widget(GTK_WIDGET (button), "statusbar1");
-        context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Statusbar example");
+	context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Statusbar example");
 
-        snprintf(buff, strlen(text)+1, "%s", text );
-        gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+	snprintf(buff, strlen(text)+1, "%s", text );
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 
 }
 
@@ -4412,161 +4475,161 @@ unsigned long get_crc32(unsigned char *p, int len)
 
 int icmpv6_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 
-        GtkWidget *type, *code, *checksum, *cks_bt;
-        GtkWidget *msgbody, *data_bt, *datapat, *datalen;
+	GtkWidget *type, *code, *checksum, *cks_bt;
+	GtkWidget *msgbody, *data_bt, *datapat, *datalen;
 
-        gchar *type_t, *code_t, *checksum_t;
-        gchar *msgbody_t, *data_t_pat, *data_t_len;
+	gchar *type_t, *code_t, *checksum_t;
+	gchar *msgbody_t, *data_t_pat, *data_t_len;
 
-        int checksum_start, odd, payload_length, i, j;
-        guint32 icmpcksum;
+	int checksum_start, odd, payload_length, i, j;
+	guint32 icmpcksum;
 
-        type = lookup_widget(GTK_WIDGET(button), "entry215");
-        type_t = (char *)gtk_entry_get_text(GTK_ENTRY(type));
+	type = lookup_widget(GTK_WIDGET(button), "entry215");
+	type_t = (char *)gtk_entry_get_text(GTK_ENTRY(type));
 
-        //icmp_start = number;
+	//icmp_start = number;
 	icmpv6_start = number;
 	
 	/* next header for icmpv6 is 0x3a or 58 */
 	l4_proto_used = 58;
 
 	/* type */
-        if (char2x(type_t) == -1) {
-                error("Error: icmpv6 type field");
-                return -1;
-        }
-        packet[number] = (unsigned char)char2x(type_t);
-        number++;
+	if (char2x(type_t) == -1) {
+		error("Error: icmpv6 type field");
+		return -1;
+	}
+	packet[number] = (unsigned char)char2x(type_t);
+	number++;
 
 	code = lookup_widget(GTK_WIDGET(button), "entry216");
-        checksum = lookup_widget(GTK_WIDGET(button), "entry217");
-        cks_bt = lookup_widget(GTK_WIDGET(button), "checkbutton48");
-        data_bt = lookup_widget(GTK_WIDGET(button), "checkbutton47");
-        datapat = lookup_widget(GTK_WIDGET(button), "entry212");
-        datalen = lookup_widget(GTK_WIDGET(button), "entry213");
-        msgbody = lookup_widget(GTK_WIDGET(button), "entry214");
+	checksum = lookup_widget(GTK_WIDGET(button), "entry217");
+	cks_bt = lookup_widget(GTK_WIDGET(button), "checkbutton48");
+	data_bt = lookup_widget(GTK_WIDGET(button), "checkbutton47");
+	datapat = lookup_widget(GTK_WIDGET(button), "entry212");
+	datalen = lookup_widget(GTK_WIDGET(button), "entry213");
+	msgbody = lookup_widget(GTK_WIDGET(button), "entry214");
 
-        code_t = (char *)gtk_entry_get_text(GTK_ENTRY(code));
-        checksum_t = (char *)gtk_entry_get_text(GTK_ENTRY(checksum));
-        data_t_pat = (char *)gtk_entry_get_text(GTK_ENTRY(datapat));
-        data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
-        msgbody_t = (char *)gtk_entry_get_text(GTK_ENTRY(msgbody));
+	code_t = (char *)gtk_entry_get_text(GTK_ENTRY(code));
+	checksum_t = (char *)gtk_entry_get_text(GTK_ENTRY(checksum));
+	data_t_pat = (char *)gtk_entry_get_text(GTK_ENTRY(datapat));
+	data_t_len = (char *)gtk_entry_get_text(GTK_ENTRY(datalen));
+	msgbody_t = (char *)gtk_entry_get_text(GTK_ENTRY(msgbody));
 
-        /* code */
-        if (char2x(code_t) == -1) {
-                  error("Error: icmpv6 reply code field");
-                  return -1;
-        }
-        packet[number] = (unsigned char)char2x(code_t);
-        number++;
+	/* code */
+	if (char2x(code_t) == -1) {
+		  error("Error: icmpv6 reply code field");
+		  return -1;
+	}
+	packet[number] = (unsigned char)char2x(code_t);
+	number++;
 
-        /* checksum */
-        if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
-                checksum_start = number;
-                packet[number] = (unsigned char)0;
-                number++;
-                packet[number] = (unsigned char)0;
-                number++;
-        }
-        else {
-        /* if checksum_start = 0, we leave it in the end */
-                checksum_start = 0;
+	/* checksum */
+	if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+		checksum_start = number;
+		packet[number] = (unsigned char)0;
+		number++;
+		packet[number] = (unsigned char)0;
+		number++;
+	}
+	else {
+	/* if checksum_start = 0, we leave it in the end */
+		checksum_start = 0;
 
-                if (char2x(checksum_t) == -1) {
-                         //printf("Error: icmp reply checksum field\n");
-                         error("Error: icmpv6 reply checksum field");
-                         return -1;
-                }
-                packet[number] = (unsigned char)char2x(checksum_t);
-                checksum_t++; checksum_t++; number++;
-                if (char2x(checksum_t) == -1) {
-                       //printf("Error: icmp reply checksum field\n");
-                       error("Error: icmpv6 reply checksum field");
-                       return -1;
-                }
-                packet[number] = (unsigned char)char2x(checksum_t);
-                number++;
-         }
+		if (char2x(checksum_t) == -1) {
+			 //printf("Error: icmp reply checksum field\n");
+			 error("Error: icmpv6 reply checksum field");
+			 return -1;
+		}
+		packet[number] = (unsigned char)char2x(checksum_t);
+		checksum_t++; checksum_t++; number++;
+		if (char2x(checksum_t) == -1) {
+		       //printf("Error: icmp reply checksum field\n");
+		       error("Error: icmpv6 reply checksum field");
+		       return -1;
+		}
+		packet[number] = (unsigned char)char2x(checksum_t);
+		number++;
+	 }
 
 	/* optional message body */
-        if ( (strlen(msgbody_t) != 0) && (strlen(msgbody_t) %2 != 0)) {
+	if ( (strlen(msgbody_t) != 0) && (strlen(msgbody_t) %2 != 0)) {
 		error("Error: ICMPv6 message body must be an even number");
-                return -1;
-        }
+		return -1;
+	}
 
-        j = strlen(msgbody_t)/2;
-        for (i=0; i<j; i++) {
-                if (char2x(msgbody_t) == -1) {
-                        error("Error: icmpv6 message body");
-                        return -1;
-                }
-                packet[number] = (unsigned char)char2x(msgbody_t);
-                number++; msgbody_t++; msgbody_t++;
-        }
+	j = strlen(msgbody_t)/2;
+	for (i=0; i<j; i++) {
+		if (char2x(msgbody_t) == -1) {
+			error("Error: icmpv6 message body");
+			return -1;
+		}
+		packet[number] = (unsigned char)char2x(msgbody_t);
+		number++; msgbody_t++; msgbody_t++;
+	}
 
 	/* data */
-        if (GTK_TOGGLE_BUTTON(data_bt)->active) {
+	if (GTK_TOGGLE_BUTTON(data_bt)->active) {
 
-                if (strlen(data_t_pat) != 2) {
-                        error("Error: Wrong icmpv6 data pattern");
-                        return -1;
-                }
-                if (char2x(data_t_pat) == -1) {
-                        error("Error: Wrong icmpv6 data pattern");
-                        return -1;
-                }
+		if (strlen(data_t_pat) != 2) {
+			error("Error: Wrong icmpv6 data pattern");
+			return -1;
+		}
+		if (char2x(data_t_pat) == -1) {
+			error("Error: Wrong icmpv6 data pattern");
+			return -1;
+		}
 
-                if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
-                        error("Error: icmpv6 data length");
-                        return -1;
-                }
+		if ( (atol(data_t_len) < 0) || (atol(data_t_len) > 9500) ) {
+			error("Error: icmpv6 data length");
+			return -1;
+		}
 
-                /* there can be rubbish in this field */
-                if (check_digit(data_t_len, strlen(data_t_len),
-                        "Error: icmpv6 data") == -1)
-                        return -1;
+		/* there can be rubbish in this field */
+		if (check_digit(data_t_len, strlen(data_t_len),
+			"Error: icmpv6 data") == -1)
+			return -1;
 
-               for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
-                        packet[number] = (unsigned char)char2x(data_t_pat);
-                        number++;
+	       for (payload_length=0; payload_length<atol(data_t_len); payload_length++) {
+			packet[number] = (unsigned char)char2x(data_t_pat);
+			number++;
 
-               }
+	       }
 
-               //icmp_stop = number;
+	       //icmp_stop = number;
 	       icmpv6_stop = number;
 
-         }
-         else {
-               //icmp_stop = number;
+	 }
+	 else {
+	       //icmp_stop = number;
 	       icmpv6_stop = number;
 	}
 
-         if (checksum_start > 0) {
+	 if (checksum_start > 0) {
 
-                icmpcksum = (guint32)(icmpv6_stop - icmpv6_start);
-                /* pseudo header (ip part) + length + nr of cicles over guint16 */
-                icmpcksum = pseudo_header_sum + icmpcksum;
-                /* if the length is odd we have to add a pad byte */
+		icmpcksum = (guint32)(icmpv6_stop - icmpv6_start);
+		/* pseudo header (ip part) + length + nr of cicles over guint16 */
+		icmpcksum = pseudo_header_sum + icmpcksum;
+		/* if the length is odd we have to add a pad byte */
 
-                if( (icmpv6_stop - icmpv6_start)%2 != 0)
-                               odd = 1;
-                /* previos value + part from checksum */
-                icmpcksum = icmpcksum + get_checksum32(icmpv6_start, icmpv6_stop+odd);
-                while (icmpcksum >> 16)
-                        icmpcksum = (icmpcksum & 0xFFFF)+ (icmpcksum >> 16);
-                /* the one's complement */
-                icmpcksum = (-1) - icmpcksum;
+		if( (icmpv6_stop - icmpv6_start)%2 != 0)
+			       odd = 1;
+		/* previos value + part from checksum */
+		icmpcksum = icmpcksum + get_checksum32(icmpv6_start, icmpv6_stop+odd);
+		while (icmpcksum >> 16)
+			icmpcksum = (icmpcksum & 0xFFFF)+ (icmpcksum >> 16);
+		/* the one's complement */
+		icmpcksum = (-1) - icmpcksum;
 
-                // -58 stands for 3a what is protocol number for icmpv6
-                if (ip_proto_used == 6)
-                        icmpcksum = icmpcksum - 58;
+		// -58 stands for 3a what is protocol number for icmpv6
+		if (ip_proto_used == 6)
+			icmpcksum = icmpcksum - 58;
 
-                /* let's write it */
-                packet[checksum_start] = (char)(icmpcksum/256);
-                packet[checksum_start+1] =  (char)(icmpcksum%256);
+		/* let's write it */
+		packet[checksum_start] = (char)(icmpcksum/256);
+		packet[checksum_start+1] =  (char)(icmpcksum%256);
 
 
-         }
+	 }
 
 	return 1;
 }

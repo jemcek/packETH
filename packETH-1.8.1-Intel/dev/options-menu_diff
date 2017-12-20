@@ -1,0 +1,51 @@
+/* There is a problem in glade (at least in version i was using), that it does not support the optionsmenu callback (see glade faq). You have to add some extra lines by hand. The problem is that the file interface.c gets overwritten each time you build the source with glade. So after you build the source in glade you have to add the following lines */
+
+/* these lines you add at the end of the main functon - create_window1() inside interface.c */
+
+{
+GtkWidget *option_menu1;
+GtkWidget *option_menu3;
+GtkWidget *option_menu4;
+GtkWidget *option_menu5;
+GtkWidget *option_menu6;
+GtkWidget *option_menu14;
+GtkWidget *option_menu15;
+GtkWidget *option_menu20;
+option_menu1 = lookup_widget (window1, "L_optmenu1_bt");
+option_menu3 = lookup_widget (window1, "optionmenu3");
+option_menu4 = lookup_widget (window1, "optionmenu4");
+option_menu5 = lookup_widget (window1, "optionmenu5");
+option_menu6 = lookup_widget (window1, "optionmenu6");
+option_menu14 = lookup_widget (window1, "optionmenu14");
+option_menu15 = lookup_widget (window1, "optionmenu15");
+option_menu20 = lookup_widget (window1, "optionmenu20");
+
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu1)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_L_optmenu1_bt_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu3)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu3_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu4)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu4_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu5)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu5_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu6)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu6_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu14)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu14_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu15)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu15_clicked), NULL);
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu20)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_igmpmessage_type_clicked), NULL);
+}
+
+
+/* these lines you add at the end of the create_udp_payload_dialog */
+
+{
+GtkWidget *option_menu7;
+option_menu7 = lookup_widget (udp_payload_dialog, "optionmenu7");
+gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu7)->menu),
+	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu7_clicked), NULL);
+}
+
+

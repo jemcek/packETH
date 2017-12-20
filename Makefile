@@ -215,12 +215,12 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /root/packETH-develop/missing aclocal-1.15
+ACLOCAL = aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /root/packETH-develop/missing autoconf
-AUTOHEADER = ${SHELL} /root/packETH-develop/missing autoheader
-AUTOMAKE = ${SHELL} /root/packETH-develop/missing automake-1.15
+AUTOCONF = autoconf
+AUTOHEADER = autoheader
+AUTOMAKE = automake-1.15
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -249,7 +249,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = $(DEPS_LIBS) -lm
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /root/packETH-develop/missing makeinfo
+MAKEINFO = makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = packeth

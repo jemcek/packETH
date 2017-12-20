@@ -12,4 +12,5 @@ Interface dialog now displays all available interfaces not only interfaces with 
 
 1.8.1 -> 1.9
 
-Added options for additional stream control (speed ramp, size ramp)
+Gui: Added options for additional stream control (speed ramp, size ramp)
+CLI: added options for IDS/firewall testing
