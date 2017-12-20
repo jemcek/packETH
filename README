@@ -14,6 +14,7 @@ git clone https://github.com/jemcek/packETH.git
 cd packETH
 ./configure
 make
+make install
 ./packETH 
 
 or download the code from: https://sourceforge.net/projects/packeth/files/
@@ -21,6 +22,7 @@ tar xjvf packETH.tar.bz
 cd packETH
 ./configure
 make
+make install
 ./packETH
 
 USAGE:
