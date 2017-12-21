@@ -1,7 +1,7 @@
 /*
  * packETH - ethernet packet generator
  * By Miha Jemec <jemcek@gmail.com>
- * Copyright 2003-2014 Miha Jemec
+ * Copyright 2003-2018 Miha Jemec
  *
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

@@ -756,10 +756,20 @@ create_window1 (void)
   GtkWidget *frame36;
   GtkWidget *vbox60;
   GtkWidget *label243;
-  GtkWidget *hbox98;
+  GtkWidget *hbox1517;
+  GtkWidget *radiobutton89;
+  GSList *radiobutton89_group = NULL;
   GtkWidget *entry109;
+  GtkWidget *label409;
+  GtkWidget *hbox1515;
+  GtkWidget *radiobutton90;
+  GtkWidget *entry222;
+  GtkWidget *label408;
+  GtkWidget *hbox1516;
+  GtkWidget *radiobutton91;
   GtkWidget *checkbutton35;
   GtkWidget *hseparator9;
+  GtkWidget *label420;
   GtkWidget *hbox1502;
   GtkWidget *radiobutton80;
   GSList *radiobutton80_group = NULL;
@@ -778,6 +788,42 @@ create_window1 (void)
   GtkWidget *entry221;
   GtkWidget *hbox114;
   GtkWidget *radiobutton82;
+  GtkWidget *radiobutton95;
+  GtkWidget *hbox1519;
+  GtkWidget *vbox85;
+  GtkWidget *label412;
+  GtkWidget *entry223;
+  GtkWidget *vbox86;
+  GtkWidget *label413;
+  GtkWidget *entry224;
+  GtkWidget *vbox87;
+  GtkWidget *label414;
+  GtkWidget *entry225;
+  GtkWidget *vbox88;
+  GtkWidget *label415;
+  GtkWidget *hbox1521;
+  GtkWidget *label423;
+  GtkWidget *entry226;
+  GtkWidget *label424;
+  GtkWidget *label425;
+  GtkWidget *hseparator10;
+  GtkWidget *vbox93;
+  GtkWidget *checkbutton66;
+  GtkWidget *hbox1520;
+  GtkWidget *vbox89;
+  GtkWidget *label416;
+  GtkWidget *entry227;
+  GtkWidget *vbox90;
+  GtkWidget *label417;
+  GtkWidget *entry228;
+  GtkWidget *vbox91;
+  GtkWidget *label418;
+  GtkWidget *entry229;
+  GtkWidget *label426;
+  GtkWidget *vbox92;
+  GtkWidget *label419;
+  GtkWidget *entry230;
+  GtkWidget *label427;
   GtkWidget *frame37;
   GtkWidget *table3;
   GtkWidget *hbox120;
@@ -4680,33 +4726,80 @@ create_window1 (void)
   gtk_container_add (GTK_CONTAINER (frame36), vbox60);
   gtk_container_set_border_width (GTK_CONTAINER (vbox60), 10);
 
-  label243 = gtk_label_new (_("Number of packets to send\n ( 0 - 999999999 ) : "));
+  label243 = gtk_label_new (_("Total packets to send "));
   gtk_widget_show (label243);
-  gtk_box_pack_start (GTK_BOX (vbox60), label243, FALSE, FALSE, 10);
+  gtk_box_pack_start (GTK_BOX (vbox60), label243, FALSE, FALSE, 5);
   gtk_label_set_justify (GTK_LABEL (label243), GTK_JUSTIFY_CENTER);
 
-  hbox98 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox98);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox98, FALSE, FALSE, 10);
+  hbox1517 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1517);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1517, FALSE, TRUE, 5);
+
+  radiobutton89 = gtk_radio_button_new_with_mnemonic (NULL, _("number  "));
+  gtk_widget_show (radiobutton89);
+  gtk_box_pack_start (GTK_BOX (hbox1517), radiobutton89, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton89), radiobutton89_group);
+  radiobutton89_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton89));
 
   entry109 = gtk_entry_new ();
   gtk_widget_show (entry109);
-  gtk_box_pack_start (GTK_BOX (hbox98), entry109, TRUE, FALSE, 0);
-  gtk_widget_set_size_request (entry109, 84, -1);
+  gtk_box_pack_start (GTK_BOX (hbox1517), entry109, FALSE, TRUE, 0);
+  gtk_widget_set_size_request (entry109, 99, -1);
   gtk_entry_set_max_length (GTK_ENTRY (entry109), 9);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry109), 8226);
 
+  label409 = gtk_label_new (_("  (0 - 999999999) "));
+  gtk_widget_show (label409);
+  gtk_box_pack_start (GTK_BOX (hbox1517), label409, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label409), GTK_JUSTIFY_CENTER);
+
+  hbox1515 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1515);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1515, FALSE, TRUE, 5);
+
+  radiobutton90 = gtk_radio_button_new_with_mnemonic (NULL, _("duration "));
+  gtk_widget_show (radiobutton90);
+  gtk_box_pack_start (GTK_BOX (hbox1515), radiobutton90, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton90), radiobutton89_group);
+  radiobutton89_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton90));
+
+  entry222 = gtk_entry_new ();
+  gtk_widget_show (entry222);
+  gtk_box_pack_start (GTK_BOX (hbox1515), entry222, FALSE, TRUE, 0);
+  gtk_widget_set_size_request (entry222, 99, -1);
+  gtk_widget_set_sensitive (entry222, FALSE);
+  gtk_entry_set_max_length (GTK_ENTRY (entry222), 7);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry222), 8226);
+
+  label408 = gtk_label_new (_("  seconds"));
+  gtk_widget_show (label408);
+  gtk_box_pack_start (GTK_BOX (hbox1515), label408, FALSE, FALSE, 0);
+
+  hbox1516 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1516);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1516, FALSE, TRUE, 5);
+
+  radiobutton91 = gtk_radio_button_new_with_mnemonic (NULL, _("infinite"));
+  gtk_widget_show (radiobutton91);
+  gtk_box_pack_start (GTK_BOX (hbox1516), radiobutton91, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton91), radiobutton89_group);
+  radiobutton89_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton91));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton91), TRUE);
+
   checkbutton35 = gtk_check_button_new_with_mnemonic (_(" Infinite"));
-  gtk_widget_show (checkbutton35);
-  gtk_box_pack_start (GTK_BOX (hbox98), checkbutton35, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1516), checkbutton35, FALSE, FALSE, 0);
 
   hseparator9 = gtk_hseparator_new ();
   gtk_widget_show (hseparator9);
-  gtk_box_pack_start (GTK_BOX (vbox60), hseparator9, FALSE, FALSE, 21);
+  gtk_box_pack_start (GTK_BOX (vbox60), hseparator9, FALSE, FALSE, 10);
+
+  label420 = gtk_label_new (_("Speed & Bandwidth"));
+  gtk_widget_show (label420);
+  gtk_box_pack_start (GTK_BOX (vbox60), label420, FALSE, FALSE, 5);
 
   hbox1502 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox1502);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox1502, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1502, FALSE, FALSE, 5);
 
   radiobutton80 = gtk_radio_button_new_with_mnemonic (NULL, _("bandwidth"));
   gtk_widget_show (radiobutton80);
@@ -4736,7 +4829,7 @@ create_window1 (void)
 
   hbox1501 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox1501);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox1501, FALSE, FALSE, 10);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1501, FALSE, FALSE, 5);
 
   radiobutton81 = gtk_radio_button_new_with_mnemonic (NULL, _("delay between"));
   gtk_widget_show (radiobutton81);
@@ -4769,7 +4862,7 @@ create_window1 (void)
 
   hbox1514 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox1514);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox1514, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1514, FALSE, FALSE, 5);
 
   radiobutton87 = gtk_radio_button_new_with_mnemonic (NULL, _("packets per second"));
   gtk_widget_show (radiobutton87);
@@ -4787,13 +4880,185 @@ create_window1 (void)
 
   hbox114 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox114);
-  gtk_box_pack_start (GTK_BOX (vbox60), hbox114, FALSE, TRUE, 9);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox114, FALSE, FALSE, 5);
 
   radiobutton82 = gtk_radio_button_new_with_mnemonic (NULL, _("max speed"));
   gtk_widget_show (radiobutton82);
   gtk_box_pack_start (GTK_BOX (hbox114), radiobutton82, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton82), radiobutton80_group);
   radiobutton80_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton82));
+
+  radiobutton95 = gtk_radio_button_new_with_mnemonic (NULL, _("ramp (Mbit/s)"));
+  gtk_widget_show (radiobutton95);
+  gtk_box_pack_start (GTK_BOX (vbox60), radiobutton95, FALSE, FALSE, 5);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton95), radiobutton80_group);
+  radiobutton80_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton95));
+
+  hbox1519 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1519);
+  gtk_box_pack_start (GTK_BOX (vbox60), hbox1519, FALSE, TRUE, 0);
+  gtk_widget_set_sensitive (hbox1519, FALSE);
+
+  vbox85 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox85);
+  gtk_box_pack_start (GTK_BOX (hbox1519), vbox85, TRUE, TRUE, 5);
+
+  label412 = gtk_label_new (_("start"));
+  gtk_widget_show (label412);
+  gtk_box_pack_start (GTK_BOX (vbox85), label412, FALSE, FALSE, 0);
+
+  entry223 = gtk_entry_new ();
+  gtk_widget_show (entry223);
+  gtk_box_pack_start (GTK_BOX (vbox85), entry223, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry223, 20, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry223), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry223), 8226);
+
+  vbox86 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox86);
+  gtk_box_pack_start (GTK_BOX (hbox1519), vbox86, TRUE, TRUE, 5);
+
+  label413 = gtk_label_new (_("end "));
+  gtk_widget_show (label413);
+  gtk_box_pack_start (GTK_BOX (vbox86), label413, FALSE, FALSE, 0);
+
+  entry224 = gtk_entry_new ();
+  gtk_widget_show (entry224);
+  gtk_box_pack_start (GTK_BOX (vbox86), entry224, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry224, 20, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry224), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry224), 8226);
+
+  vbox87 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox87);
+  gtk_box_pack_start (GTK_BOX (hbox1519), vbox87, TRUE, TRUE, 5);
+
+  label414 = gtk_label_new (_("step"));
+  gtk_widget_show (label414);
+  gtk_box_pack_start (GTK_BOX (vbox87), label414, FALSE, FALSE, 0);
+
+  entry225 = gtk_entry_new ();
+  gtk_widget_show (entry225);
+  gtk_box_pack_start (GTK_BOX (vbox87), entry225, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry225, 10, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry225), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry225), 8226);
+
+  vbox88 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox88);
+  gtk_box_pack_start (GTK_BOX (hbox1519), vbox88, TRUE, TRUE, 2);
+
+  label415 = gtk_label_new (_("Interval (sec)"));
+  gtk_widget_show (label415);
+  gtk_box_pack_start (GTK_BOX (vbox88), label415, FALSE, FALSE, 0);
+
+  hbox1521 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1521);
+  gtk_box_pack_start (GTK_BOX (vbox88), hbox1521, FALSE, FALSE, 0);
+
+  label423 = gtk_label_new (_("    "));
+  gtk_widget_show (label423);
+  gtk_box_pack_start (GTK_BOX (hbox1521), label423, FALSE, FALSE, 0);
+
+  entry226 = gtk_entry_new ();
+  gtk_widget_show (entry226);
+  gtk_box_pack_start (GTK_BOX (hbox1521), entry226, TRUE, TRUE, 0);
+  gtk_widget_set_size_request (entry226, 10, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry226), 6);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry226), 8226);
+
+  label424 = gtk_label_new ("");
+  gtk_widget_show (label424);
+  gtk_box_pack_start (GTK_BOX (hbox1521), label424, FALSE, FALSE, 0);
+
+  label425 = gtk_label_new (_("      "));
+  gtk_widget_show (label425);
+  gtk_box_pack_start (GTK_BOX (hbox1521), label425, FALSE, FALSE, 0);
+
+  hseparator10 = gtk_hseparator_new ();
+  gtk_widget_show (hseparator10);
+  gtk_box_pack_start (GTK_BOX (vbox60), hseparator10, FALSE, TRUE, 15);
+
+  vbox93 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox93);
+  gtk_box_pack_start (GTK_BOX (vbox60), vbox93, FALSE, FALSE, 0);
+
+  checkbutton66 = gtk_check_button_new_with_mnemonic (_("variable packet size (bytes)"));
+  gtk_widget_show (checkbutton66);
+  gtk_box_pack_start (GTK_BOX (vbox93), checkbutton66, FALSE, FALSE, 5);
+
+  hbox1520 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1520);
+  gtk_box_pack_start (GTK_BOX (vbox93), hbox1520, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (hbox1520, FALSE);
+
+  vbox89 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox89);
+  gtk_box_pack_start (GTK_BOX (hbox1520), vbox89, FALSE, FALSE, 5);
+
+  label416 = gtk_label_new (_("start"));
+  gtk_widget_show (label416);
+  gtk_box_pack_start (GTK_BOX (vbox89), label416, FALSE, FALSE, 0);
+
+  entry227 = gtk_entry_new ();
+  gtk_widget_show (entry227);
+  gtk_box_pack_start (GTK_BOX (vbox89), entry227, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry227, 60, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry227), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry227), 8226);
+
+  vbox90 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox90);
+  gtk_box_pack_start (GTK_BOX (hbox1520), vbox90, FALSE, FALSE, 5);
+
+  label417 = gtk_label_new (_("stop "));
+  gtk_widget_show (label417);
+  gtk_box_pack_start (GTK_BOX (vbox90), label417, FALSE, FALSE, 0);
+
+  entry228 = gtk_entry_new ();
+  gtk_widget_show (entry228);
+  gtk_box_pack_start (GTK_BOX (vbox90), entry228, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry228, 60, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry228), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry228), 8226);
+
+  vbox91 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox91);
+  gtk_box_pack_start (GTK_BOX (hbox1520), vbox91, FALSE, FALSE, 5);
+
+  label418 = gtk_label_new (_("step"));
+  gtk_widget_show (label418);
+  gtk_box_pack_start (GTK_BOX (vbox91), label418, FALSE, FALSE, 0);
+
+  entry229 = gtk_entry_new ();
+  gtk_widget_show (entry229);
+  gtk_box_pack_start (GTK_BOX (vbox91), entry229, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry229, 60, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry229), 4);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry229), 8226);
+
+  label426 = gtk_label_new (_("    "));
+  gtk_widget_show (label426);
+  gtk_box_pack_start (GTK_BOX (hbox1520), label426, FALSE, FALSE, 0);
+
+  vbox92 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox92);
+  gtk_box_pack_start (GTK_BOX (hbox1520), vbox92, FALSE, FALSE, 0);
+
+  label419 = gtk_label_new (_("Interval (sec)"));
+  gtk_widget_show (label419);
+  gtk_box_pack_start (GTK_BOX (vbox92), label419, FALSE, FALSE, 0);
+
+  entry230 = gtk_entry_new ();
+  gtk_widget_show (entry230);
+  gtk_box_pack_start (GTK_BOX (vbox92), entry230, FALSE, FALSE, 0);
+  gtk_widget_set_size_request (entry230, 60, -1);
+  gtk_entry_set_max_length (GTK_ENTRY (entry230), 6);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry230), 8226);
+
+  label427 = gtk_label_new (_("      "));
+  gtk_widget_show (label427);
+  gtk_box_pack_start (GTK_BOX (hbox1520), label427, FALSE, FALSE, 0);
 
   frame37 = gtk_frame_new (NULL);
   gtk_widget_show (frame37);
@@ -6345,6 +6610,15 @@ create_window1 (void)
   g_signal_connect ((gpointer) button81, "clicked",
                     G_CALLBACK (on_button81_clicked),
                     NULL);
+  g_signal_connect ((gpointer) radiobutton89, "clicked",
+                    G_CALLBACK (on_radiobutton89_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton90, "clicked",
+                    G_CALLBACK (on_radiobutton90_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton91, "clicked",
+                    G_CALLBACK (on_radiobutton91_clicked),
+                    NULL);
   g_signal_connect ((gpointer) checkbutton35, "toggled",
                     G_CALLBACK (on_checkbutton35_toggled),
                     NULL);
@@ -6359,6 +6633,12 @@ create_window1 (void)
                     NULL);
   g_signal_connect ((gpointer) radiobutton82, "clicked",
                     G_CALLBACK (on_radiobutton82_activate),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton95, "clicked",
+                    G_CALLBACK (on_radiobutton95_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) checkbutton66, "toggled",
+                    G_CALLBACK (on_checkbutton66_toggled),
                     NULL);
   g_signal_connect ((gpointer) entry160, "changed",
                     G_CALLBACK (on_entry160_changed),
@@ -7219,10 +7499,19 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, frame36, "frame36");
   GLADE_HOOKUP_OBJECT (window1, vbox60, "vbox60");
   GLADE_HOOKUP_OBJECT (window1, label243, "label243");
-  GLADE_HOOKUP_OBJECT (window1, hbox98, "hbox98");
+  GLADE_HOOKUP_OBJECT (window1, hbox1517, "hbox1517");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton89, "radiobutton89");
   GLADE_HOOKUP_OBJECT (window1, entry109, "entry109");
+  GLADE_HOOKUP_OBJECT (window1, label409, "label409");
+  GLADE_HOOKUP_OBJECT (window1, hbox1515, "hbox1515");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton90, "radiobutton90");
+  GLADE_HOOKUP_OBJECT (window1, entry222, "entry222");
+  GLADE_HOOKUP_OBJECT (window1, label408, "label408");
+  GLADE_HOOKUP_OBJECT (window1, hbox1516, "hbox1516");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton91, "radiobutton91");
   GLADE_HOOKUP_OBJECT (window1, checkbutton35, "checkbutton35");
   GLADE_HOOKUP_OBJECT (window1, hseparator9, "hseparator9");
+  GLADE_HOOKUP_OBJECT (window1, label420, "label420");
   GLADE_HOOKUP_OBJECT (window1, hbox1502, "hbox1502");
   GLADE_HOOKUP_OBJECT (window1, radiobutton80, "radiobutton80");
   GLADE_HOOKUP_OBJECT (window1, entry206, "entry206");
@@ -7238,6 +7527,42 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, entry221, "entry221");
   GLADE_HOOKUP_OBJECT (window1, hbox114, "hbox114");
   GLADE_HOOKUP_OBJECT (window1, radiobutton82, "radiobutton82");
+  GLADE_HOOKUP_OBJECT (window1, radiobutton95, "radiobutton95");
+  GLADE_HOOKUP_OBJECT (window1, hbox1519, "hbox1519");
+  GLADE_HOOKUP_OBJECT (window1, vbox85, "vbox85");
+  GLADE_HOOKUP_OBJECT (window1, label412, "label412");
+  GLADE_HOOKUP_OBJECT (window1, entry223, "entry223");
+  GLADE_HOOKUP_OBJECT (window1, vbox86, "vbox86");
+  GLADE_HOOKUP_OBJECT (window1, label413, "label413");
+  GLADE_HOOKUP_OBJECT (window1, entry224, "entry224");
+  GLADE_HOOKUP_OBJECT (window1, vbox87, "vbox87");
+  GLADE_HOOKUP_OBJECT (window1, label414, "label414");
+  GLADE_HOOKUP_OBJECT (window1, entry225, "entry225");
+  GLADE_HOOKUP_OBJECT (window1, vbox88, "vbox88");
+  GLADE_HOOKUP_OBJECT (window1, label415, "label415");
+  GLADE_HOOKUP_OBJECT (window1, hbox1521, "hbox1521");
+  GLADE_HOOKUP_OBJECT (window1, label423, "label423");
+  GLADE_HOOKUP_OBJECT (window1, entry226, "entry226");
+  GLADE_HOOKUP_OBJECT (window1, label424, "label424");
+  GLADE_HOOKUP_OBJECT (window1, label425, "label425");
+  GLADE_HOOKUP_OBJECT (window1, hseparator10, "hseparator10");
+  GLADE_HOOKUP_OBJECT (window1, vbox93, "vbox93");
+  GLADE_HOOKUP_OBJECT (window1, checkbutton66, "checkbutton66");
+  GLADE_HOOKUP_OBJECT (window1, hbox1520, "hbox1520");
+  GLADE_HOOKUP_OBJECT (window1, vbox89, "vbox89");
+  GLADE_HOOKUP_OBJECT (window1, label416, "label416");
+  GLADE_HOOKUP_OBJECT (window1, entry227, "entry227");
+  GLADE_HOOKUP_OBJECT (window1, vbox90, "vbox90");
+  GLADE_HOOKUP_OBJECT (window1, label417, "label417");
+  GLADE_HOOKUP_OBJECT (window1, entry228, "entry228");
+  GLADE_HOOKUP_OBJECT (window1, vbox91, "vbox91");
+  GLADE_HOOKUP_OBJECT (window1, label418, "label418");
+  GLADE_HOOKUP_OBJECT (window1, entry229, "entry229");
+  GLADE_HOOKUP_OBJECT (window1, label426, "label426");
+  GLADE_HOOKUP_OBJECT (window1, vbox92, "vbox92");
+  GLADE_HOOKUP_OBJECT (window1, label419, "label419");
+  GLADE_HOOKUP_OBJECT (window1, entry230, "entry230");
+  GLADE_HOOKUP_OBJECT (window1, label427, "label427");
   GLADE_HOOKUP_OBJECT (window1, frame37, "frame37");
   GLADE_HOOKUP_OBJECT (window1, table3, "table3");
   GLADE_HOOKUP_OBJECT (window1, hbox120, "hbox120");
@@ -7438,6 +7763,7 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, button86, "button86");
   GLADE_HOOKUP_OBJECT (window1, label251, "label251");
   GLADE_HOOKUP_OBJECT (window1, statusbar1, "statusbar1");
+
 {
 GtkWidget *option_menu1;
 GtkWidget *option_menu3;
@@ -7473,6 +7799,7 @@ gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu15)->menu),
 gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu20)->menu),
 	      "deactivate", GTK_SIGNAL_FUNC (on_igmpmessage_type_clicked), NULL);
 }
+
 
   return window1;
 }
@@ -8505,6 +8832,7 @@ create_udp_payload_dialog (void)
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, hbox77, "hbox77");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, cancel_rtp_bt, "cancel_rtp_bt");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, rtp_ok_bt, "rtp_ok_bt");
+
 {
 GtkWidget *option_menu7;
 option_menu7 = lookup_widget (udp_payload_dialog, "optionmenu7");
@@ -8543,12 +8871,12 @@ create_about_dialog (void)
   gtk_widget_show (pixmap17);
   gtk_box_pack_start (GTK_BOX (vbox63), pixmap17, FALSE, FALSE, 15);
 
-  label275 = gtk_label_new (_("packETH - 1.8.1"));
+  label275 = gtk_label_new (_("packETH - 1.9"));
   gtk_widget_show (label275);
   gtk_box_pack_start (GTK_BOX (vbox63), label275, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label275), GTK_JUSTIFY_CENTER);
 
-  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2015 \n           Miha Jemec          \njemcek@gmail.com\nhttp://packeth.sourceforge.net/"));
+  label276 = gtk_label_new (_("ethernet packet generator\n         Copyright2003 - 2017\n           Miha Jemec          \njemcek@gmail.com\nhttp://packeth.sourceforge.net/"));
   gtk_widget_show (label276);
   gtk_box_pack_start (GTK_BOX (vbox63), label276, FALSE, FALSE, 10);
   gtk_label_set_justify (GTK_LABEL (label276), GTK_JUSTIFY_CENTER);

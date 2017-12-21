@@ -1,7 +1,7 @@
 /*
  * packETH - ethernet packet generator
  * By Miha Jemec <jemcek@gmail.com>
- * Copyright 2003-2014 Miha Jemec
+ * Copyright 2003-2018 Miha Jemec
  *
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -886,4 +886,24 @@ on_radiobutton87_activate              (GtkButton       *button,
 
 void
 on_radiobutton87_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton89_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton90_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton91_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton95_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_checkbutton66_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
