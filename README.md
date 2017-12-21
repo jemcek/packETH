@@ -16,7 +16,7 @@ https://packeth.wordpress.com
 
 git clone https://github.com/jemcek/packETH.git  
 cd packETH  
-./autogen.sh      (you will need aclocal,autoconf,autoheader and automake installed to run this) 
+./autogen.sh      (you will need aclocal,autoconf,autoheader and automake installed to run this)   
 ./configure  
 make  
 make install  
@@ -25,7 +25,7 @@ make install
 or download the code from: https://sourceforge.net/projects/packeth/files/  
 tar xjvf packETH.(version).tar.bz  
 cd packETH  
-autoreconf -f -i  (this may not be needed but in case you get automake version mismatch etc...)   
+autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
 ./configure  
 make  
 make install  
