@@ -1,4 +1,4 @@
-# packETH
+# packETH  
 
 packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux. 
 
@@ -10,9 +10,9 @@ Blog with some use cases:
 
 https://packeth.wordpress.com
 
-## INSTALLATION:
+## INSTALLATION  
 
-### GUI
+### GUI  
 
 git clone https://github.com/jemcek/packETH.git
 cd packETH
@@ -31,14 +31,14 @@ make
 make install
 ./packETH
 
-### CLI
+### CLI  
 
 cd cli
 make
 
-## USAGE:
+## USAGE  
 
-### GUI version:
+### GUI version  
 The usage of the program should be pretty straightforward. As you will see, there are 4 main windows (first four buttons from the left side). I call them:
 - Builder - the page where you build the packet and send it once
 - Gen-b - generator for sending packet currently build inside Builder with many options how to send it
@@ -47,12 +47,10 @@ The usage of the program should be pretty straightforward. As you will see, ther
 
 To send the packets you need the SuperUser rights.
 
-### CLI version:
-Inside cli subdirectory you can find also the command line version of packETH called packETHcli. Just type "make" inside the subdir. 
+### CLI version  
+Type ./packETHcli -h  for available options.
 
-Type ./packETHcli -h  for more options.
-
-## AUTHORS & SUPPORT
+## AUTHORS & SUPPORT  
 
 If you get into problems, please feel free to contact me.  
 
