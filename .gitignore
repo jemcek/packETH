@@ -1,0 +1,12 @@
+Makefile*
+aclocal.m4
+autom4te.cache/
+compile
+config*
+depcomp
+install-sh
+missing
+packETH
+src/*.o
+src/.deps/*
+stamp-h1
