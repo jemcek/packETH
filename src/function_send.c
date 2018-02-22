@@ -459,30 +459,30 @@ void* sendbuilt (void *parameters)
 			}
 			/* changing RTP values: seq number++, timestamp for 10ms */
 			if ( (p->inc & (1<<6)) && (p->l4_proto_in_use == 17)) {
-				packet[p->udpstart+10] = (li+1)/256;
-				packet[p->udpstart+11] = (li+1)%256;
-				packet[p->udpstart+12] = ((li+1)*80)/16777216;
-				packet[p->udpstart+13] = ((li+1)*80)/65536;
-				packet[p->udpstart+14] = ((li+1)*80)/256;
-				packet[p->udpstart+15] = (signed int)(((li+1)*80)%256);
+				packet[p->udpstart+10] = li/256;
+				packet[p->udpstart+11] = li%256;
+				packet[p->udpstart+12] = (li*80)/16777216;
+				packet[p->udpstart+13] = (li*80)/65536;
+				packet[p->udpstart+14] = (li*80)/256;
+				packet[p->udpstart+15] = (signed int)((li*80)%256);
 			}
 			/* changing RTP values: seq number++, timestamp for 20ms */
 			if ( (p->inc & (1<<7)) && (p->l4_proto_in_use == 17)) {
-				packet[p->udpstart+10] = (li+1)/256;
-				packet[p->udpstart+11] = (li+1)%256;
-				packet[p->udpstart+12] = ((li+1)*160)/16777216;
-				packet[p->udpstart+13] = ((li+1)*160)/65536;
-				packet[p->udpstart+14] = ((li+1)*160)/256;
-				packet[p->udpstart+15] = (signed int)(((li+1)*160)%256);
+				packet[p->udpstart+10] = li/256;
+				packet[p->udpstart+11] = li%256;
+				packet[p->udpstart+12] = (li*160)/16777216;
+				packet[p->udpstart+13] = (li*160)/65536;
+				packet[p->udpstart+14] = (li*160)/256;
+				packet[p->udpstart+15] = (signed int)((li*160)%256);
 			}
 			/* changing RTP values: seq number++, timestamp for 30ms */
 			if ( (p->inc & (1<<8)) && (p->l4_proto_in_use == 17)) {
-				packet[p->udpstart+10] = (li+1)/256;
-				packet[p->udpstart+11] = (li+1)%256;
-				packet[p->udpstart+12] = ((li+1)*240)/16777216;
-				packet[p->udpstart+13] = ((li+1)*240)/65536;
-				packet[p->udpstart+14] = ((li+1)*240)/256;
-				packet[p->udpstart+15] = (signed int)(((li+1)*240)%256);
+				packet[p->udpstart+10] = li/256;
+				packet[p->udpstart+11] = li%256;
+				packet[p->udpstart+12] = (li*240)/16777216;
+				packet[p->udpstart+13] = (li*240)/65536;
+				packet[p->udpstart+14] = (li*240)/256;
+				packet[p->udpstart+15] = (signed int)((li*240)%256);
 			}
 			/* changing byte x value */
 			if (p->inc & (1<<9)) {
