@@ -87,7 +87,7 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
 int readSnortRules(const char *filename);
 void cleanupRules(int);
 int one(char *interface, char *filename);
-int two(char *interface, long delay, long pkt2send, char *filename, char *sizetmp, int period);
+int two(char *interface, long delay, long pkt2send, char *filename, char *sizetmp, int period, char *ratetmp);
 int four(char *interface, long delay, long pkt2send, char *filename, char *sizetmp, int period, int attack);
 void usage(void);
 
@@ -95,15 +95,17 @@ int main(int argc, char *argv[])
 {
         char iftext[20];
         char sizetmp[20];
+	char ratetmp[50];
         char filename[100];
         long mode=0, delay=100000, number=1, attack=4;
-        int c, period = 0;
+        int c, period = 10;
         char *p;
 
 	sizetmp[0]='\0';
+	ratetmp[0]='\0';
 
         /* Scan CLI parameters */
-        while ((c = getopt(argc, argv, "hi:m:d:n:s:p:f:a:r:")) != -1) {
+        while ((c = getopt(argc, argv, "hi:m:d:n:s:p:f:z:a:")) != -1) {
                 switch(c) {
 		case 'a': {
 			attack = strtol(optarg, &p, 10);
@@ -128,6 +130,10 @@ int main(int argc, char *argv[])
                         strncpy(sizetmp, optarg, 20);
                         break;
                 }
+		case 'z': {
+			strncpy(ratetmp, optarg, 50);
+			break;
+		}
                 case 'p': {
                         period = strtol(optarg, &p, 10);
                         break;
@@ -150,7 +156,7 @@ int main(int argc, char *argv[])
                         break;
                 }
                 case 2: {
-                        two(iftext, delay, number, filename, sizetmp, period);
+                        two(iftext, delay, number, filename, sizetmp, period, ratetmp);
                         break;
                 }
                 case 3: {
@@ -168,35 +174,37 @@ int main(int argc, char *argv[])
 
 void usage(void)
 {
-        printf("Usage: packETHcli -i <interface> -m <mode> [-d <delay> -n <number of packets> [-s <startsize stopsize stepsize] -p period] -f <file>\n");
+        printf("\nUsage: packETHcli -i <interface> -m <mode> [options] -f <file>\n");
         printf(" \n");
-        printf(" -m <1,2,3>  - 1: send one packet (builder mode), no further options\n");
-        printf("             - 2: send sequence of one packet (Gen-b mode)\n");
-        printf("                        -d <us, 0> - delay between packets in micro seconds (-1 for maximum speed without counters, 0 for max speed with counters)\n");
-        printf("                        -n <number, 0> - number of packets to send or 0 for infinite\n");
-        printf("                        -s \"<startsize stopsize stepsize> (please note that checksum in not recalculated for shorter lengths!!!)\" \n");
-        printf("                        -p <period between steps> \n");
-        printf("             - 3: send sequence packets (Gen-s mode) - not yet done...\n");
-	printf("	     - 4: send sequence of packets (Gen-b mode)\n");
-        printf("                        -d <us, 0> - delay between packets in micro seconds (-1 for maximum speed without counters, 0 for max speed with counters)\n");
-        printf("                        -n <number, 0> - number of packets to send or 0 for infinite\n");
-        printf("                        -s \"<startsize stopsize stepsize>\" \n");
-        printf("                        -p <period between steps> \n");
-        printf("                        -f <attack definitions file in Snort rule format> \n");	
-        printf("                        -a <numbers from 0 to 4> - innocent traffic for 0, 25%% attack for 1, 50%% attack for 2, 75%% attack for 3, 100%% attack for 4> \n");
+        printf(" <mode>:\n");
+        printf("    1   : send one packet (builder mode), no further options\n");
+        printf("    2   : send a sequence of one packet (Gen-b mode)\n");
+        printf("            -d <us, 0, -1> - delay between packets in micro seconds (default 100ms) or 0 for maximum speed with counters or -1 for max speed without counters)\n");
+        printf("            -n <number, 0> - number of packets to send or 0 for infinite (default 1)\n");
+        printf("            (Optional:)\n");
+        printf("               -s \"<startsize stopsize stepsize>\" (please note that TCP&UDP checksums are not recalculated!!!) \n");
+	printf("               -z \"<startrate stoprate steprate)\" in kbit/s (this option overides the -d option) \n");
+        printf("               -p <period between steps (default 10s)> \n");
+	printf("    4: send sequence of packets (IDS test mode)\n");
+        printf("            -d <us, 0, -1> - delay between packets in micro seconds (default 100ms) or 0 for maximum speed with counters or -1 for max speed without counters)\n");
+        printf("            -n <number, 0> - number of packets to send or 0 for infinite\n");
+        printf("            -s \"<startsize stopsize stepsize>\" \n");
+        printf("            -p <period between steps> \n");
+        printf("            -f <attack definitions file in Snort rule format> \n");	
+        printf("            -a <numbers from 0 to 4> - innocent traffic for 0, 25%% attack for 1, 50%% attack for 2, 75%% attack for 3, 100%% attack for 4> \n");
         printf("                                                                                                     \n");
-        printf(" -f <file name> - file name where packet is stored in pcap format\n");
+        printf(" -f <file> - file name where packet is stored in pcap format (except mode 4) \n");
         printf("                                                                                                     \n");
         printf("Examples:                                                                                            \n");
         printf("                                                                                                     \n");
-        printf("  ./packETHcli -i lo -m 1 -f packet1.pcap                   			 - send packet1.pcap once on lo \n");
-        printf("  ./packETHcli -i eth0 -m 2 -d 1000 -n 300 -f packet2.pcap   			 - send packet2.pcap 300 times with 1000 us (1ms) between them  \n");
-        printf("  ./packETHcli -i eth0 -m 2 -d -1 -n 0 -f packet2.pcap   			 - send packet2.pcap at max speed, infinite times, no counters\n");
-        printf("  ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f packet2.pcap   			 - send packet2.pcap at max speed, infinite times, with counters\n");
-        printf("  ./packETHcli -i eth1 -m 2 -d 0 -n 0 -s \"1000 1500 100\" -p 10 -f packet3.pcap   - send packet2.pcap at max speed, start with packet length of 1000 bytes \n");
-        printf("                                                                             	 - send 10 packets with this packet length, increase packet length by 100 bytes till 1500 \n");
-        printf("  ./packETHcli -i eth0 -m 2 -d 100 -n 0 -s \"8500 8500\" -f packet2.pcap     	 - send packet2.pcap infinite times with 300us between them\n");
-        printf("                                                                           	 - with the size of 8500 bytes (even if packet2 is longer)\n\n\n");
+        printf("  ./packETHcli -i lo   -m 1 -f p1.pcap                   			 - send packet p1.pcap once on lo \n");
+        printf("  ./packETHcli -i eth0 -m 2 -d 1000 -n 300 -f p1.pcap   			 - send packet p1.pcap 300 times with 1000 us (1ms) between them  \n");
+        printf("  ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap   			         - send at max speed, infinite times, with counters\n");
+        printf("  ./packETHcli -i eth0 -m 2 -d -1 -n 0 -f p1.pcap   			         - send at max speed, infinite times, no counters\n");
+	printf("  ./packETHcli -i eth1 -m 2  -z \"1000 1500 100\" -p 10 -f p1.pcap                 - send with 1000kbit/s for 10s, then increse rate by 100kbit/s each 10s up to 1500 kbit/s\n");
+        printf("  ./packETHcli -i eth1 -m 2 -d 0 -n 0 -s \"1000 1500 100\" -p 10 -f p1.pcap        - send at max speed, start with packet size of 1000 bytes for 10s then increase \n");
+        printf("                                                                                   packet size by 100 bytes each 10s up to 1500 bytes\n");
+        printf("\n\n");
         exit (8);
 }
 
@@ -311,10 +319,9 @@ int one(char *iftext, char *filename)
 	return 1;
 }
 
-                           
 
 /* send one packet more than once */
-int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int period) {
+int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int period, char *ratetmp) {
 
         int c, fd, count, flag = 0;
         struct sockaddr_ll sa;
@@ -323,11 +330,14 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
         long li, gap = 0, gap2 = 0, sentnumber = 0, lastnumber = 0, seconds = 0;
         struct timeval nowstr, first, last;
         unsigned int mbps, pkts, link;
-	int size, period2=0;
-	int startsize = 60;
-	int stopsize = 1500;
-	int stepsize = 10;
+	int size, rate=0, period2=0;
+	int startsize = 0;
+	int stopsize = 0;
+	int stepsize = 0 ;
 	int wordcount = 0;
+        int startrate = 0;
+        int stoprate = 0;
+        int steprate = 0;
 
 	FILE *file_p;
 	char *ptr; 
@@ -336,7 +346,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
         struct pcaprec_hdr ph;
         int freads;
         char pkt_temp[10000];
-	char tmp7[10];
+	char tmp7[20];
 	char ch;
 
         /* do we have the rights to do that? */
@@ -422,6 +432,11 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 
 	fclose(file_p);
 
+	if ((strlen(sizetmp) > 0 ) && (strlen(ratetmp) > 0 )) {
+		printf("\n Only -s or -z can be used at a time\n\n");
+		return 1;
+	}
+
 	if (strlen(sizetmp) > 0 ) {
 		for (count = 0; count <= strlen(sizetmp); count ++){
         		ch = sizetmp[count];
@@ -441,7 +456,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 			
     		}
 		if (startsize > stopsize) {
-			printf("\nstartsize is greater than stopzize\n\n");
+			printf("\nstartsize is greater than stopzize (or did you forget the quotation marks?)\n\n");
 			return 1;
 		}
 		if (startsize < 60) {
@@ -457,6 +472,47 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 	else
 		size = ph.incl_len;
 
+	if (strlen(ratetmp) > 0 ) {
+		for (count = 0; count <= strlen(ratetmp); count ++){
+        		ch = ratetmp[count];
+       			if((isblank(ch)) || (ratetmp[count] == '\0')){ 
+				strncpy(tmp7, &ratetmp[flag],count-flag); 
+				tmp7[count-flag]='\0';
+				if (wordcount==0) 
+					startrate = strtol(tmp7, &p, 10);
+				else if (wordcount ==1)						
+					stoprate = strtol(tmp7, &p, 10);
+				else if (wordcount ==2)						
+					steprate = strtol(tmp7, &p, 10);
+
+            			wordcount += 1;
+				flag = count;
+        		}
+			
+    		}
+		if (startrate > stoprate) {
+			printf("\nstartrate is greater than stoprate (or did you forget the quotation marks?)\n\n");
+			return 1;
+		}
+		if (startrate < 1) {
+			printf("\nstartrate must be >= 1kbit/s\n\n");
+			return 1;
+		}
+		if (stoprate > 10000000) {
+			printf("\nstopsize must be <= 10Gbit/s\n\n");
+			return 1;
+		}
+                //delay = (long)(startrate*1000) / (size*8);
+                delay = 1000 * size * 8 / startrate;
+                //printf("core delay %ld \n", delay);
+                if (delay > 990000) {
+                  printf ("startrate is to low (less than 1pps)\n\n");
+                  return 1; 
+                }
+                rate = startrate;
+
+        }
+
 		
 
         /* this is the time we started */
@@ -464,8 +520,12 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
         gettimeofday(&last, NULL);
         gettimeofday(&nowstr, NULL);
 
+
+
         /* to send first packet immedialtelly */
         gap = delay;
+ 
+
 
 	/*-----------------------------------------------------------------------------------------------*/
 
@@ -477,7 +537,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 
 	/* else if delay == 0 and infinite packets, send as fast as possible with counters... */
 	else if (delay==0) {
-	  	for(li = 0; (pkt2send == 0) ? 1 : li < pkt2send; li++) {
+            	for(li = 0; pkt2send == 0 ? 1 : li < pkt2send; li++) {
 			gettimeofday(&nowstr, NULL);
 			gap2 = nowstr.tv_sec - first.tv_sec;
 			c = sendto(fd, ptr, size, 0, (struct sockaddr *)&sa, sizeof (sa));
@@ -531,6 +591,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 
 		 /* every second display number of sent packets */
                 if (gap2 > seconds) {
+                        //printf("delay %ld, period2 %d, rate %d, steprate %d", delay, period2, rate, steprate);
 			pkts = sentnumber - lastnumber;
 			mbps = pkts * ph.incl_len / 125; // 8 bits per byte / 1024 for kbit
 			/* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
@@ -540,16 +601,34 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
                 	printf("  Sent %ld packets on %s; %d packet length; %d packets/s; %d kbit/s data rate;, %d kbit/s link utilization\n", sentnumber, iftext, size, pkts, mbps, link);
                         seconds++;
 
-			if ( (period2 > (period-2)) && (period>0) ) {
+                        if (stepsize > 0) {
+			    if ( (period2 > (period-2)) && (period>0) ) {
 				size = size + stepsize;
 				if (size > stopsize) {
 					printf("  Sent %ld packets on %s \n", sentnumber, iftext);
 					return 1;
 				}
 				period2 = 0;
-			}
-			else
+			    }
+			    else
 				period2++;
+                         }
+                         else if (steprate > 0) {
+			    if ( (period2 > (period-2)) && (period>0) ) {
+				rate = rate + steprate;
+                                delay = (long)(rate*1000) / (size*8);
+                                delay = 1000000 / delay;
+                                //printf("delay %ld, rate %d", delay, rate);
+				if (rate > stoprate) {
+					printf("  Sent %ld packets on %s \n", sentnumber, iftext);
+					return 1;
+				}
+				period2 = 0;
+			    }
+			    else
+				period2++;
+                         }
+
                 }
 	}
 	printf("  Sent %ld packets on %s \n", sentnumber, iftext);
@@ -557,7 +636,9 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 	}
 	return 1;
 }
+
 /*------------------------------------------------------------------------------*/
+
 inline __sum16
 ip_fast_csum(const void *iph, unsigned int ihl)
 {
@@ -1009,4 +1090,4 @@ four(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int
 	
 	return 1;
 }
-/*------------------------------------------------------------------------------*/
+
