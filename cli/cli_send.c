@@ -39,6 +39,10 @@
 #include <netdb.h>
 
 #define PCAP_MAGIC   0xa1b2c3d4
+#ifndef MAX_MTU
+    #define MAX_MTU 9000
+	#define MAX_MTU_STR "9000"
+#endif
 
 /* "libpcap" file header (minus magic number). */
 struct pcap_hdr {
@@ -69,6 +73,7 @@ void usage(void);
 
 int main(int argc, char *argv[])
 {
+printf("%d\n", MAX_MTU);
         char iftext[20];
         char sizetmp[20];
         char filename[100];
@@ -408,8 +413,8 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 			printf("\nstartsize must be >60\n\n");
 			return 1;
 		}
-		if (stopsize > 9000) {
-			printf("\nstopsize must be <9000\n\n");
+		if (stopsize > MAX_MTU) {
+			printf("\nstopsize must be <" MAX_MTU_STR "\n\n");
 			return 1;
 		}
 		size = startsize;

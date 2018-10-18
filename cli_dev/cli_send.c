@@ -426,8 +426,8 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 			printf("\nstartsize must be >60\n\n");
 			return 1;
 		}
-		if (stopsize > 9000) {
-			printf("\nstopsize must be <9000\n\n");
+		if (stopsize > MAX_MTU) {
+			printf("\nstopsize must be <" MAX_MTU_STR "\n\n");
 			return 1;
 		}
 		size = startsize;

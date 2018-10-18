@@ -958,8 +958,8 @@ four(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int
 			cleanupRules(num_rules);			
 			return 1;
 		}
-		if (stopsize > 9000) {
-			printf("\nstopsize must be <9000\n\n");
+		if (stopsize > MAX_MTU) {
+			printf("\nstopsize must be <%d\n\n", MAX_MTU);
 			close(fd);
 			cleanupRules(num_rules);			
 			return 1;
