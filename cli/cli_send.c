@@ -455,12 +455,14 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
                 lastnumber = sentnumber;
 
                 printf("  Sent %ld packets on %s; %d packet length; %d packets/s; %d kbit/s data rate;, %d kbit/s link utilization\n", sentnumber, iftext, size, pkts, mbps, link);
+                fflush(stdout);
                 seconds++;
 
                 if ( (period2 > (period-2)) && (period>0) ) {
                     size = size + stepsize;
                     if (size > stopsize) {
                         printf("  Sent %ld packets on %s \n", sentnumber, iftext);
+                        fflush(stdout);
                         return 1;
                     }
                     period2 = 0;
@@ -470,6 +472,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
             }
         }
         printf("  Sent %ld packets on %s \n", sentnumber, iftext);
+        fflush(stdout);
     }
 
     else {
@@ -499,12 +502,14 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
 
                 
                 printf("  Sent %ld packets on %s; %d packet length; %d packets/s; %d kbit/s data rate;, %d kbit/s link utilization\n", sentnumber, iftext, size, pkts, mbps, link);
+                fflush(stdout);
                 seconds++;
 
                 if ( (period2 > (period-2)) && (period>0) ) {
                     size = size + stepsize;
                     if (size > stopsize) {
                         printf("  Sent %ld packets on %s \n", sentnumber, iftext);
+                        fflush(stdout);
                         return 1;
                     }
                     period2 = 0;
@@ -514,6 +519,7 @@ int two(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, 
             }
         }
         printf("  Sent %ld packets on %s \n", sentnumber, iftext);
+        fflush(stdout);
         return 1;
     }
     return 1;
