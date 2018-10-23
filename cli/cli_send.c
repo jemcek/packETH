@@ -73,7 +73,6 @@ void usage(void);
 
 int main(int argc, char *argv[])
 {
-printf("%d\n", MAX_MTU);
         char iftext[20];
         char sizetmp[20];
         char filename[100];
