@@ -10,3 +10,4 @@ packETH
 src/*.o
 src/.deps/*
 stamp-h1
+!configure.ac

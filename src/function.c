@@ -46,6 +46,7 @@
 #include "function.h"
 #include "function_send.h"
 #include "headers.h"
+#include "config.h"
 
 /* some global variables:
  * packet [] - the packet contents 
@@ -859,16 +860,16 @@ int send_packet(GtkButton *button, gpointer user_data)
 			params1.ramp_step = strtoll(en229_t, (char **)NULL, 10);
 			params1.ramp_interval = strtoll(en230_t, (char **)NULL, 10);
 
-			if ( (params1.ramp_start > 9000) || (params1.ramp_start < 60) ) {
-				error("Error: Size ramp start length (60 - 9000 bytes)");
+			if ( (params1.ramp_start > MAX_MTU) || (params1.ramp_start < 60) ) {
+				error("Error: Size ramp start length (60 - " MAX_MTU_STR "bytes)");
 				return -1;
 			}
-			if ( (params1.ramp_stop > 9000) || (params1.ramp_stop < 60) ) {
-				error("Error: Size ramp stop length (60 - 9000 bytes)");
+			if ( (params1.ramp_stop > MAX_MTU) || (params1.ramp_stop < 60) ) {
+				error("Error: Size ramp stop length (60 - " MAX_MTU_STR " bytes)");
 				return -1;
 			}
-			if ( (params1.ramp_step > 9000) || (params1.ramp_step < 1) ) {
-				error("Error: Size ramp step length (1 - 9000 bytes)");
+			if ( (params1.ramp_step > MAX_MTU) || (params1.ramp_step < 1) ) {
+				error("Error: Size ramp step length (1 - " MAX_MTU_STR " bytes)");
 				return -1;
 			}
 			if ( (params1.ramp_interval > 999999) || (params1.ramp_interval < 1) ) {

@@ -30,4 +30,14 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([bzero ftime gettimeofday isascii memset socket strchr strtol strtoul strtoull])
 
 AC_CONFIG_FILES([Makefile])
+
+# Option to define a larger (or smaller) maximum MTU
+AC_ARG_WITH([mtu], [AS_HELP_STRING([--with-mtu], [change the maximum MTU, default: 9000])])
+AS_IF([test "x$with_mtu" != "x"],
+	[AC_DEFINE_UNQUOTED([MAX_MTU], [${with_mtu}], ["..."])],
+	[AC_DEFINE_UNQUOTED([MAX_MTU], [9000], ["..."])])
+AS_IF([test "x$with_mtu" != "x"],
+	[AC_DEFINE_UNQUOTED([MAX_MTU_STR], ["${with_mtu}"], ["..."])],
+	[AC_DEFINE_UNQUOTED([MAX_MTU_STR], ["9000"], ["..."])])
+
 AC_OUTPUT
