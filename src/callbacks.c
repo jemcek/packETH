@@ -2177,7 +2177,7 @@ on_Interface_button_clicked                    (GtkButton       *button,
 	head = pif = if_nameindex();
 	//int num_ifreq;
 	int fd, length;
-	char buff[100];
+	char buff[1000];
 	char *ptr;
 
 	statusbar_text(button, "");
