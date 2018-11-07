@@ -91,7 +91,7 @@ All examples assume that we send on interface eth0 and that the packet is stored
 
 ###  mode 2 - send packets at constant rate:
    - send 5th packet from file p10.pcap
-     <./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap> 
+     ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap> 
    - send at max speed, infinite times, no counters
      ./packETHcli -i eth0 -m 2 -d -1 -n 0 -f p1.pcap  
    - send 300 packets with 1000 us (1ms) between them
