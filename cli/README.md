@@ -14,14 +14,14 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
 ./packETHcli -h
 
- <mode>:
-    1   - SEND PACKET ONCE (default mode): send packet from the pcap file once
+ Modes:
+    1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
                               to see sequence numbers of packets inside pcap file: tcpdump -# -r filename
           Example: packETHcli -i lo -f packet.pcap
 
-    2   - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
+    2 - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
           Parameters:
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
@@ -35,7 +35,7 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
           Example: ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap
 
-    3   - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP):
+    3 - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP):
           Parameters:
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
@@ -49,7 +49,7 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
           Example: ./packETHcli -i eth1 -m 3 -t 3600 -Z "500 100 1" -p 5 -f p1.pcap
 
-    4   - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
+    4 - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
           Parameters:
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
@@ -66,7 +66,7 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
           Example: ./packETHcli -i eth1 -m 4 -d 2000 -n 0 -s "100 1500 100" -p 5 -f p1.pcap
 
-    5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
+    5 - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
           Parameters
             -f <attack definitions file in Snort rule format>
             -a <numbers from 0 to 4> - innocent traffic for 0, 25% attack for 1, 50% attack for 2, 
