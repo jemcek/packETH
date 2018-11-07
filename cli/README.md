@@ -14,7 +14,7 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
 ./packETHcli -h
 
- Modes:
+ Modes:  
     1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
