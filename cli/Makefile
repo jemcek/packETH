@@ -30,12 +30,13 @@ CC = gcc
 CPPFLAGS =  
 
 LDFLAGS = 
-CFLAGS = -g -O2 -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
+CFLAGS = -g -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations -Werror
+CFLAGS += -O3
 LIBS =  -lm  -lpthread
 
-SOURCES = cli_send.c 
+SOURCES = cli_send.c parse_snort_rules.c
 
-OBJECTS =  cli_send.o  
+OBJECTS =  cli_send.o parse_snort_rules.o
 
 PROGRAM = packETHcli
 
@@ -54,6 +55,9 @@ install: $(PROGRAM)
 	if [ ! -d $(DESTDIR)/$(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM) ]; then mkdir -p $(DESTDIR)/$(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM); fi
 	$(INSTALL_DATA) pixmaps/* $(DESTDIR)/$(INSTALL_PREFIX)/share/pixmaps/$(PROGRAM)
 
+test:
+	$(CC) $(CFLAGS) $(LDFLAGS) -DTEST_SNORT_RULE_PARSING parse_snort_rules.c -o parse_snort_rules
+
 clean:
-	rm -f $(OBJECTS) $(PROGRAM)
+	rm -f $(OBJECTS) $(PROGRAM) *~ parse_snort_rules
 
