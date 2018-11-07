@@ -84,9 +84,9 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 All examples assume that we send on interface eth0 and that the packet is stored in file p1.pcap
 
 ###  mode 1 - send one packet and exit:
-   - send packet p1.pcap once on interface eth0
+   - send packet p1.pcap once on interface eth0. 
      ./packETHcli -i eth0 -f p1.pcap                                               
-   - send 5th packet from file p10.pcap
+   - send 5th packet from file p10.pcap. 
      ./packETHcli -i eth0 -f p10.pcap -c 5 
 
 ###  mode 2 - send packets at constant rate:
