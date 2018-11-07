@@ -90,15 +90,15 @@ All examples assume that we send on interface eth0 and that the packet is stored
      ./packETHcli -i eth0 -f p10.pcap -c 5 
 
 ###  mode 2 - send packets at constant rate:
-   - send 5th packet from file p10.pcap\
+   - send 5th packet from file p10.pcap  
      ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap> 
-   - send at max speed, infinite times, no counters
+   - send at max speed, infinite times, no counters  
      ./packETHcli -i eth0 -m 2 -d -1 -n 0 -f p1.pcap  
-   - send 300 packets with 1000 us (1ms) between them
+   - send 300 packets with 1000 us (1ms) between them  
      ./packETHcli -i eth0 -m 2 -d 1000 -n 300 -f p1.pcap 
-   - send packets with rate 1500 kbit/s for 30s
+   - send packets with rate 1500 kbit/s for 30s  
      ./packETHcli -i eth0 -m 2 -b 1500 -t 30 -f p1.pcap 
-   - send 7th packet 10000 times, with rate 100 Mbit/s
+   - send 7th packet 10000 times, with rate 100 Mbit/s  
      ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap -c 7 
 
 ###  mode 3 - send packets with different rates (speed ramp):
