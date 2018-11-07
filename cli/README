@@ -17,7 +17,8 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
                -n <number, 0> - number of packets to send or 0 for infinite
                -t <seconds> - seconds to transmit
               Delay between packets or sendrate (only one option possible)
-               -d <us, 0, -1> - delay between packets in micro seconds; select 0 for maximum speed with counters; select -1 for max speed without counters)
+               -d <us, 0, -1> - delay between packets in micro seconds; select 0 for maximum speed with counters; 
+                                select -1 for max speed without counters)
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
           Optional parameter:
@@ -43,12 +44,13 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
                -t <seconds> - seconds to transmit
-              Delay between packets or sendrate (only one option possible). Choose first option for constant pps and second one for constant bandwidth
+              Delay between packets or sendrate (only one option possible). 
+              Choose first option for constant pps and second one for constant bandwidth
                -d <us, 0> - delay between packets in micro seconds; select 0 for maximum speed
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
               Startsize, Stopsize, Stepsize and Step duration number
-               -s "<startsize stopsize stepsize>" in bytes (please note that TCP&UDP checksums are not (yet :) ) recalculated!!!)
+               -s "<startsize stopsize stepsize>" in bytes (TCP&UDP checksums are not (yet :) ) recalculated!!!)
                -p <seconds> - period between steps in seconds
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
@@ -57,7 +59,8 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
     5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
           Parameters
             -f <attack definitions file in Snort rule format>
-            -a <numbers from 0 to 4> - innocent traffic for 0, 25% attack for 1, 50% attack for 2, 75% attack for 3, 100% attack for 4>
+            -a <numbers from 0 to 4> - innocent traffic for 0, 25% attack for 1, 50% attack for 2, 
+                                       75% attack for 3, 100% attack for 4
             -S <packet size in bytes OR -s "<startsize stopsize stepsize>" -p <step period>
             -d <us, 0, -1> - delay between packets OR -b <bandwidth in kbit/s>  OR -B <bandwidth in Mbit/s
             -n <number, 0> - number of packets to send (0 for infinite) OR -t <duration in seconds>
