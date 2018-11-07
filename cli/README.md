@@ -83,13 +83,13 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
 All examples assume that we send on interface eth0 and that the packet is stored in file p1.pcap
 
-  mode 1 - send one packet and exit:
+###  mode 1 - send one packet and exit:
    - send packet p1.pcap once on interface eth0
      ./packETHcli -i eth0 -f p1.pcap                                               
    - send 5th packet from file p10.pcap
      ./packETHcli -i eth0 -f p10.pcap -c 5 
 
-  mode 2 - send packets at constant rate:
+###  mode 2 - send packets at constant rate:
    - send 5th packet from file p10.pcap
      ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap 
    - send at max speed, infinite times, no counters
@@ -101,13 +101,13 @@ All examples assume that we send on interface eth0 and that the packet is stored
    - send 7th packet 10000 times, with rate 100 Mbit/s
      ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap -c 7 
 
-  mode 3 - send packets with different rates (speed ramp):
+###  mode 3 - send packets with different rates (speed ramp):
    - start sendind at 100kbit/s for 10s, then increase rate by 100kbit/s each 10s up to 1500 kbit/s
      ./packETHcli -i eth1 -m   -n 0 -z "100 1500 100" -p 10 -f p1.pcap             
    - send with 500Mbit/s for 5s, then decrease rate by 1Mbit/s each 5s. Stop after 3600s if not finished
      ./packETHcli -i eth1 -m 3 -t 3600 -Z "500 100 1" -p 5 -f p1.pcap              
 
-  mode 4 - send packets with variable size (size ramp):
+###  mode 4 - send packets with variable size (size ramp):
    - send at max speed, start with packet size of 100 bytes for 10s then increase by 100 bytes up to 1500 bytes
      ./packETHcli -i eth1 -m 4 -d 0 -n 0 -s "100 1500 100" -p 10 -f p1.pcap        
    - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150
@@ -115,7 +115,7 @@ All examples assume that we send on interface eth0 and that the packet is stored
    - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150
      ./packETHcli -i eth1 -m 4 -B 10 -t 300 -s "1000 1500 100" -p 10 -f p1.pcap    
 
-  mode 5 - send packets for IDS testing:
+###  mode 5 - send packets for IDS testing:
    - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes
      ./packETHcli -i eth1 -m 5 -f sample_snort_rules.txt -B 10 -t 60 -S1000 -a 2    
    - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes
