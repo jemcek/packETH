@@ -14,11 +14,11 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
 ./packETHcli -h
 
- Modes:  
+### Modes:  
     1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
-                              to see sequence numbers of packets inside pcap file: tcpdump -# -r filename
+                              to see sequence numbers of packets inside pcap file: 
           Example: packETHcli -i lo -f packet.pcap
 
     2 - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
