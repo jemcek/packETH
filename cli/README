@@ -1,4 +1,4 @@
-##INSTALL: make
+## INSTALL: make
 
 Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
