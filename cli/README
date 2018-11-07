@@ -1,8 +1,8 @@
-INSTALL: make
+## INSTALL: make
 
 Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
-WHAT IS NEW?
+## WHAT IS NEW?
 - added option to change packet rate while sending (ramp mode) in both directions
 - added option to change packet size while sending (ramp mode) at constant pps or constant bandwidth
 - option to select which packet should be sent in case there are many stored in pcap file 
@@ -10,7 +10,7 @@ WHAT IS NEW?
 - IDS test mode included in main repo 
 
 
-USAGE:
+## USAGE:
 
 ./packETHcli -h
 
@@ -79,7 +79,7 @@ USAGE:
  -f <file> - file name where packet is stored in pcap format (or attack definitions file in Snort rule format in mode 5)
 
 
-Examples: ./packETHcli -e
+## Examples: ./packETHcli -e
 
 All examples assume that we send on interface eth0 and that the packet is stored in file p1.pcap
 
