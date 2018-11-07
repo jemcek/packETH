@@ -102,22 +102,22 @@ All examples assume that we send on interface eth0 and that the packet is stored
      ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap -c 7 
 
 ###  mode 3 - send packets with different rates (speed ramp):
-   - start sendind at 100kbit/s for 10s, then increase rate by 100kbit/s each 10s up to 1500 kbit/s
+   - start sendind at 100kbit/s for 10s, then increase rate by 100kbit/s each 10s up to 1500 kbit/s  
      ./packETHcli -i eth1 -m   -n 0 -z "100 1500 100" -p 10 -f p1.pcap             
-   - send with 500Mbit/s for 5s, then decrease rate by 1Mbit/s each 5s. Stop after 3600s if not finished
+   - send with 500Mbit/s for 5s, then decrease rate by 1Mbit/s each 5s. Stop after 3600s if not finished  
      ./packETHcli -i eth1 -m 3 -t 3600 -Z "500 100 1" -p 5 -f p1.pcap              
 
 ###  mode 4 - send packets with variable size (size ramp):
-   - send at max speed, start with packet size of 100 bytes for 10s then increase by 100 bytes up to 1500 bytes
+   - send at max speed, start with packet size of 100 bytes for 10s then increase by 100 bytes up to 1500 bytes  
      ./packETHcli -i eth1 -m 4 -d 0 -n 0 -s "100 1500 100" -p 10 -f p1.pcap        
-   - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150
+   - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150  
      ./packETHcli -i eth1 -m 4 -d 2000 -n 0 -s "100 1500 100" -p 5 -f p1.pcap      
-   - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150
+   - send with constant rate 500pps (bandwidth changes), increase length by 100 bytes every 5s from 100 to 150  
      ./packETHcli -i eth1 -m 4 -B 10 -t 300 -s "1000 1500 100" -p 10 -f p1.pcap    
 
 ###  mode 5 - send packets for IDS testing:
-   - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes
+   - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes  
      ./packETHcli -i eth1 -m 5 -f sample_snort_rules.txt -B 10 -t 60 -S1000 -a 2    
-   - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes
+   - send 50% IDS traffic (-a 2) at 10Mbit/s for 60 seconds, packet size 1000 bytes  
      ./packETHcli -i eth1 -m 5 -f sample_snort_rules.txt -d 1000 -t 60 -s "100 1000 100" -a 4 -p 10  
 
