@@ -68,8 +68,7 @@ tcpdump -r \<pcap file name\> -#
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
                -t <seconds> - seconds to transmit
-              Delay between packets or sendrate (only one option possible). 
-              Choose first option for constant pps and second one for constant bandwidth
+              Delay between packets (constant pps) or sendrate (constant bandwith):  
                -d <us, 0> - delay between packets in micro seconds; select 0 for maximum speed
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
