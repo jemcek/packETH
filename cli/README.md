@@ -19,7 +19,7 @@ make
 ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
 Based on mode you select, you can set different parameters. The app will guide you which parameters or ok or missing.
-For all modes you need to specify the outgoing interface where you want to send packets. 
+For all modes you need to specify the outgoing interface where you want to send packets.  
 Modes 1-4 read packet(s) from pcap file. If more than one packet is stored in pcap file the first one will be sent by deault. You can overide this by selecting -c <sequence number>
 
 ### Modes:  
