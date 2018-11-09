@@ -13,7 +13,7 @@ Interface dialog now displays all available interfaces not only interfaces with 
 1.8.1 -> 1.9
 
 Gui: Added options for additional stream control (speed ramp, size ramp)
-CLI: added options for IDS/firewall testing (Thanks to Muhammad Asim Jamshed and Prof Fahad Dogar)
+CLI: added options for IDS testing (Thanks to Muhammad Asim Jamshed from Intel Labs and Prof Fahad Dogar from Tufts University)
 
 7.11.2018 (github commits)
 Complete rewrite of packETHcli with many new features. 
