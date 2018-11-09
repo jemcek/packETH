@@ -5,7 +5,7 @@
 - option to select which packet should be sent in case there are many stored in pcap file 
 - added option to specify time to transmit (not only number of packets)
 - IDS test mode included in main repo 
-- changed statistics form kbit/s to Mbit/s
+- changed statistics from kbit/s to Mbit/s
 
 ## INSTALLATION: 
 
