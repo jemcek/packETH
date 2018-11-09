@@ -1,5 +1,5 @@
 ## WHAT IS NEW (7.11.2018)?
-- different options splited in different modes now to be more user friendly
+- different sending options (single, multi, ramp) splited in different modes now to be more user friendly
 - added option to change packet rate while sending (ramp mode) in both directions
 - added option to change packet size while sending (ramp mode) at constant pps or constant bandwidth
 - option to select which packet should be sent in case there are many stored in pcap file 
