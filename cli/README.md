@@ -37,8 +37,9 @@ tcpdump -r \<pcap file name\> -#
                -n <number, 0> - number of packets to send or 0 for infinite
                -t <seconds> - seconds to transmit
               Delay between packets or sendrate (only one option possible)
-               -d <us, 0, -1> - delay between packets in micro seconds; select 0 for maximum speed with counters; 
-                                select -1 for max speed without counters)
+               -d <us, 0, -1> - delay between packets in micro seconds   
+                                select 0 for maximum speed with counters   
+                                select -1 for max speed without counters  
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
           Optional parameter:
@@ -73,7 +74,7 @@ tcpdump -r \<pcap file name\> -#
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
               Startsize, Stopsize, Stepsize and Step duration number
-               -s "<startsize stopsize stepsize>" in bytes (TCP&UDP checksums are not (yet :) ) recalculated!!!)
+               -s "<startsize stopsize stepsize>" in bytes (TCP&UDP checksums are not recalculated!!!)
                -p <seconds> - period between steps in seconds
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file  
