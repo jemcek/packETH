@@ -34,7 +34,7 @@ make
 make install  
 ./packETH  
 
-### CLI  
+### CLI (you can only compile cli version if you want)
 
 cd cli  
 make  
