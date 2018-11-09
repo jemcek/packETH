@@ -1,6 +1,8 @@
 # packETH  
 
-packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux.   
+packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux.  
+
+With the GUI version you can create and send packets. The CLI version only allows you to send already stored packets in pcap format. 
 
 More information about installation, usage, GUI and CLI version and FAQ can be found here:  
 
