@@ -24,7 +24,7 @@ In modes 1-4 -f reads packet(s) from pcap file
 - if more than one packet is stored in pcap file, by default the first one will be sent
 - You can overide this by selecting -c <sequence number>
 - To see sequence numbers of packets stored in pcap file use this command:  
-   tcpdump -r \<pcap file name\> -#
+   tcpdump -r \<pcap file name\> -#  
 In mode 5 -f reads attack definitions file in Snort rule format
 
 ### Modes:  
