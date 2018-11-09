@@ -53,6 +53,13 @@ To send the packets you need the SuperUser rights.
 ### CLI version  
 Type ./packETHcli -h  for available options.  
 
+## DONATIONS
+
+If you would like to increase my motivation for further development, you can make a donation. 
+The amount is not important at all, it is just a sign for me, that time I spent for this project helps someone. 
+
+https://www.paypal.com/donate/?token=n93oVmxnMD6S0pU87PjkgLCfx6RJU7VLJDVS4OBGULA7jO1-Hg-5VTNpeYwtpGMrtdkh4G&country.x=SI&locale.x=SI
+
 ## AUTHORS & SUPPORT  
 
 If you get into problems, please feel free to contact me.    
