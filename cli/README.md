@@ -16,7 +16,7 @@ make
 
 ./packETHcli -h     - for help
 
-./packETHcli -m <mode> -i <interface> -f \<file\> \[options\]
+./packETHcli -m \<mode\> -i \<interface\> -f \<file\> \[options\]
 
 Based on mode you select, you can set different parameters. The app will guide you which parameters or ok or missing.
 For all modes you need to specify the outgoing interface where you want to send packets.  
