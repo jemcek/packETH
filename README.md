@@ -24,7 +24,7 @@ cd packETH
 ./autogen.sh      (you will need aclocal,autoconf,autoheader and automake installed to run this)   
 ./configure  
 make  
-make install  
+make install (optional)
 ./packETH   
 
 or download the code from: https://sourceforge.net/projects/packeth/files/  
@@ -33,7 +33,7 @@ cd packETH
 autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
 ./configure  
 make  
-make install  
+make install (optional)
 ./packETH  
 
 ### CLI (you can also only compile cli version if you want)
@@ -43,7 +43,10 @@ make
 
 ## USAGE  
 
-### GUI version  
+### GUI version 
+
+./packETH (or packETH if you did the make install)
+
 The usage of the program should be pretty straightforward. As you will see, there are 4 main windows (first four buttons from the left side). I call them:   
 - Builder - the page where you build the packet and send it once  
 - Gen-b - generator for sending packet currently build inside Builder with many options how to send it  
