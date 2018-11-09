@@ -20,8 +20,12 @@ make
 
 Based on mode you select, you can set different parameters. The app will guide you which parameters or ok or missing.
 For all modes you need to specify the outgoing interface where you want to send packets.  
-Modes 1-4 read packet(s) from pcap file. If more than one packet is stored in pcap file, by default the first one will be sent. You can overide this by selecting -c <sequence number>. To see sequence numbers of packets stored in pcap file use this command:  
-tcpdump -r \<pcap file name\> -#
+In modes 1-4 -f reads packet(s) from pcap file
+- if more than one packet is stored in pcap file, by default the first one will be sent
+- You can overide this by selecting -c <sequence number>
+- To see sequence numbers of packets stored in pcap file use this command:  
+   tcpdump -r \<pcap file name\> -#
+In mode 5 -f reads attack definitions file in Snort rule format
 
 ### Modes:  
     1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
