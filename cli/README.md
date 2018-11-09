@@ -27,8 +27,7 @@ tcpdump -r \<pcap file name\> -#
     1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
-                              to see sequence numbers of packets inside pcap file: 
-                              tcpdump -r <pcap file> -#
+                      
           Example: packETHcli -i lo -f packet.pcap
 
     2 - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: 
@@ -43,6 +42,7 @@ tcpdump -r \<pcap file name\> -#
                -B <bandwidth> - desired sending rate in Mbit/s
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
+          
           Example: ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap
 
     3 - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP):
