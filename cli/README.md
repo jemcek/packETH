@@ -9,7 +9,7 @@
 
 ## INSTALLATION: 
 
-cd cli
+cd cli  
 make
 
 ## USAGE:
