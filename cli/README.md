@@ -2,23 +2,29 @@
 
 Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
-## WHAT IS NEW?
+## WHAT IS NEW (7.11.2018)?
+- different options splited in different modes now to be more user friendly
 - added option to change packet rate while sending (ramp mode) in both directions
 - added option to change packet size while sending (ramp mode) at constant pps or constant bandwidth
 - option to select which packet should be sent in case there are many stored in pcap file 
 - added option to specify time to transmit (not only number of packets)
 - IDS test mode included in main repo 
+- changed statistics form kbit/s to Mbit/s
 
 
 ## USAGE:
 
-./packETHcli -h
+./packETHcli -h   - for help
+
+
+
 
 ### Modes:  
     1 - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Optional parameter:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
                               to see sequence numbers of packets inside pcap file: 
+                              tcpdump -r <pcap file> -#
           Example: packETHcli -i lo -f packet.pcap
 
     2 - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
