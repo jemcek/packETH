@@ -42,7 +42,8 @@ tcpdump -r \<pcap file name\> -#
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
           Optional parameter:
-               -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
+               -c <number>  - sequence number of packet stored in pcap file   
+                              (by default first packet will be sent)
           
           Example: ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap
 
@@ -57,7 +58,8 @@ tcpdump -r \<pcap file name\> -#
               Step duration:
                -p <seconds> - period between steps in seconds
           Optional parameter:
-               -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
+               -c <number>  - sequence number of packet stored in pcap file  
+                              (by default first packet will be sent)
           Example: ./packETHcli -i eth1 -m 3 -t 3600 -Z "500 100 1" -p 5 -f p1.pcap
 
     4 - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
@@ -74,7 +76,8 @@ tcpdump -r \<pcap file name\> -#
                -s "<startsize stopsize stepsize>" in bytes (TCP&UDP checksums are not (yet :) ) recalculated!!!)
                -p <seconds> - period between steps in seconds
           Optional parameter:
-               -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
+               -c <number>  - sequence number of packet stored in pcap file  
+                              (by default first packet will be sent)
           Example: ./packETHcli -i eth1 -m 4 -d 2000 -n 0 -s "100 1500 100" -p 5 -f p1.pcap
 
     5 - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
