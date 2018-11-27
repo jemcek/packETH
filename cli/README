@@ -11,6 +11,7 @@ Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
    -m 3   - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP)
    -m 4   - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
    -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
+   -m 9   - RECEIVER MODE (count packets sent by packETHcli or packETH
 
  -f <file> - file name where packet is stored in pcap format (or attack definitions file in Snort rule format in mode 5)
  -I <seconds> - time interval to display results (default 1s)
