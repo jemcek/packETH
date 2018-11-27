@@ -20,22 +20,7 @@ FOR EXAMPLES SEE: ./packETHcli -e
 
 FOR COMPLETE HELP: ./packETHcli -h
 
-root@krokar:~/packETH/cli# ./packETHcli -h
-
-Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
-
- There are 5 diffent modes, use ./packETHcli -m <mode> to get detailed help for particular mode
-
-   -m 1   - SEND PACKET ONCE (default mode): send packet from the pcap file once
-   -m 2   - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
-   -m 3   - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP)
-   -m 4   - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
-   -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
-
- -f <file> - file name where packet is stored in pcap format (or attack definitions file in Snort rule format in mode 5)
- -I <seconds> - time interval to display results (default 1s)
-
-FOR EXAMPLES SEE: ./packETHcli -e
+Modes:
 
  -m 1   - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Usage: ./packETHcli -m 1 -i <interface> -f <file> [-c]
