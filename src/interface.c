@@ -6659,6 +6659,9 @@ create_window1 (void)
   g_signal_connect ((gpointer) optionmenu15, "clicked",
                     G_CALLBACK (on_optionmenu15_clicked),
                     NULL);
+  g_signal_connect ((gpointer) checkbutton67, "toggled",
+                    G_CALLBACK (on_checkbutton67_toggled),
+                    NULL);
   g_signal_connect ((gpointer) radiobutton61, "toggled",
                     G_CALLBACK (on_radiobutton61_toggled),
                     NULL);

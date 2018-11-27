@@ -5208,3 +5208,11 @@ on_checkbutton66_toggled               (GtkToggleButton *togglebutton,
 
 }
 
+
+void
+on_checkbutton67_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+}
+

@@ -880,6 +880,7 @@ create_window1 (void)
   GtkWidget *checkbutton64;
   GtkWidget *checkbutton65;
   GtkWidget *checkbutton63;
+  GtkWidget *checkbutton67;
   GtkWidget *label2;
   GtkWidget *vbox62;
   GtkWidget *frame39;
@@ -5364,6 +5365,12 @@ create_window1 (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  checkbutton67 = gtk_check_button_new_with_mnemonic (_("Add  pattern (last 10 bytes)"));
+  gtk_widget_show (checkbutton67);
+  gtk_table_attach (GTK_TABLE (table3), checkbutton67, 1, 2, 9, 10,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   label2 = gtk_label_new (_("  Built gen"));
   gtk_widget_show (label2);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label2);
@@ -7619,6 +7626,7 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, checkbutton64, "checkbutton64");
   GLADE_HOOKUP_OBJECT (window1, checkbutton65, "checkbutton65");
   GLADE_HOOKUP_OBJECT (window1, checkbutton63, "checkbutton63");
+  GLADE_HOOKUP_OBJECT (window1, checkbutton67, "checkbutton67");
   GLADE_HOOKUP_OBJECT (window1, label2, "label2");
   GLADE_HOOKUP_OBJECT (window1, vbox62, "vbox62");
   GLADE_HOOKUP_OBJECT (window1, frame39, "frame39");
@@ -7763,43 +7771,6 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, button86, "button86");
   GLADE_HOOKUP_OBJECT (window1, label251, "label251");
   GLADE_HOOKUP_OBJECT (window1, statusbar1, "statusbar1");
-
-{
-GtkWidget *option_menu1;
-GtkWidget *option_menu3;
-GtkWidget *option_menu4;
-GtkWidget *option_menu5;
-GtkWidget *option_menu6;
-GtkWidget *option_menu14;
-GtkWidget *option_menu15;
-GtkWidget *option_menu20;
-option_menu1 = lookup_widget (window1, "L_optmenu1_bt");
-option_menu3 = lookup_widget (window1, "optionmenu3");
-option_menu4 = lookup_widget (window1, "optionmenu4");
-option_menu5 = lookup_widget (window1, "optionmenu5");
-option_menu6 = lookup_widget (window1, "optionmenu6");
-option_menu14 = lookup_widget (window1, "optionmenu14");
-option_menu15 = lookup_widget (window1, "optionmenu15");
-option_menu20 = lookup_widget (window1, "optionmenu20");
-
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu1)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_L_optmenu1_bt_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu3)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu3_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu4)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu4_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu5)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu5_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu6)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu6_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu14)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu14_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu15)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu15_clicked), NULL);
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu20)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_igmpmessage_type_clicked), NULL);
-}
-
 
   return window1;
 }
@@ -8832,13 +8803,6 @@ create_udp_payload_dialog (void)
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, hbox77, "hbox77");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, cancel_rtp_bt, "cancel_rtp_bt");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, rtp_ok_bt, "rtp_ok_bt");
-
-{
-GtkWidget *option_menu7;
-option_menu7 = lookup_widget (udp_payload_dialog, "optionmenu7");
-gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu7)->menu),
-	      "deactivate", GTK_SIGNAL_FUNC (on_optionmenu7_clicked), NULL);
-}
 
   return udp_payload_dialog;
 }

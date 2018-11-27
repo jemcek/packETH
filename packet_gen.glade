@@ -14892,6 +14892,7 @@ Adjust paremeters while sending</property>
 				  <property name="active">False</property>
 				  <property name="inconsistent">False</property>
 				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_checkbutton67_toggled" last_modification_time="Tue, 27 Nov 2018 12:03:54 GMT"/>
 				</widget>
 				<packing>
 				  <property name="left_attach">1</property>
