@@ -242,7 +242,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 	GtkWidget *optm1, *optm2, *optm3, *xmenu, *ymenu, *stopbt;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
-	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66;
+	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66, *ckbt67;
 	GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt82, *rdbt95, *rdbt89, *rdbt90, *rdbt91;
 	GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230;
 
@@ -425,6 +425,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		ckbt64 = lookup_widget (GTK_WIDGET (button), "checkbutton64");
 		ckbt65 = lookup_widget (GTK_WIDGET (button), "checkbutton65");
 		ckbt66 = lookup_widget (GTK_WIDGET (button), "checkbutton66");
+		ckbt67 = lookup_widget (GTK_WIDGET (button), "checkbutton67");
 
 		/* do we have to adjust any parameters while sending? */
 		params1.inc = 0;
@@ -493,6 +494,8 @@ int send_packet(GtkButton *button, gpointer user_data)
 		if (GTK_TOGGLE_BUTTON(ckbt64)->active)  params1.inc = params1.inc + 16384;
 		// correct tcp checksum
 		if (GTK_TOGGLE_BUTTON(ckbt65)->active)  params1.inc = params1.inc + 32768;
+		// correct tcp checksum
+		if (GTK_TOGGLE_BUTTON(ckbt67)->active)  params1.inc = params1.inc + 65536;
 
 		//printf("tokle je params1.inc %d\n", params1.inc);
 

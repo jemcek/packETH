@@ -6659,9 +6659,6 @@ create_window1 (void)
   g_signal_connect ((gpointer) optionmenu15, "clicked",
                     G_CALLBACK (on_optionmenu15_clicked),
                     NULL);
-  g_signal_connect ((gpointer) checkbutton67, "toggled",
-                    G_CALLBACK (on_checkbutton67_toggled),
-                    NULL);
   g_signal_connect ((gpointer) radiobutton61, "toggled",
                     G_CALLBACK (on_radiobutton61_toggled),
                     NULL);
@@ -7811,6 +7808,7 @@ create_window1 (void)
 			            "deactivate", GTK_SIGNAL_FUNC (on_igmpmessage_type_clicked), NULL);
   }
 
+
   return window1;
 }
 
@@ -8843,13 +8841,14 @@ create_udp_payload_dialog (void)
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, cancel_rtp_bt, "cancel_rtp_bt");
   GLADE_HOOKUP_OBJECT (udp_payload_dialog, rtp_ok_bt, "rtp_ok_bt");
 
+/* these lines you add at the end of the create_udp_payload_dialog */
+
   {
 	  GtkWidget *option_menu7;
 	  option_menu7 = lookup_widget (udp_payload_dialog, "optionmenu7");
 	  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (option_menu7)->menu),
 			            "deactivate", GTK_SIGNAL_FUNC (on_optionmenu7_clicked), NULL);
   }
-
 
   return udp_payload_dialog;
 }
