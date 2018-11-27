@@ -1,3 +1,6 @@
+packETHcli is a cli (command line) version of packETH. It can be compiled and run without GUI version.
+It has different sending options although not all features from packETH are supported. 
+It also has a receiver mode where packets sent by packETH or packETHcli can be captured and checked for errors. 
 
 Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
