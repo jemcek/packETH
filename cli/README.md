@@ -1,3 +1,7 @@
+## NEWS 27.11.2018:
+- packETHcli added receiver option (mode -m -9) to count received packets sent by packETHcli or packETH
+- packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
+
 ## WHAT IS NEW (7.11.2018)?
 - different sending options (single, multi, ramp) splited in different modes now to be more user friendly
 - added option to change packet rate while sending (ramp mode) in both directions
@@ -15,6 +19,7 @@ make
 ## USAGE:
 
 ./packETHcli -h     - for help
+./packETHcli -e     - for examples
 
 ./packETHcli -m \<mode\> -i \<interface\> -f \<file\> \[options\]
 

@@ -1,65 +1,80 @@
-# packETH
+# packETH  
 
-NEWS 7.11.2018:
+packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux.  
+
+With the GUI version you can create and send packets. With the CLI version you can only send already stored packets from pcap file. 
+
+More information about installation, usage, GUI and CLI version and FAQ can be found here:  
+
+http://packeth.sourceforge.net/packeth/Home.html  
+
+Blog with some use cases:  
+
+https://packeth.wordpress.com  
+
+## NEWS 27.11.2018:
+- packETHcli added receiver option (mode -m -9) to count received packets
+- packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
+- packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9 
+
+## NEWS 7.11.2018:
 Complete packETHcli rewrite with many new options to tune sending parameters. Please see the cli dir for details!
 
-packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux. 
+## INSTALLATION  
 
-More information about installation, usage, GUI and CLI version and FAQ can be found here:
+### GUI  
 
-http://packeth.sourceforge.net/packeth/Home.html
+git clone https://github.com/jemcek/packETH.git  
+cd packETH  
+./autogen.sh      (you will need aclocal,autoconf,autoheader and automake installed to run this)   
+./configure  
+make  
+make install (optional)
+./packETH   
 
-Blog with some use cases:
+or download the code from: https://sourceforge.net/projects/packeth/files/  
+tar xjvf packETH.(version).tar.bz  
+cd packETH  
+autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
+./configure  
+make  
+make install (optional)
+./packETH  
 
-https://packeth.wordpress.com
+### CLI (you can also only compile cli version if you want)
 
-## INSTALLATION:
+cd cli  
+make  
 
-### GUI
+## USAGE  
 
-git clone https://github.com/jemcek/packETH.git
-cd packETH
-./autogen.sh
-./configure
-make
-make install
-./packETH 
+### GUI version 
 
-or download the code from: https://sourceforge.net/projects/packeth/files/
-tar xjvf packETH.(version).tar.bz
-cd packETH
-autoreconf -f -i  (this may not be needed but in case you get automake version mismatch etc...) 
-./configure
-make
-make install
-./packETH
+./packETH (or packETH if you did the make install)
 
-### CLI
+The usage of the program should be pretty straightforward. As you will see, there are 4 main windows (first four buttons from the left side). I call them:   
+- Builder - the page where you build the packet and send it once  
+- Gen-b - generator for sending packet currently build inside Builder with many options how to send it  
+- Gen-s - generator that allows you to select up to 10 previosly built packets and send them in different manner  
+- Pcap window - open a tcpdump/wireshark capture file and load the selected packet into builder  
 
-cd cli
-make
+To send the packets you need the SuperUser rights.  
 
-## USAGE:
+### CLI version  
+Type ./packETHcli -h  for available options.  
 
-### GUI version:
-The usage of the program should be pretty straightforward. As you will see, there are 4 main windows (first four buttons from the left side). I call them:
-- Builder - the page where you build the packet and send it once
-- Gen-b - generator for sending packet currently build inside Builder with many options how to send it
-- Gen-s - generator that allows you to select up to 10 previosly built packets and send them in different manner
-- Pcap window - open a tcpdump/wireshark capture file and load the selected packet into builder
+## DONATIONS
 
-To send the packets you need the SuperUser rights.
+If you would like to increase my motivation for further development, you can make a donation. 
+The amount is not important at all, it is just a sign for me, that time I spent for this project helps someone. 
 
-### CLI version:
-Inside cli subdirectory you can find also the command line version of packETH called packETHcli. Just type "make" inside the subdir. 
+[DONATE](https://www.paypal.com/donate/?token=n93oVmxnMD6S0pU87PjkgLCfx6RJU7VLJDVS4OBGULA7jO1-Hg-5VTNpeYwtpGMrtdkh4G&country.x=SI&locale.x=SI)
 
-Type ./packETHcli -h  for more options.
+## AUTHORS & SUPPORT  
 
-## AUTHORS & SUPPORT
+If you get into problems, please feel free to contact me.    
 
-If you get into problems, please feel free to contact me.  
-
-Miha Jemec
-jemcek@gmail.com
-packETH (C) 2003-2018 by Miha Jemec, <jemcek@gmail.com>
-Covered under the GPL.
+Miha Jemec  
+jemcek@gmail.com  
+packETH (C) 2003-2018 by Miha Jemec, <jemcek@gmail.com>  
+Covered under the GPL.  
