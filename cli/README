@@ -1,8 +1,22 @@
 packETHcli is a cli (command line) version of packETH. It can be compiled and run without GUI version.
 It has different sending options although not all features from packETH are supported. 
-It also has a receiver mode where packets sent by packETH or packETHcli can be captured and checked for errors. 
+It also has a receiver mode where packets sent by packETH or packETHcli can be captured and checked for errors.
 
-Usage: ./packETHcli -m <mode > -i <interface> -f <file> [options]
+NEWS: NOV 2018:
+- added receiver option (mode -m -9) to count received packets
+- added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also
+correctly received at the receiver site
+- nanoseconds support
+- added option to change packet rate while sending (ramp mode) in both directions
+- added option to change packet size while sending (ramp mode) at constant pps or constant bandwidth
+- option to select which packet should be sent in case there are many stored in pcap file
+- added option to specify time to transmit (not only number of packets)
+- IDS test mode included in main repo
+
+INSTALLATION
+~/packETH/cli# make
+
+USAGE: ./packETHcli -m <mode > -i <interface> -f <file> [options]
 
  There are 5 diffent modes, use ./packETHcli -m <mode> to get detailed help for particular mode
 
@@ -20,7 +34,7 @@ FOR EXAMPLES SEE: ./packETHcli -e
 
 FOR COMPLETE HELP: ./packETHcli -h
 
-Modes:
+MODES:
 
  -m 1   - SEND PACKET ONCE (default mode): send packet from the pcap file once
           Usage: ./packETHcli -m 1 -i <interface> -f <file> [-c]
