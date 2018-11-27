@@ -1844,11 +1844,12 @@ void usage(void) {
     printf(" \n");
     printf(" There are 5 diffent modes, use ./packETHcli -m <mode> to get detailed help for particular mode\n");
     printf(" \n");
-    printf("   -m 1   - SEND PACKET ONCE (default mode): send packet from the pcap file once \n");
-    printf("   -m 2   - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate\n");
+    printf("   -m 1   - SEND PACKET ONCE (default mode)\n");
+    printf("   -m 2   - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE:\n");
     printf("   -m 3   - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP)\n");
     printf("   -m 4   - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)\n");
     printf("   -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)\n");
+    printf("   -m 9   - RECEIVER MODE (count packets sent by packETHcli or packETH\n");
     printf("\n");
     printf(" -f <file> - file name where packet is stored in pcap format (or attack definitions file in Snort rule format in mode 5) \n");
     printf(" -I <seconds> - time interval to display results (default 1s) \n");
