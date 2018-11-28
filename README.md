@@ -2,7 +2,7 @@
 
 packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux.  
 
-With the GUI version (packETH) you can create and send packets. With the CLI version (packETHcli) you can only send already stored packets from pcap file. 
+With the GUI version (packETH) you can create and send packets. With the CLI version (packETHcli) you can only send already stored packets from pcap file. The CLI version also has a receiver mode, that can count packets and check if all packets that were sent were also reveived. 
 
 More information about installation, usage, GUI and CLI version and FAQ can be found here:  
 
@@ -17,9 +17,6 @@ https://packeth.wordpress.com
 - packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
 - packETHcli - nanoseconds support
 - packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9 
-
-## NEWS 7.11.2018:
-Complete packETHcli rewrite with many new options to tune sending parameters. Please see the cli dir for details!
 
 ## INSTALLATION  
 
