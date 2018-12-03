@@ -36,8 +36,7 @@ cd packETH
 autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
 ./configure  
 make  
-make install (optional)
-./packETH  
+make install (optional)  
 
 ### CLI (you can also only compile cli version if you want)
 
