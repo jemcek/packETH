@@ -20,7 +20,7 @@ https://packeth.wordpress.com
 
 ## INSTALLATION  
 
-#### GUI  
+### GUI  
 
 git clone https://github.com/jemcek/packETH.git  
 cd packETH  
@@ -38,7 +38,7 @@ autoreconf -f -i  (optional in case you get automake version mismatch, missing f
 make  
 make install (optional)  
 
-#### CLI (you can also only compile cli version if you want)
+### CLI (you can also only compile cli version if you want)
 
 cd cli  
 make  
