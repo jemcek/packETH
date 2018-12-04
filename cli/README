@@ -115,6 +115,16 @@ MODES:
                -x             - insert pattern "a9b8c7d6" and counter inside last 10 bytes of packet
           Example: ./packETHcli -i eth1 -m 4 -d 2000 -n 0 -s "100 1500 100" -p 5 -f p1.pcap
 
+ -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
+          Usage: ./packETHcli -m 5 -i <interface> -f <attack definitions file> [options]
+          Required parameters
+            -f <attack definitions file in Snort rule format>
+            -a <numbers from 0 to 4> - innocent traffic for 0, 25% attack for 1, 50% attack for 2, 75% attack for 3, 100% attack for 4>
+            -S <packet size in bytes OR -s "<startsize stopsize stepsize>" -p <step period>
+            -d <us, 0, -1> - delay between packets OR -b <bandwidth in kbit/s>  OR -B <bandwidth in Mbit/s
+            -n <number, 0> - number of packets to send (0 for infinite) OR -t <duration in seconds>
+           Example: ./packETHcli -i lo -f sample_snort_rules.txt -B 10 -m 5 -t 60 -S 1000 -a 2
+
  -m 9   - RECEIVER MODE: COUNT PACKETS (FROM packETHcli)
           Usage: ./packETHcli -m 9 -i <interface> [-x OR -o <offset counter> -q <offset pattern> -w <pattern>]
           Optional parameter:
@@ -125,6 +135,6 @@ MODES:
             -w <pattern>  - what should be the pattern to match
             -o <offset>   - where should the inceremented counter be (bytes offset)
           Examples:
-          ./receiver -i eth0
-          ./receiver -i eth0 -x
-          ./receiver -i eth0 -o 60 -q 70 -w 12345678
+          ./packETHcli -i eth0
+          ./packETHcli -i eth0 -x
+          ./packETHcli -i eth0 -o 60 -q 70 -w 12345678
