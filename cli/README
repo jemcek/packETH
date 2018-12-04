@@ -1,4 +1,4 @@
-packETHcli is a cli (command line) version of packETH. It can be compiled and run without GUI version.
+packETHcli is a cli (command line) version of packETH. It allows you to easily send packets from pcap file. 
 It has different sending options although not all features from packETH are supported. 
 It also has a receiver mode where packets sent by packETH or packETHcli can be captured and checked for errors.
 
