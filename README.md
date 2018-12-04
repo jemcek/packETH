@@ -2,7 +2,7 @@
 
 packETH is GUI and CLI packet generator tool for ethernet. It allows you to create and send any possible packet or sequence of packets on the ethernet link. It is very simple to use, powerful and supports many adjustments of parameters while sending packets. It runs on Linux.  
 
-With the GUI version (packETH) you can create and send packets. With the CLI version (packETHcli) you can only send already stored packets from pcap file. 
+With the GUI version (packETH) you can create and send packets. With the CLI version (packETHcli) you can only send already stored packets from pcap file. The CLI version also has a receiver mode, that can count packets and check if all packets that were sent were also received. 
 
 More information about installation, usage, GUI and CLI version and FAQ can be found here:  
 
@@ -12,8 +12,11 @@ Blog with some use cases:
 
 https://packeth.wordpress.com  
 
-## NEWS 7.11.2018:
-Complete packETHcli rewrite with many new options to tune sending parameters. Please see the cli dir for details!
+## NEWS 27.11.2018:
+- packETHcli added receiver option (mode -m -9) to count received packets
+- packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
+- packETHcli - nanoseconds support
+- packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9 
 
 ## INSTALLATION  
 
@@ -33,8 +36,7 @@ cd packETH
 autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
 ./configure  
 make  
-make install (optional)
-./packETH  
+make install (optional)  
 
 ### CLI (you can also only compile cli version if you want)
 
@@ -57,6 +59,9 @@ To send the packets you need the SuperUser rights.
 
 ### CLI version  
 Type ./packETHcli -h  for available options.  
+
+### RECEIVER mode  
+packETHcli also has a reveiver mode (-m 9). In this mode packEThcli counts packets and displays statistics. If you add a pattern into packets sent by packETH or packETHcli then only packets with valid pattern will be counted. See manual for more help.  
 
 ## DONATIONS
 

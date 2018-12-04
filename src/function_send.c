@@ -603,6 +603,19 @@ void* sendbuilt (void *parameters)
 				packet[11] = packet[p->ethstart+5];
 			}
 			/* correct the ipv4 checksum? */ 
+			if ( (p->inc & (1<<16)) ) {
+				packet[actualnumber-10] = 0x61;
+				packet[actualnumber- 9] = 0x39;
+				packet[actualnumber- 8] = 0x62;
+				packet[actualnumber- 7] = 0x38;
+				packet[actualnumber- 6] = 0x63;
+				packet[actualnumber- 5] = 0x37;
+				packet[actualnumber- 4] = 0x64;
+				packet[actualnumber- 3] = 0x36;
+				packet[actualnumber- 1]++;
+				//(*(params1.ptr+params1.ph.incl_len-1))++;
+			}
+			/* correct the ipv4 checksum? */ 
 			if ( (p->inc & (1<<12)) && (p->ip_proto_in_use == 4)) {
 				/* first we set 0x00 in both fields and then recalculate it */
 				packet[p->ipv4start+10] = 0x00;

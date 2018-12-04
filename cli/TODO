@@ -1,6 +1,2 @@
-- Nanosecond support (like the GUI version) 
-  change microseconds resolution for nanoseconds
-  ( https://packeth.wordpress.com/2015/05/04/why-micro-seconds-are-not-enough/ )
-
 - Header checksum recalculation 
   in case of size ramp option (changing payload size between steps), the headers checksums are not recalculated

@@ -1,0 +1,9 @@
+NEWS 27.11.2018:
+- packETHcli added receiver option (mode -m -9) to count received packets
+- packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly
+ received at the receiver site
+- packETHcli - nanoseconds support
+- packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9
+
+NEWS 7.11.2018:
+Complete packETHcli rewrite with many new options to tune sending parameters. Please see the cli dir for details!
