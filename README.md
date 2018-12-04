@@ -60,7 +60,7 @@ To send the packets you need the SuperUser rights.
 ### CLI version  
 Type ./packETHcli -h  for available options.  
 
-### packETHcli RECEIVER mode  
+### RECEIVER mode  
 packETHcli also has a reveiver mode (-m 9). In this mode packEThcli counts packets and displays statistics. If you add a pattern into packets sent by packETH or packETHcli then only packets with valid pattern will be counted. See manual for more help.  
 
 ## DONATIONS
