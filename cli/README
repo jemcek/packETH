@@ -4,7 +4,8 @@ It also has a receiver mode where packets sent by packETH or packETHcli can be c
 
 NEWS: NOV 2018:
 - added receiver option (mode -m -9) to count received packets
-- added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
+- added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode  
+  if all packets that were sent were also correctly received at the receiver site
 - nanoseconds support
 - added option to change packet rate while sending (ramp mode) in both directions
 - added option to change packet size while sending (ramp mode) at constant pps or constant bandwidth
