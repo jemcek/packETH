@@ -98,13 +98,15 @@ MODES:
               Number of packets to send or duration in seconds (only one option possible)
                -n <number, 0> - number of packets to send or 0 for infinite
                -t <seconds> - seconds to transmit
-              Delay between packets or sendrate (only one option possible). Choose first option for constant pps and second one for constant bandwidth
+              Delay between packets or sendrate (only one option possible).  
+              Choose first option for constant pps and second one for constant bandwidth
                -d <us, 0> - delay between packets in micro seconds; select 0 for maximum speed
-               -D <ns, 0, -1> - delay between packets in nano seconds; select 0 for maximum speed with counters; select -1 for max speed without counters)
+               -D <ns, 0, -1> - delay between packets in nano seconds;  
+                                select 0 for maximum speed with counters; select -1 for max speed without counters)
                -b <bandwidth> - desired sending rate in kbit/s
                -B <bandwidth> - desired sending rate in Mbit/s
               Startsize, Stopsize, Stepsize and Step duration number
-               -s "<startsize stopsize stepsize>" in bytes (please note that TCP&UDP checksums are not (yet :) ) recalculated!!!)
+               -s "<startsize stopsize stepsize>" in bytes (please note that TCP&UDP checksums are not recalculated!)
                -p <seconds> - period between steps in seconds
           Optional parameters:
                -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
@@ -116,7 +118,7 @@ MODES:
  -m 9   - RECEIVER MODE: COUNT PACKETS (FROM packETHcli)
           Usage: ./packETHcli -m 9 -i <interface> [-x OR -o <offset counter> -q <offset pattern> -w <pattern>]
           Optional parameter:
-          To count packets with predifined pattern sent by packETHcli use -x option on both sides (sender and receiver)  :
+          To count packets with predifined pattern sent by packETHcli use -x option on both sides (sender and receiver):
             -x   - Last 10 bytes in received packets will be checked for pattern "a8b7c7d6" and counter
           To count packets with custom pattern at custom positon and counter at custom position:
             -q <offset>   - where should the pattern be (bytes offset)
