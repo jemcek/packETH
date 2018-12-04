@@ -112,7 +112,6 @@ struct params {
     int stopsize;
     int stepsize;
     int ConstantRate;
-    int num_rules;
 
 
 } params1;
@@ -200,7 +199,6 @@ int main(int argc, char *argv[])
     params1.stopsize = 0;
     params1.stepsize = 0 ;
     params1.ConstantRate = 0;
-    params1.num_rules = 0;
 
 
     /* Scan CLI parameters */
@@ -493,7 +491,7 @@ int receiver_mode(void) {
         exit(7);      
     }
      if (params1.packetsize != -2) {
-        printf("\n Option -S not allowed in this mode!\n\n");
+        printf("\n Option -S not allowed in this mode\n\n");
         exit(7);    
     }
     if (params1.delay_mode != 0) {
@@ -513,15 +511,7 @@ int receiver_mode(void) {
         exit(7);
     }
     if ((strlen(params1.sizeramp) > 0 ) || (strlen(params1.rateramp) > 0 ) || (strlen(params1.rateRAMP) > 0 ) || (params1.period != -2)) {
-        printf("\n Ramp options not allowed in this mode!\n\n");
-        exit(7);
-    }
-    if (strlen(params1.filename) > 0) {
-        printf("\n Option -f not allowed in this mode!\n\n");
-        exit(7);
-    }
-    if (params1.seqnum != -2) {
-        printf("\n Option -c not allowed in this mode!\n\n");
+        printf("\n Ramp options not allowed in this mode\n\n");
         exit(7);
     }
 
@@ -1147,8 +1137,6 @@ int function_send() {
 
     int c;
     int period2 = 0;
-    uint64_t seed;
-    int rules_idx = 0;
    
     long  sentnumber = 0, lastnumber = 0;
     long long gap=0, gap2=0, gap2s=0, gap3s=0;
@@ -1166,10 +1154,6 @@ int function_send() {
 
     /* to send first packet immedialtelly */
     gap = 0;
-
-    /* generate seed for random number generator */
-    if (params1.mode == 5)
-        seed = first.tv_usec;
 
     /*-----------------------------------------------------------------------------------------------*/
     //if the -1 for delay was choosed, just send as fast as possible, no output, no counters, no pattern, nothing
@@ -1191,9 +1175,6 @@ int function_send() {
                 continue;
 
             //send!
-            if (params1.mode == 5) {
-                params1.ptr = build_packet(params1.pkt_temp, params1.size, params1.num_rules, &rules_idx, &seed, params1.attack);
-            }
             c = sendto(params1.fd, params1.ptr, params1.size, 0, (struct sockaddr *)&params1.sa, sizeof (params1.sa));
 
             last_ns.tv_sec = now_ns.tv_sec;
@@ -1446,9 +1427,6 @@ void print_final(struct timeval first, long packets_sent, char *interface_name)
     printf("  Sent %ld packets on %s in %f second(s). \n", packets_sent, interface_name, duration_s);
     printf("------------------------------------------------\n");
     fflush(stdout);
-    close(params1.fd);
-    if (params1.mode == 5)
-        cleanupRules(params1.num_rules);  
     exit(1);  
 }
 
@@ -1681,12 +1659,25 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
 //int four(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int period, int attack)
 int send_ids_mode() 
 {
-    int count, flag=0;
+    int c, count, flag=0;
+    int ConstantRate = 0;
     
+    long li, gap = 0, gap2 = 0, sentnumber = 0, lastnumber = 0, seconds = 0, rate=0;
+    struct timeval nowstr, first, last;
+    unsigned int mbps, pkts, link;
+    float Mbps, Link;
+
+    int size, period2 = 0;
+    int startsize = 60;
+    int stopsize = 1500;
+    int stepsize = 10;
     int wordcount = 0;
+    
+    int num_rules, rules_idx = 0;
     char *p;
     char tmp7[10];
     char ch;
+    uint64_t seed;
     
     if (params1.paramnum == 1) {  
         usage_5();
@@ -1700,32 +1691,13 @@ int send_ids_mode()
         exit(7);
     }
 
-    //check if the options are ok
-    if ((params1.delay_mode != 1) && (params1.delay_mode != 2) && (params1.delay_mode != 4) && (params1.delay_mode != 8)) {
-        printf("\n Wrong or missing delay between packets or bandwidth parameter.\n\n Specify one of the following options:\n");
-        printf("   -D <nanoseconds>    - delay between packets in nanoseconds\n");
-        printf("   -d <microseconds>   - delay between packets in microseconds\n");
-        printf("   -d 0                - maximum speed with counters\n");
-        printf("   -b <bandwidth>      - desired bandwidth in kbit/s\n");
-        printf("   -B <bandwidth>      - desired bandwidth in Mbit/s\n\n");
-        exit(7);    
-    }
-    else if ((params1.delay_mode == 1) && (params1.delay == -1)) {
-        printf("\n Option -d -1 not allowed with this mode\n\n");
+    if ((params1.delay == -2) && (params1.bw == -2) && (params1.BW == -2))  {
+        printf("\n Missing delay between packets or desired bandwidth to send at. \n Specify -d <delay between packets in microseconds> or -b <bandwidth in kbits/s> or -B <bandwidth in Mbits/s>!\n\n");
         exit(7);
     }
-    
-    if (params1.delay_mode == 1)
-        params1.delay = params1.delay * 1000;
-    else if (params1.delay_mode == 2) 
-        params1.delay = params1.delay;
-    else if (params1.delay_mode == 4)
-        params1.delay = (long long)(1000000 * (long long)params1.ph.incl_len * 8 / params1.bw);
-    else if (params1.delay_mode == 8) 
-        params1.delay = (long long)(1000 * (long long)params1.ph.incl_len * 8 / params1.BW);
-
-    if (params1.delay > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+    else if ( ((params1.delay != -2) && (params1.bw != -2)) || ((params1.delay != -2) && (params1.BW != -2)) || ((params1.bw != -2) && (params1.BW != -2)) ) {
+        printf("\n Only one option allowed at a time (-d or -b or -B). \n Specify -d <delay between packets in microseconds> or -b <bandwidth in kbits/s> or -B <bandwidth in Mbits/s>!\n\n");
+        exit(7);
     }
     
     if ((params1.number == -2) && (params1.duration == -2)) {
@@ -1752,6 +1724,10 @@ int send_ids_mode()
         printf("\n Option -c not allowed in this mode.\n\n");
         exit(7);
     }
+    
+    if (params1.delay > 999000) {
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+    }
 
     if ((strlen(params1.sizeramp) ==0 ) && (params1.packetsize == -2)) {
         printf("\n Did you specify packet size with -S or size ramp values with -s option (in bytes)? \n And don't forget the quotation marks! (for example: -s \"100 1000 200\")\n\n");
@@ -1763,14 +1739,10 @@ int send_ids_mode()
         exit(7);
     }
 
-    if (params1.my_pattern > 0) {
-        printf("\n Pattern options not allowed in this mode!\n\n");
-        exit(7);
-    }
 
     /* read snort rule file */
-    params1.num_rules = readSnortRules(params1.filename);
-    if (params1.num_rules == 0) {
+    num_rules = readSnortRules(params1.filename);
+    if (num_rules == 0) {
         /* if there are no rules, then die! */
         fprintf(stderr, "Rules file is empty!\n");
         exit(EXIT_FAILURE);
@@ -1783,42 +1755,177 @@ int send_ids_mode()
                 strncpy(tmp7, &params1.sizeramp[flag],count-flag); 
                 tmp7[count-flag]='\0';
                 if (wordcount==0) 
-                    params1.startsize = strtol(tmp7, &p, 10);
+                    startsize = strtol(tmp7, &p, 10);
                 else if (wordcount == 1)
-                    params1.stopsize = strtol(tmp7, &p, 10);
+                    stopsize = strtol(tmp7, &p, 10);
                 else if (wordcount == 2)
-                    params1.stepsize = strtol(tmp7, &p, 10);
+                    stepsize = strtol(tmp7, &p, 10);
                 
-                wordcount += 1;
+                        wordcount += 1;
                 flag = count;
             }
             
         }
-        if (params1.startsize > params1.stopsize) {
+        if (startsize > stopsize) {
             printf("\nstartsize is greater than stopzize\n\n");
             close(params1.fd);
-            cleanupRules(params1.num_rules);
+            cleanupRules(num_rules);
             return 1;
         }
-        if (params1.startsize < 60) {
+        if (startsize < 60) {
             printf("\nstartsize must be >60\n\n");
             close(params1.fd);
-            cleanupRules(params1.num_rules);            
+            cleanupRules(num_rules);            
             return 1;
         }
-        if (params1.stopsize > MAX_MTU) {
+        if (stopsize > MAX_MTU) {
             printf("\nstopsize must be <%d\n\n", MAX_MTU);
             close(params1.fd);
-            cleanupRules(params1.num_rules);            
+            cleanupRules(num_rules);            
             return 1;
         }
-        params1.size = params1.startsize;
+        size = startsize;
     }
     else
-        params1.size = params1.packetsize;
+        size = params1.packetsize;
 
-    function_send();
-              
+    if ((params1.delay == -2) && (params1.bw > 0)) {
+        params1.delay = 1000 * size * 8 / params1.bw;
+        ConstantRate = 0;
+        rate = params1.bw;
+    }
+    else if ((params1.delay == -2) && (params1.BW > 0)) {
+        params1.delay = size * 8 / params1.BW;
+        ConstantRate = 0;
+        rate = params1.BW*1000;
+    }
+    else
+        ConstantRate = 1;
+    
+
+    /* this is the time we started */
+    gettimeofday(&first, NULL);
+    gettimeofday(&last, NULL);
+    gettimeofday(&nowstr, NULL);
+    
+    /* generate seed for random number generator */
+    seed = first.tv_usec;
+    
+    /* to send first packet immedialtelly */
+    gap = 0;
+    
+    /* if delay == 0 and infinite packets, send as fast as possible with counters... */
+    if (params1.delay==0) {
+        for(li = 0; params1.number == 0 ? 1 : li < params1.number; li++) {
+            gettimeofday(&nowstr, NULL);
+            gap2 = nowstr.tv_sec - first.tv_sec;
+            params1.ptr = build_packet(params1.pkt_temp, size, num_rules, &rules_idx, &seed, params1.attack);
+            c = sendto(params1.fd, params1.ptr, size, 0, (struct sockaddr *)&params1.sa, sizeof (params1.sa));
+            last.tv_sec = nowstr.tv_sec;
+            last.tv_usec = nowstr.tv_usec;
+            
+            if (c > 0)
+                sentnumber++;
+            /* every second display number of sent packets */
+            if (gap2 > seconds) {
+                pkts = sentnumber - lastnumber;
+                mbps = pkts * size / 125; // 8 bits per byte / 1024 for kbit
+                /* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
+                link = pkts * (size + 24) / 125;
+                Mbps = (float)mbps/1000;
+                Link = (float)link/1000;
+                lastnumber = sentnumber;
+
+                printf("  Sent %ld packets on %s; %d packet length; %d packets/s; %.3f Mbit/s data rate; %.3f Mbit/s link utilization\n", sentnumber, params1.iftext, size, pkts, Mbps, Link);
+                fflush(stdout);
+                seconds++;
+
+                if (stepsize > 0) {
+                    if ( (period2 > (params1.period-2)) && (params1.period>0) ) {
+                        size = size + stepsize;
+                        if (size > stopsize) {
+                            print_final(first, sentnumber, params1.iftext);
+                            fflush(stdout);
+                            close(params1.fd);
+                            cleanupRules(num_rules);            
+                            return 1;
+                        }
+                        period2 = 0;
+                    }
+                    else
+                        period2++;
+                }
+            }
+            if ((params1.duration > 0) && (seconds >= params1.duration))
+                break;
+        }
+        print_final(first, sentnumber, params1.iftext);
+        return 1;
+    }
+    
+    else {
+        for(li = 0; params1.number == 0 ? 1 : li < params1.number; li++) {
+            while (gap < params1.delay) {
+                gettimeofday(&nowstr, NULL);
+                gap = (nowstr.tv_sec*1000000 + nowstr.tv_usec) - (last.tv_sec*1000000 + last.tv_usec);
+                gap2 = nowstr.tv_sec - first.tv_sec;
+            }
+
+            params1.ptr = build_packet(params1.pkt_temp, size, num_rules, &rules_idx, &seed, params1.attack);
+            c = sendto(params1.fd, params1.ptr, size, 0, (struct sockaddr *)&params1.sa, sizeof (params1.sa));
+
+            last.tv_sec = nowstr.tv_sec;
+            last.tv_usec = nowstr.tv_usec;
+            gap = 0;
+
+            if (c > 0)
+                sentnumber++;
+
+            /* every second display number of sent packets */
+            if (gap2 > seconds) {
+                pkts = sentnumber - lastnumber;
+                mbps = pkts * size / 125; // 8 bits per byte / 1024 for kbit
+                /* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
+                link = pkts * (size + 24) / 125;
+                Mbps = (float)mbps/1000;
+                Link = (float)link/1000;
+                lastnumber = sentnumber;
+
+                printf("  Sent %ld packets on %s; %d packet length; %d packets/s; %.3f Mbit/s data rate; %.3f Mbit/s link utilization\n", sentnumber, params1.iftext, size, pkts, Mbps, Link);
+                fflush(stdout);
+                seconds++;
+
+                if (stepsize > 0) {
+                    if ( (period2 > (params1.period-2)) && (params1.period>0) ) {
+                        size = size + stepsize;
+                        if (size > stopsize) {
+                            print_final(first, sentnumber, params1.iftext);
+                            close(params1.fd);
+                            cleanupRules(num_rules);
+                            return 1;
+                        }
+                        period2 = 0;
+                    }
+                    else
+                        period2++;
+                }
+                //if we want to keep the rate the same, we need to change the delay
+                if (ConstantRate == 0) {
+                    params1.delay = (long)(rate*1000) / (size*8);
+                    params1.delay = 1000000 / params1.delay;
+                }
+            }
+            if ((params1.duration > 0) && (seconds >= params1.duration))
+                break;
+        }
+        print_final(first, sentnumber, params1.iftext);
+        close(params1.fd);
+        cleanupRules(num_rules);        
+        return 1;
+    }
+
+    close(params1.fd);
+    cleanupRules(num_rules);
     return 1;
 }
 
@@ -1949,9 +2056,9 @@ void usage_9(void)
     printf("            -w <pattern>  - what should be the pattern to match\n");
     printf("            -o <offset>   - where should the inceremented counter be (bytes offset)\n");
     printf("          Examples:\n");
-    printf("          ./packETHcli -m 9 -i eth0\n");
-    printf("          ./packETHcli -m 9 -i eth0 -x\n");
-    printf("          ./packETHcli -m 9 -i eth0 -o 60 -q 70 -w 12345678\n");
+    printf("          ./receiver -i eth0\n");
+    printf("          ./receiver -i eth0 -x\n");
+    printf("          ./receiver -i eth0 -o 60 -q 70 -w 12345678\n");
     printf("\n");
 }
 
