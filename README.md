@@ -16,7 +16,7 @@ https://packeth.wordpress.com
 - packETHcli added receiver option (mode -m -9) to count received packets
 - packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
 - packETHcli - nanoseconds support
-- packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9 
+- https://packeth.wordpress.com/2018/12/05/reciver-mode-check-for-dropped-packets/ 
 
 ## INSTALLATION  
 
