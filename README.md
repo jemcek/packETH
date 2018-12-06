@@ -25,7 +25,7 @@ https://packeth.wordpress.com
 
 git clone https://github.com/jemcek/packETH.git  
 or   
-download from: https://sourceforge.net/projects/packeth/files/ 
+download from: https://sourceforge.net/projects/packeth/files/   
 tar xjvf packETH.(version).tar.bz  
 
 cd packETH  
