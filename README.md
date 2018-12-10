@@ -24,13 +24,10 @@ https://packeth.wordpress.com
 ### GUI  
 
 git clone https://github.com/jemcek/packETH.git  
-or   
-download from: https://sourceforge.net/projects/packeth/files/   
-tar xjvf packETH.(version).tar.bz  
 
 cd packETH  
 ./autogen.sh      (you will need aclocal,autoconf,autoheader and automake installed to run this)   
-autoreconf -f -i  (optional in case you get automake version mismatch, missing files etc...)   
+autoreconf -f -i  (optional) - in case you get automake version mismatch, missing files etc...   
 ./configure  
 make  
 make install (optional)
