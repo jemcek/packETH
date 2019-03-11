@@ -2021,12 +2021,15 @@ int icmpv6_header(GtkButton *button, int whocalled) {
 	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton48");
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
         ptrf = ptrf + 4;
-
-	if (remain >=511)	{
-		inspar(button, "entry214", ptrf, 1024);
-		//remain = remain -4;
-	}
-	else if (remain > 0) {
+    
+    //if (remain >=511)	{
+	//	inspar(button, "entry214", ptrf, 1024);
+	//	//remain = remain -4;
+	//}
+	//else if (remain > 0) {
+	//	inspar(button, "entry214", ptrf, remain*2);
+	//}
+	if (remain > 0) {
 		inspar(button, "entry214", ptrf, remain*2);
 	}
 	else

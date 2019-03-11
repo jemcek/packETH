@@ -42,7 +42,7 @@ main (int argc, char *argv[])
   GtkWidget *tos_dialod;
   GtkWidget *fragmentation_dialog; */
 
-  g_thread_init(NULL);
+  //g_thread_init(NULL);
   gdk_threads_init();     
   gdk_threads_enter();
 
