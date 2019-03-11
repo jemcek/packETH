@@ -4641,7 +4641,7 @@ create_window1 (void)
   gtk_widget_show (entry214);
   gtk_box_pack_start (GTK_BOX (hbox1504), entry214, FALSE, TRUE, 0);
   gtk_widget_set_size_request (entry214, 531, -1);
-  gtk_entry_set_max_length (GTK_ENTRY (entry214), 9000);
+  gtk_entry_set_max_length (GTK_ENTRY (entry214), 10000);
   gtk_entry_set_invisible_char (GTK_ENTRY (entry214), 8226);
 
   hbox1505 = gtk_hbox_new (FALSE, 0);
