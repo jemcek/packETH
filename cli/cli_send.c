@@ -434,7 +434,8 @@ int receiver_mode(void) {
     long packets=0, packets_total=0, my_packets=0, my_total_packets=0;
     long seconds=0, gap=0, errors=0; 
     //long gapns=0;
-    unsigned int last_value=0, current_value=0, mbps;
+    unsigned int last_value=0, current_value=0;
+    long mbps;
     float Mbps;
 
     //struct sockaddr_ll socket_address;
@@ -1420,7 +1421,7 @@ int read_packet_from_file(char *filename) {
 /*------------------------------------------------------------------------------*/
 void print_intermidiate(long packets_sent, long packets_last_sent, int packet_size, int print_interval) {
     
-    unsigned int mbps, packets_pps, link;
+    long  mbps, packets_pps, link;
     float Mbps, Link;
 
     packets_pps = (packets_sent - packets_last_sent) / print_interval;
@@ -1429,7 +1430,7 @@ void print_intermidiate(long packets_sent, long packets_last_sent, int packet_si
     link = packets_pps * (packet_size + 24) / 125; /* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
     Link = (float)link/1000;
     
-    printf("  Sent %ld packets on %s; %d bytes packet length; %d packets/s; %.3f Mbit/s data rate; %.3f Mbit/s link utilization\n", packets_sent, params1.iftext, packet_size, packets_pps, Mbps, Link);
+    printf("  Sent %ld packets on %s; %d bytes packet length; %ld packets/s; %.3f Mbit/s data rate; %.3f Mbit/s link utilization\n", packets_sent, params1.iftext, packet_size, packets_pps, Mbps, Link);
     fflush(stdout);
 }
 
