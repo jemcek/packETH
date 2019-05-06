@@ -83,5 +83,5 @@ If you get into problems, please feel free to contact me.
 
 Miha Jemec  
 jemcek@gmail.com  
-packETH (C) 2003-2018 by Miha Jemec, <jemcek@gmail.com>  
+packETH (C) 2003-2019 by Miha Jemec, <jemcek@gmail.com>  
 Covered under the GPL.  
