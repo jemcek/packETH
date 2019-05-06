@@ -30,7 +30,7 @@ cd packETH
 autoreconf -f -i  (optional) - in case you get automake version mismatch, missing files etc...   
 ./configure  
 make  
-make install (optional)
+make install (optional)  
 ./packETH   
 
 Depending on your Linux distribution and type of installation additional packages may be needed. For example:
