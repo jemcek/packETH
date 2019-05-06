@@ -33,6 +33,17 @@ make
 make install (optional)
 ./packETH   
 
+Depending on your Linux distribution and type of installation additional packages may be needed. For example:
+
+#### Centos 7.4 (minimal):
+yum groupinstall 'Development Tools'  
+yum install gtk2-devel.x86_64  
+
+#### Ubuntu 18.04 server
+sudo apt-get install build-essential  
+sudo apt-get install autoconf  
+sudo apt-get install pkg-config  
+sudo apt-get install gtk+2.0  
 
 ### CLI (you can also only compile cli version if you want)
 
