@@ -44,6 +44,9 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 
+#include <endian.h>
+#include <errno.h>
+
 #define PCAP_MAGIC   0xa1b2c3d4
 #ifndef MAX_MTU
     #define MAX_MTU 9000
@@ -1358,61 +1361,91 @@ int interface_setup()
 }
 
 /*------------------------------------------------------------------------------*/
-int read_packet_from_file(char *filename) {
+int read_packet_from_file(char *filename)
+{
+    int little_endian = 0;
+    int big_endian = 0;
 
-    FILE *file_p;
+    FILE * file_p;
     int freads;
-    //int last=0
-    int i=0;
-    //char *ptr2;
+    int i = 0;
 
-    if((file_p = fopen(filename, "r")) == NULL) {
+    if ((file_p = fopen(filename, "r")) == NULL)
+    {
         printf("\nCan not open file for reading. Did you specify pcap file with option -f ?\n\n");
         exit(7);
     }
 
     /* first we read the pcap file header */
-    freads = fread(params1.pkt_temp, sizeof(params1.fh), 1, file_p);
+    freads = fread(&params1.fh, sizeof(params1.fh), 1, file_p);
     /* if EOF, exit */
-    if (freads == 0) {
-        printf("\nPcap file not correct?\n\n");
+    if (freads == 0)
+    {
+        printf("\nCan't read pcap file header\n\n");
         exit(7);
     }
 
-    memcpy(&params1.fh, params1.pkt_temp, 24);
-
+    if (be32toh(params1.fh.magic) == PCAP_MAGIC)
+    {
+        printf("\nPCAP file writed in BE\n");
+        big_endian = 1;
+    }
+    else if (le32toh(params1.fh.magic) == PCAP_MAGIC)
+    {
+        printf("\nPCAP file writed in LE\n");
+        little_endian = 1;
+    }
     /* if magic number in NOK, exit */
-    if (params1.fh.magic != PCAP_MAGIC) {
-        printf("\nWrong pcap file format?\n\n");
+    else if (params1.fh.magic != PCAP_MAGIC)
+    {
+        printf("\nPCAP magic sequence incorrect, file magic = %u, pcap magic = %u \n\n", params1.fh.magic, PCAP_MAGIC);
         exit(7);
     }
 
     // we can select which packet we want to send
     if (params1.seqnum == -2)
         params1.seqnum = 1;
-    for (i=0; i < params1.seqnum; i++) {
-        /* next the  pcap packet header */
-        freads = fread(params1.pkt_temp, sizeof(params1.ph), 1, file_p);
-    
-            /* if EOF, exit */
-            if (freads == 0) {
-                printf("\nWrong sequence number? Or wrong pcap file format?\n\n");
-                exit(7);
+
+    for (i = 0; i < params1.seqnum; i++)
+    {
+        /* next the pcap packet header */
+        freads = fread(&params1.ph, sizeof(params1.ph), 1, file_p);
+        /* if EOF, exit */
+        if (freads == 0)
+        {
+            printf("\nCan't read pcap record header for packet %d in pcap file (%s)\n\n", i, strerror(errno));
+            exit(7);
+        }
+        else
+        {
+            if (little_endian)
+            {
+                params1.ph.ts_sec = le32toh(params1.ph.ts_sec);
+                params1.ph.ts_usec = le32toh(params1.ph.ts_usec);
+                params1.ph.incl_len = le32toh(params1.ph.incl_len);
+                params1.ph.orig_len = le32toh(params1.ph.orig_len);
             }
-    
-            /* copy the 16 bytes into ph structure */
-            memcpy(&params1.ph, params1.pkt_temp, 16);    
-            params1.ptr = params1.pkt_temp + sizeof(params1.ph);
-    
-            /* and the packet itself, but only up to the capture length */
-            freads = fread(params1.ptr, params1.ph.incl_len, 1, file_p);
-    
-            /* if EOF, exit */
-            if (freads == 0) {
-                printf("\nWrong sequence number? Or wrong pcap file format?\n\n");
-                exit(7);
+            else if (big_endian)
+            {
+                params1.ph.ts_sec = be32toh(params1.ph.ts_sec);
+                params1.ph.ts_usec = be32toh(params1.ph.ts_usec);
+                params1.ph.incl_len = be32toh(params1.ph.incl_len);
+                params1.ph.orig_len = be32toh(params1.ph.orig_len);
+            }
+        }
+
+        params1.ptr = params1.pkt_temp;
+
+        /* and the packet itself, but only up to the capture length */
+        freads = fread(params1.ptr, params1.ph.incl_len, 1, file_p);
+        /* if EOF, exit */
+        if (freads == 0)
+        {
+            printf("\nCan't read packet with len %u from pcap file\n\n", params1.ph.incl_len);
+            exit(7);
         }
     }
+
     fclose(file_p);
 
     return 1;
