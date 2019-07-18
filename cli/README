@@ -2,7 +2,11 @@ packETHcli is a cli (command line) version of packETH. It allows you to easily s
 It has different sending options although not all features from packETH are supported. 
 It also has a receiver mode where packets sent by packETH or packETHcli can be captured and checked for errors.
 
-NEWS: NOV 2018:
+NEWS: 
+JUL 2019:  
+- added burst mode (-m 6)
+
+NOV 2018:
 - added receiver option (mode -m -9) to count received packets
 - added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode  
   if all packets that were sent were also correctly received at the receiver site
@@ -24,7 +28,8 @@ USAGE: ./packETHcli -m <mode > -i <interface> -f <file> [options]
    -m 2   - SEND PACKET CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate
    -m 3   - SEND PACKET CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP)
    -m 4   - SEND PACKET CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)
-   -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)
+   -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)  
+   -m 6   - SEND PACKETS IN BURST MODE (CONSTANT BURST)
    -m 9   - RECEIVER MODE (count packets sent by packETHcli or packETH
 
  -f <file> - file name where packet is stored in pcap format (or attack definitions file in Snort rule format in mode 5)
@@ -124,6 +129,21 @@ MODES:
             -d <us, 0, -1> - delay between packets OR -b <bandwidth in kbit/s>  OR -B <bandwidth in Mbit/s
             -n <number, 0> - number of packets to send (0 for infinite) OR -t <duration in seconds>
            Example: ./packETHcli -i lo -f sample_snort_rules.txt -B 10 -m 5 -t 60 -S 1000 -a 2
+
+ -m 6   - SEND PACKETS IN BURST MODE (CONSTANT BURST)
+          Usage: ./packETHcli -m 4 -i <interface> -f <pcap file> [options]
+          Required parameters:
+              Number of packets to send or duration in seconds (only one option possible)
+               -n <number, 0> - number of packets to send or 0 for infinite
+               -t <seconds> - seconds to transmit
+              Number of packets in burst, delay between packets in burst (us), delay till next burst (us)
+               -L "<packets_in_burst  delay_between_packets_in_burst_us  delay_between_bursts_us>"
+          Optional parameters:
+               -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)
+               -I <seconds> - time interval to display results (default 1s)
+              Insert predifined pattern into packet:
+               -x             - insert pattern "a9b8c7d6" and counter inside last 10 bytes of packet
+          Example: ./packETHcli -i eth1 -m 6 -n 0 -L "100 1 100" -f p1.pcap
 
  -m 9   - RECEIVER MODE: COUNT PACKETS (FROM packETHcli)
           Usage: ./packETHcli -m 9 -i <interface> [-x OR -o <offset counter> -q <offset pattern> -w <pattern>]
