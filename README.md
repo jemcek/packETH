@@ -30,9 +30,20 @@ cd packETH
 autoreconf -f -i  (optional) - in case you get automake version mismatch, missing files etc...   
 ./configure  
 make  
-make install (optional)
+make install (optional)  
 ./packETH   
 
+Depending on your Linux distribution and type of installation additional packages may be needed. For example:
+
+#### Centos 7.4 (minimal):
+yum groupinstall 'Development Tools'  
+yum install gtk2-devel.x86_64  
+
+#### Ubuntu 18.04 server
+sudo apt-get install build-essential  
+sudo apt-get install autoconf  
+sudo apt-get install pkg-config  
+sudo apt-get install gtk+2.0  
 
 ### CLI (you can also only compile cli version if you want)
 
@@ -72,5 +83,5 @@ If you get into problems, please feel free to contact me.
 
 Miha Jemec  
 jemcek@gmail.com  
-packETH (C) 2003-2018 by Miha Jemec, <jemcek@gmail.com>  
+packETH (C) 2003-2019 by Miha Jemec, <jemcek@gmail.com>  
 Covered under the GPL.  
