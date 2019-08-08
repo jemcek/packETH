@@ -12,6 +12,9 @@ Blog with some use cases:
 
 https://packeth.wordpress.com  
 
+## NEWS JUL 2019:  
+- packETHcli added burst mode (-m -6)
+
 ## NEWS 27.11.2018:
 - packETHcli added receiver option (mode -m -9) to count received packets
 - packETHcli added option to incluce pattern (predifined or custom) which can be checked by packETHcli in receiver mode if all packets that were sent were also correctly received at the receiver site
