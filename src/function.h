@@ -22,6 +22,8 @@
 
 #include <gtk/gtk.h>
 
+extern char iftext[20];
+
 signed int char2x(char *p);
 char c4(int value);
 guint32 get_checksum32(int start, int stop);	

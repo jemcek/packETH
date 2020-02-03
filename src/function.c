@@ -66,7 +66,7 @@ int ipv4_start = 0;
 int ipv6_start = 0;
 int eth_start = 0;
 gboolean stop_flag = 0;
-extern char iftext[20];
+char iftext[20];
 static unsigned long crc32_table[256];
 int crc32_table_init = 0;
 int ip_proto_used = 0; // 0 - none, 4 - ipv4, 6- IPv6, 806 - ARP
