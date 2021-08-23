@@ -55,7 +55,6 @@ extern long li_last_packets_sent;
 extern long li_packets_sent_lastsec;
 extern long sentstream[10];
 extern long sendtime;
-char iftext[20];
 
 struct params  {
 	long long del;

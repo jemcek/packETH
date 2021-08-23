@@ -65,7 +65,6 @@ extern int number;
 extern int stop_flag;
 extern long desired_bw;
 gint row_number;/* this is because i cant get the selected row number*/
-gchar iftext[20];
 gchar address_filename[100] = "addresslist";
 static GtkWidget *entry_field;
 static GtkWidget *entry_field_ip;
