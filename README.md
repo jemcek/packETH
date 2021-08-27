@@ -78,7 +78,7 @@ packETHcli also has a reveiver mode (-m 9). In this mode packEThcli counts packe
 If you would like to increase my motivation for further development, you can make a donation. 
 The amount is not important at all, it is just a sign for me, that time I spent for this project helps someone. 
 
-[DONATE](https://www.paypal.com/donate/?token=n93oVmxnMD6S0pU87PjkgLCfx6RJU7VLJDVS4OBGULA7jO1-Hg-5VTNpeYwtpGMrtdkh4G&country.x=SI&locale.x=SI)
+[DONATE](https://www.paypal.com/donate/?token=KPbEwZks6OOJOTpQHnNPH_kWrzpDlO4MHMupNENjyr10Wj2x-IWwMXzRk2F2caVyD_r6GXw0eud5Xa8x&locale.x=SI)
 
 ## AUTHORS & SUPPORT  
 
