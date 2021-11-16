@@ -81,7 +81,7 @@ struct params {
     struct pcaprec_hdr ph;
     char iftext[20];
     int fd;
-    char *ptr; 
+    char *ptr;
     char pkt_temp[10000];
     char filename[200];
     long long delay;
@@ -169,12 +169,12 @@ int interface_setup(void);
 int read_packet_from_file(char *filename);
 int function_send(void);
 int function_send_burst(void);
-
+static char *strncpy_safe(char *out, size_t outsz, const char *in, size_t insz);
 
 
 int main(int argc, char *argv[])
 {
-    
+
     int c;
     char *p;
 
@@ -232,15 +232,15 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'h': {
-                usage(); 
-                usage_1(); 
-                usage_2(); 
-                usage_3(); 
-                usage_4(); 
-                usage_5(); 
-                usage_6(); 
+                usage();
+                usage_1();
+                usage_2();
+                usage_3();
+                usage_4();
+                usage_5();
+                usage_6();
                 usage_9();
-                exit(0); 
+                exit(0);
                 break;
             }
             case 'e': {
@@ -248,12 +248,12 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'i': {
-                strcpy(params1.iftext, optarg); 
+                strcpy(params1.iftext, optarg);
                 // waht values are allowed
                 break;
             }
             case 'I': {
-                params1.display_interval = strtol(optarg, &p, 10); 
+                params1.display_interval = strtol(optarg, &p, 10);
                 if ((params1.display_interval < 1) || (params1.display_interval > 600)) {
                    printf("\n Diplay interval (-I <value>) should be between 1s (default) and 600s!\n\n");
                    exit(0);
@@ -333,19 +333,25 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'L': {
-                strncpy(params1.burstargs, optarg, 50);
+                strncpy_safe(params1.burstargs, sizeof(params1.burstargs),
+                             optarg, strnlen(optarg, sizeof(params1.burstargs) - 1));
                 break;
             }
             case 's': {
-                strncpy(params1.sizeramp, optarg, 20);
+                strncpy_safe(params1.sizeramp, sizeof(params1.sizeramp),
+                             optarg, strnlen(optarg, sizeof(params1.sizeramp) - 1));
                 break;
             }
             case 'z': {
-                strncpy(params1.rateramp, optarg, 50);
+                /* strncpy(params1.rateramp, optarg, 50); */
+                strncpy_safe(params1.rateramp, sizeof(params1.rateramp),
+                             optarg, strnlen(optarg, sizeof(params1.rateramp) - 1));
                 break;
             }
             case 'Z': {
-                strncpy(params1.rateRAMP, optarg, 50);
+                /* strncpy(params1.rateRAMP, optarg, 50); */
+                strncpy_safe(params1.rateRAMP, sizeof(params1.rateRAMP),
+                             optarg, strnlen(optarg, sizeof(params1.rateRAMP) - 1));
                 break;
             }
             case 'p': {
@@ -375,7 +381,7 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'w': {
-                strncpy(params1.pattern, optarg, 20);
+                strncpy_safe(params1.pattern, sizeof(params1.pattern), optarg, strlen(optarg));
                 params1.my_pattern = params1.my_pattern + 8;
                 break;
             }
@@ -393,16 +399,16 @@ int main(int argc, char *argv[])
             }
         }
     }
-   
-    
+
+
     if (argc == 1) {
         usage();
         printf("FOR COMPLETE HELP: ./packETHcli -h\n");
-        printf("\n");   
-        exit(0);      
+        printf("\n");
+        exit(0);
     }
 
-    
+
     if (argc == 3) {
         //just the help
         params1.paramnum = 1;
@@ -457,7 +463,7 @@ int receiver_mode(void) {
 
     int firstround=0, first_packet=0;
     long packets=0, packets_total=0, my_packets=0, my_total_packets=0;
-    long seconds=0, gap=0, errors=0; 
+    long seconds=0, gap=0, errors=0;
     //long gapns=0;
     unsigned int last_value=0, current_value=0;
     long mbps;
@@ -470,13 +476,13 @@ int receiver_mode(void) {
     struct timeval nowstr, first;
     //struct timespec first_ns, now_ns;
 
-    //char pattern[30];   
+    //char pattern[30];
     //int offset_counter=0;
     //int offset_pattern=0;
     //int my_pattern=0;
 
     // print help for this mode
-    if (params1.paramnum == 1) {  
+    if (params1.paramnum == 1) {
         usage_9();
         exit(0);
     }
@@ -501,27 +507,27 @@ int receiver_mode(void) {
     }
     else if (strlen(params1.pattern) > 16) {
         printf("\n Pattern should not be longer than 16 chars!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_pattern < 0) || (params1.offset_pattern > 9900)) {
         printf("\n Offset of the pattern should be between 0 and 9900!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_counter < 0) || (params1.offset_counter > 9900)) {
         printf("\n Offset of the counter should be between 0 and 9900!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((strlen(params1.pattern) > 0) && (params1.offset_counter >= params1.offset_pattern) && (params1.offset_counter <= params1.offset_pattern + strlen(params1.pattern))) {
         printf("\n Counter position offset and pattern position offset should not overlap!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if (params1.attack != -2) {
         printf("\n -a option not allowed in this mode!\n\n");
-        exit(7);      
+        exit(7);
     }
      if (params1.packetsize != -2) {
         printf("\n Option -S not allowed in this mode!\n\n");
-        exit(7);    
+        exit(7);
     }
     if (params1.delay_mode != 0) {
         printf("\n Delay (-d, -D) and bandwidth (-b, -B) options not allowed in this mode!\n\n");
@@ -564,15 +570,15 @@ int receiver_mode(void) {
 
         //we received a packet
         if (recv_size > 0) {
-            
+
             // is -x options enabled?
             if (params1.my_pattern == 1) {
                 // do the last 10 bytes match
                 if (strncmp(&buf[recv_size-10], MY_PATTERN, 8) == 0) {
                     //now check if the sequence number matches (this is the last byte in payload)
                     current_value = (unsigned int)buf[recv_size-1];
-                    //printf("2 %02x %02x \n", current_value, last_value);        
-                    
+                    //printf("2 %02x %02x \n", current_value, last_value);
+
                     //if this is (re)start ignore the first packet value and don't count as error
                     if (first_packet == 0) {
                         first_packet = 1;
@@ -582,8 +588,8 @@ int receiver_mode(void) {
                         errors++;
                     }
 
-                    last_value = current_value; 
- 
+                    last_value = current_value;
+
                     // ok they match, so this is my packet. We can increase the counter
                     my_packets++;
                     my_total_packets++;
@@ -594,13 +600,13 @@ int receiver_mode(void) {
                 // count all packets also not ours
                 packets++;
                 packets_total++;
-                
+
             }
             // it seems that custom option was choosed
-            else if (params1.offset_pattern > 0) {  
+            else if (params1.offset_pattern > 0) {
                 // does the pattern matches?
                 if (strncmp(&buf[params1.offset_pattern], params1.pattern, strlen(params1.pattern)) == 0) {
-            
+
                     //now check if the sequence number matches (this is the last byte in payload)
                     current_value = (unsigned int)buf[params1.offset_counter-1];
                     //if this is (re)start ignore the first packet value and don't count as error
@@ -612,18 +618,18 @@ int receiver_mode(void) {
                         errors++;
                     }
 
-                    last_value = current_value; 
- 
+                    last_value = current_value;
+
                     // ok they match, so this is my packet. We can increase the counter
                     my_packets++;
                     my_total_packets++;
                     size = recv_size;
-                   
+
                 }
 
                 packets++;
                 packets_total++;
-                
+
             }
 
             // we match all packets, so let's count them in case there is no filter
@@ -631,17 +637,17 @@ int receiver_mode(void) {
                 packets++;
                 packets_total++;
             }
-            
+
             //printf("new packet\n");
             //for(i=0; i < recv_size; i++)
             //{
             //printf("%02x ", buf[i]);
             //}
-            
+
             if (firstround == 0) {
                 firstround = 1;
             }
- 
+
         }
 
 
@@ -650,7 +656,7 @@ int receiver_mode(void) {
 
         //clock_gettime(CLOCK_MONOTONIC, &now_ns);
         //gapns = now_ns.tv_sec - first_ns.tv_sec;
-        
+
         //if (gapns > seconds) {
         if (gap > seconds) {
             if (firstround == 1) {
@@ -661,7 +667,7 @@ int receiver_mode(void) {
                 mbps = my_packets * size / 125; // 8 bits per byte / 1024 for kbit
                 Mbps = (float)mbps/1000;
                 printf("Elapsed %lds; Interface %s; Matched packets: %ld pps, %.3f Mbit/s, total %ld packets, %ld sequence errors; All packets: %ld pps, total %ld \n", seconds, params1.iftext, my_packets, Mbps, my_total_packets, errors, packets, packets_total);
-                
+
                 // in case sender stops trasmitting and later restarts, we don't want to see this as an error
                 if (my_packets == 0)
                     first_packet = 0;
@@ -675,7 +681,7 @@ int receiver_mode(void) {
             if (STOP == 1)
                 break;
         }
-        
+
     }
 
     printf("----\n");
@@ -691,7 +697,7 @@ int send_single_packet(void)
 {
     int c;
 
-    if (params1.paramnum == 1) {  
+    if (params1.paramnum == 1) {
         usage_1();
         exit(0);
     }
@@ -718,8 +724,10 @@ int send_single_packet(void)
 /* send one packet more than once */
 int send_constant_stream() {
 
+    int bufsz = 0;
+
     // print help for this mode
-    if (params1.paramnum == 1) {  
+    if (params1.paramnum == 1) {
         usage_2();
         exit(0);
     }
@@ -734,7 +742,7 @@ int send_constant_stream() {
         printf("\n Only one option allowed at a time (-n or -t). \n Specify -n <number of packets> or -t <seconds to tramsmit>!\n\n");
         exit(7);
     }
-    
+
     if ((params1.delay_mode != 1) && (params1.delay_mode != 2) && (params1.delay_mode != 4) && (params1.delay_mode != 8)) {
         printf("\n Wrong or missing delay between packets or bandwidth parameter.\n\n Specify one of the following options:\n");
         printf("   -D <nanoseconds>    - delay between packets in nanoseconds\n");
@@ -743,16 +751,16 @@ int send_constant_stream() {
         printf("   -d 0                - maximum speed with counters\n");
         printf("   -b <bandwidth>      - desired bandwidth in kbit/s\n");
         printf("   -B <bandwidth>      - desired bandwidth in Mbit/s\n\n");
-        exit(7);    
+        exit(7);
     }
 
     if (params1.delay_mode == 1)
         params1.delay = params1.delay * 1000;
-    else if (params1.delay_mode == 2) 
+    else if (params1.delay_mode == 2)
         params1.delay = params1.delay;
     else if (params1.delay_mode == 4)
         params1.delay = (long long)(1000000 * (long long)params1.ph.incl_len * 8 / params1.bw);
-    else if (params1.delay_mode == 8) 
+    else if (params1.delay_mode == 8)
         params1.delay = (long long)(1000 * (long long)params1.ph.incl_len * 8 / params1.BW);
 
 
@@ -764,10 +772,10 @@ int send_constant_stream() {
     if ((params1.number == -2) && (params1.duration > 0)) {
         params1.number = 0;
     }
-    
+
     if (params1.packetsize != -2) {
         printf("\n Option -S not allowed in this mode\n\n");
-        exit(7);    
+        exit(7);
     }
 
     if ((strlen(params1.sizeramp) > 0 ) || (strlen(params1.rateramp) > 0 ) || (strlen(params1.rateRAMP) > 0 ) || (params1.period != -2)) {
@@ -775,7 +783,7 @@ int send_constant_stream() {
         exit(7);
     }
     if (params1.delay > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n");
     }
     if ((params1.my_pattern > 1) && (params1.my_pattern != 14)) {
         printf("\n Wrong pattern parameters. Choose one option:\n\n");
@@ -785,43 +793,45 @@ int send_constant_stream() {
     }
     else if (strlen(params1.pattern) > 16) {
         printf("\n Pattern should not be longer than 16 chars!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_pattern < 0) || (params1.offset_pattern+strlen(params1.pattern) > params1.ph.incl_len)) {
         printf("\n Offset of the pattern is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_counter < 0) || (params1.offset_counter > params1.ph.incl_len)) {
         printf("\n Offset of the counter is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.my_pattern > 1) && (params1.offset_counter >= params1.offset_pattern) && (params1.offset_counter <= params1.offset_pattern + strlen(params1.pattern))) {
         printf("\n Counter position and pattern position should not overlap!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.delay == -1) && ((params1.offset_counter !=0) || (params1.offset_pattern != 0) || (strlen(params1.pattern) >0 ))) {
         printf("\n Option -x OR -o -q -w are not compatible with high speed -d -1 mode!\n\n");
-        exit(7);   
+        exit(7);
     }
     if (params1.attack != -2) {
         printf("\n -a option not allowed in this mode!\n\n");
-        exit(7);      
+        exit(7);
     }
 
 
-    // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
+    // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
+        bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
+        strncpy_safe(params1.ptr + params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
 
-    params1.size = params1.ph.incl_len; 
+    params1.size = params1.ph.incl_len;
 
     //everything is set up, lets start sending
     function_send();
@@ -836,15 +846,16 @@ int send_variable_rate() {
     int Mega = 0;
 
     int wordcount = 0;
-    
-    //char *ptr; 
+
     char *p;
-   
-    char tmp8[50];   
+
+    char tmp8[50];
     char tmp7[20];
     char ch;
 
-    if (params1.paramnum == 1) {  
+    size_t bufsz = 0;
+
+    if (params1.paramnum == 1) {
         usage_3();
         exit(0);
     }
@@ -871,11 +882,11 @@ int send_variable_rate() {
 
     if (params1.packetsize != -2) {
         printf("\n Option -S not allowed in this mode\n\n");
-        exit(7);    
+        exit(7);
     }
     if (params1.attack != -2) {
         printf("\n -a option not allowed in this mode!\n\n");
-        exit(7);      
+        exit(7);
     }
 
     if (strlen(params1.sizeramp) > 0 ) {
@@ -903,19 +914,19 @@ int send_variable_rate() {
     }
     else if (strlen(params1.pattern) > 16) {
         printf("\n Pattern should not be longer than 16 chars!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_pattern < 0) || (params1.offset_pattern+strlen(params1.pattern) > params1.ph.incl_len)) {
         printf("\n Offset of the pattern is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_counter < 0) || (params1.offset_counter > params1.ph.incl_len)) {
         printf("\n Offset of the counter is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.my_pattern > 1) && (params1.offset_counter >= params1.offset_pattern) && (params1.offset_counter <= params1.offset_pattern + strlen(params1.pattern))) {
         printf("\n Counter position and pattern position should not overlap!\n\n");
-        exit(7);   
+        exit(7);
     }
 
     params1.size = params1.ph.incl_len;
@@ -936,20 +947,20 @@ int send_variable_rate() {
 
     for (count = 0; count <= strlen(tmp8); count ++){
         ch = tmp8[count];
-        if((isblank(ch)) || (tmp8[count] == '\0')){ 
-            strncpy(tmp7, &tmp8[flag],count-flag); 
+        if((isblank(ch)) || (tmp8[count] == '\0')){
+            strncpy(tmp7, &tmp8[flag],count-flag);
             tmp7[count-flag]='\0';
-            if (wordcount==0) 
+            if (wordcount==0)
                 params1.startrate = strtol(tmp7, &p, 10);
-            else if (wordcount ==1)                     
+            else if (wordcount ==1)
                 params1.stoprate = strtol(tmp7, &p, 10);
-            else if (wordcount ==2)                     
+            else if (wordcount ==2)
                 params1.steprate = strtol(tmp7, &p, 10);
 
                     wordcount += 1;
             flag = count;
         }
-        
+
     }
 
     if (Mega == 1) {
@@ -975,29 +986,31 @@ int send_variable_rate() {
 
     if (1000 * params1.size * 8 / params1.startrate > 999000) {
         printf ("startrate is to low (less than 1pps)\n\n");
-        exit(7); 
+        exit(7);
     }
     if (1000 * params1.size * 8 / params1.stoprate > 999000) {
         printf ("stoprate is to low (less than 1pps)\n\n");
-        exit(7); 
+        exit(7);
     }
 
     params1.delay = (long long)(1000000 * (long long)params1.size * 8 / params1.startrate);
     params1.rate = params1.startrate;
-    
-    
-    // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
+
+
+    // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
+        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
+        strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
-   
+
     function_send();
     return 1;
 }
@@ -1010,8 +1023,9 @@ int send_variable_size() {
     char *p;
     char tmp7[20];
     char ch;
+    size_t bufsz = 0;
 
-    if (params1.paramnum == 1) {  
+    if (params1.paramnum == 1) {
         usage_4();
         exit(0);
     }
@@ -1024,26 +1038,26 @@ int send_variable_size() {
         printf("   -d 0                - maximum speed with counters\n");
         printf("   -b <bandwidth>      - desired bandwidth in kbit/s\n");
         printf("   -B <bandwidth>      - desired bandwidth in Mbit/s\n\n");
-        exit(7);    
+        exit(7);
     }
     else if ((params1.delay_mode == 1) && (params1.delay == -1)) {
         printf("\n Option -d -1 not allowed with this mode\n\n");
         exit(7);
     }
-    
+
     if (params1.delay_mode == 1)
         params1.delay = params1.delay * 1000;
-    else if (params1.delay_mode == 2) 
+    else if (params1.delay_mode == 2)
         params1.delay = params1.delay;
     else if (params1.delay_mode == 4)
         params1.delay = (long long)(1000000 * (long long)params1.ph.incl_len * 8 / params1.bw);
-    else if (params1.delay_mode == 8) 
+    else if (params1.delay_mode == 8)
         params1.delay = (long long)(1000 * (long long)params1.ph.incl_len * 8 / params1.BW);
 
     if (params1.delay > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n");
     }
-    
+
     if ((params1.number == -2) && (params1.duration == -2)) {
         printf("\n Missing number of packets to send or time in seconds to transmit.\n Specify -n <number of packets> or -t <seconds to transmit>.\n");
         printf(" Set -n 0 to send until the ramp finishes. \n\n");
@@ -1053,19 +1067,19 @@ int send_variable_size() {
         printf("\n Only one option allowed at a time (-n or -t). \n Specify -n <number of packets> or -t <seconds to tramsmit>!\n\n");
         printf(" Set -n 0 to send until the ramp finishes. \n\n");
         exit(7);
-    } 
-    
+    }
+
     if ((params1.number == -2) && (params1.duration > 0)) {
         params1.number = 0;
     }
 
     if (params1.packetsize != -2) {
         printf("\n Option -S not allowed in this mode\n\n");
-        exit(7);    
+        exit(7);
     }
     if (params1.attack != -2) {
         printf("\n -a option not allowed in this mode!\n\n");
-        exit(7);      
+        exit(7);
     }
     if (strlen(params1.rateramp) > 0 ) {
         printf("\n Options -z and -Z are not allowed in this mode.\n\n");
@@ -1084,20 +1098,20 @@ int send_variable_size() {
 
     for (count = 0; count <= strlen(params1.sizeramp); count ++){
         ch = params1.sizeramp[count];
-        if((isblank(ch)) || (params1.sizeramp[count] == '\0')){ 
-            strncpy(tmp7, &params1.sizeramp[flag],count-flag); 
+        if((isblank(ch)) || (params1.sizeramp[count] == '\0')){
+            strncpy(tmp7, &params1.sizeramp[flag],count-flag);
             tmp7[count-flag]='\0';
-            if (wordcount==0) 
+            if (wordcount==0)
                 params1.startsize = strtol(tmp7, &p, 10);
-            else if (wordcount ==1)                     
+            else if (wordcount ==1)
                 params1.stopsize = strtol(tmp7, &p, 10);
-            else if (wordcount ==2)                     
+            else if (wordcount ==2)
                 params1.stepsize = strtol(tmp7, &p, 10);
 
             wordcount += 1;
             flag = count;
         }
-        
+
         }
     if (params1.startsize > params1.stopsize) {
         printf("\nstartsize is greater than stopzize (or did you forget the quotation marks?)\n\n");
@@ -1113,7 +1127,7 @@ int send_variable_size() {
     }
     if (params1.ph.incl_len < params1.stopsize) {
         printf("\nPacket loaded from pcap file is shorter than stopsize!\n\n");
-        return 1;   
+        return 1;
     }
 
     if ((params1.my_pattern > 1) && (params1.my_pattern != 14)) {
@@ -1124,19 +1138,19 @@ int send_variable_size() {
     }
     else if (strlen(params1.pattern) > 16) {
         printf("\n Pattern should not be longer than 16 chars!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_pattern < 0) || (params1.offset_pattern+strlen(params1.pattern) > params1.startsize)) {
         printf("\n Offset of the pattern is outside of the start packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_counter < 0) || (params1.offset_counter > params1.startsize)) {
         printf("\n Offset of the counter is outside the start packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.my_pattern > 1) && (params1.offset_counter >= params1.offset_pattern) && (params1.offset_counter <= params1.offset_pattern + strlen(params1.pattern))) {
         printf("\n Counter position and pattern position should not overlap!\n\n");
-        exit(7);   
+        exit(7);
     }
 
     params1.size = params1.startsize;
@@ -1154,21 +1168,23 @@ int send_variable_size() {
     else
         params1.ConstantRate = 0;
 
-    // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
+    // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.size-2, 0, 1);
         memset(params1.ptr+params1.size-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
+        bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
+        strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
     function_send();
     return 1;
 }
- 
+
 /*------------------------------------------------------------------------------*/
 int send_burst_constant_mode() {
 
@@ -1178,7 +1194,7 @@ int send_burst_constant_mode() {
     char tmp7[20];
     char ch;
 
-    if (params1.paramnum == 1) {  
+    if (params1.paramnum == 1) {
         usage_6();
         exit(0);
     }
@@ -1186,9 +1202,9 @@ int send_burst_constant_mode() {
     //check if the options are ok
     if (params1.delay_mode != 0) {
         printf("\n Option -d not allowed with this mode\n\n");
-        exit(7);    
+        exit(7);
     }
-    
+
     if ((params1.number == -2) && (params1.duration == -2)) {
         printf("\n Missing number of packets to send or time in seconds to transmit.\n Specify -n <number of packets> or -t <seconds to transmit>.\n");
         printf(" Set -n 0 to send infinite number of packets. \n\n");
@@ -1198,19 +1214,19 @@ int send_burst_constant_mode() {
         printf("\n Only one option allowed at a time (-n or -t). \n Specify -n <number of packets> or -t <seconds to tramsmit>!\n\n");
         printf(" Set -n 0 to send infinite number of packets. \n\n");
         exit(7);
-    } 
-    
+    }
+
     if ((params1.number == -2) && (params1.duration > 0)) {
         params1.number = 0;
     }
 
     if (params1.packetsize != -2) {
         printf("\n Option -S not allowed in this mode\n\n");
-        exit(7);    
+        exit(7);
     }
     if (params1.attack != -2) {
         printf("\n -a option not allowed in this mode!\n\n");
-        exit(7);      
+        exit(7);
     }
     if ((strlen(params1.sizeramp) > 0 ) || (strlen(params1.rateramp) > 0 ) || (strlen(params1.rateRAMP) > 0 ) || (params1.period != -2)) {
         printf("\n Ramp options not allowed in this mode\n\n");
@@ -1226,27 +1242,27 @@ int send_burst_constant_mode() {
     //last 2 are multiplied by 1000 because we input the values in ms not ns
     for (count = 0; count <= strlen(params1.burstargs); count ++){
         ch = params1.burstargs[count];
-        if((isblank(ch)) || (params1.burstargs[count] == '\0')){ 
-            strncpy(tmp7, &params1.burstargs[flag],count-flag); 
+        if((isblank(ch)) || (params1.burstargs[count] == '\0')){
+            strncpy(tmp7, &params1.burstargs[flag],count-flag);
             tmp7[count-flag]='\0';
-            if (wordcount==0) 
+            if (wordcount==0)
                 params1.burst_packets_in_burst = strtol(tmp7, &p, 10) ;
-            else if (wordcount ==1)                     
+            else if (wordcount ==1)
                 params1.burst_delay_between_packets = strtol(tmp7, &p, 10) * 1000;
-            else if (wordcount ==2)                     
+            else if (wordcount ==2)
                 params1.burst_delay_to_next_burst = strtol(tmp7, &p, 10) * 1000;
 
             wordcount += 1;
             flag = count;
         }
-        
+
     }
 
     if (params1.burst_delay_between_packets > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n");
     }
     if (params1.burst_delay_to_next_burst > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n");
     }
 
     /*if (params1.startsize > params1.stopsize) {
@@ -1263,7 +1279,7 @@ int send_burst_constant_mode() {
     }
     if (params1.ph.incl_len < params1.stopsize) {
         printf("\nPacket loaded from pcap file is shorter than stopsize!\n\n");
-        return 1;   
+        return 1;
     }*/
 
     if ((params1.my_pattern > 1) && (params1.my_pattern != 14)) {
@@ -1274,34 +1290,35 @@ int send_burst_constant_mode() {
     }
     else if (strlen(params1.pattern) > 16) {
         printf("\n Pattern should not be longer than 16 chars!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_pattern < 0) || (params1.offset_pattern+strlen(params1.pattern) > params1.ph.incl_len)) {
         printf("\n Offset of the pattern is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.offset_counter < 0) || (params1.offset_counter > params1.ph.incl_len)) {
         printf("\n Offset of the counter is outside the packet size!\n\n");
-        exit(7);   
+        exit(7);
     }
     else if ((params1.my_pattern > 1) && (params1.offset_counter >= params1.offset_pattern) && (params1.offset_counter <= params1.offset_pattern + strlen(params1.pattern))) {
         printf("\n Counter position and pattern position should not overlap!\n\n");
-        exit(7);   
+        exit(7);
     }
 
 
-    // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
+    // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        size_t bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
+        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
+        strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
-
 
     params1.size = params1.ph.incl_len;
 
@@ -1309,18 +1326,18 @@ int send_burst_constant_mode() {
 
     return 1;
 }
- 
+
 /*------------------------------------------------------------------------------*/
 int function_send_burst() {
 
     int c;
-    
+
     long  sentnumber = 0, lastnumber = 0;
     long long gap=0, gap2=0, gap2s=0, gap3s=0;
     struct timeval first;
     struct timespec first_ns, now_ns, last_ns, last2s_ns, last3s_ns;
     long burst_sent = 0;
-   
+
     /* this is the time we started */
     gettimeofday(&first, NULL);
 
@@ -1335,13 +1352,13 @@ int function_send_burst() {
 
     /*-----------------------------------------------------------------------------------------------*/
     for(; params1.number == 0 ? 1 : sentnumber < params1.number; ) {
-    
+
             clock_gettime(CLOCK_MONOTONIC, &now_ns);
             gap = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last_ns.tv_sec*1000000000 + last_ns.tv_nsec);
             gap2 = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (first_ns.tv_sec*1000000000 + first_ns.tv_nsec);
             gap2s = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last2s_ns.tv_sec*1000000000 + last2s_ns.tv_nsec);
             gap3s = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last3s_ns.tv_sec*1000000000 + last3s_ns.tv_nsec);
-    
+
             if (burst_sent < params1.burst_packets_in_burst) {
                 if (gap < params1.burst_delay_between_packets)
                     continue;
@@ -1351,7 +1368,7 @@ int function_send_burst() {
                     continue;
                 else
                     burst_sent = 0;
-                   
+
             }
 
             //send!
@@ -1364,7 +1381,7 @@ int function_send_burst() {
             if (c > 0) {
                 sentnumber++;
                 burst_sent++;
-                if (params1.my_pattern == 1) 
+                if (params1.my_pattern == 1)
                     (*(params1.ptr+params1.ph.incl_len-1))++;
                 else if (params1.my_pattern > 1)
                     (*(params1.ptr+params1.offset_counter-1))++;
@@ -1378,7 +1395,7 @@ int function_send_burst() {
             }
                 //exit if time has elapsed we exit
                 if ((params1.duration > 0) && (gap2 >= (long long)(params1.duration*1000000000)))
-                    break; 
+                    break;
             //}
 
             // every second we check if we need to adjust size, rate or both
@@ -1388,7 +1405,7 @@ int function_send_burst() {
                 last3s_ns.tv_nsec = now_ns.tv_nsec;
 
                 //if we need do the rate (bandwidth) ramp mode
-                /*if (params1.steprate != 0) { 
+                /*if (params1.steprate != 0) {
                     if ( (period2 > (params1.period-2)) && (params1.period>0) ) {
                         params1.rate = params1.rate + params1.steprate;
                         if ((params1.steprate > 0) && (params1.rate > params1.stoprate)) {
@@ -1400,17 +1417,17 @@ int function_send_burst() {
                         params1.delay = (long long)(params1.rate*1000) / (params1.size*8);
                         params1.delay = 1000000000 / params1.delay;
                         period2 = 0;
-                        
+
                     }
                     else
                     period2++;
                 }*/
-                
+
             }
     }
     print_final(first, sentnumber, params1.iftext);
     return 1;
-    
+
 }
 
 
@@ -1419,14 +1436,14 @@ int function_send() {
 
     int c;
     int period2 = 0;
-    
+
 
 
     long  sentnumber = 0, lastnumber = 0;
     long long gap=0, gap2=0, gap2s=0, gap3s=0;
     struct timeval first;
     struct timespec first_ns, now_ns, last_ns, last2s_ns, last3s_ns;
-   
+
     /* this is the time we started */
     gettimeofday(&first, NULL);
 
@@ -1449,13 +1466,13 @@ int function_send() {
     /* with counters and delay between packets set */
     else {
         for(; params1.number == 0 ? 1 : sentnumber < params1.number; ) {
-    
+
             clock_gettime(CLOCK_MONOTONIC, &now_ns);
             gap = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last_ns.tv_sec*1000000000 + last_ns.tv_nsec);
             gap2 = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (first_ns.tv_sec*1000000000 + first_ns.tv_nsec);
             gap2s = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last2s_ns.tv_sec*1000000000 + last2s_ns.tv_nsec);
             gap3s = (now_ns.tv_sec*1000000000 + now_ns.tv_nsec) - (last3s_ns.tv_sec*1000000000 + last3s_ns.tv_nsec);
-    
+
             if (gap < params1.delay)
                 continue;
 
@@ -1468,7 +1485,7 @@ int function_send() {
 
             if (c > 0) {
                 sentnumber++;
-                if (params1.my_pattern == 1) 
+                if (params1.my_pattern == 1)
                     (*(params1.ptr+params1.ph.incl_len-1))++;
                 else if (params1.my_pattern > 1)
                     (*(params1.ptr+params1.offset_counter-1))++;
@@ -1482,7 +1499,7 @@ int function_send() {
             }
                 //exit if time has elapsed we exit
                 if ((params1.duration > 0) && (gap2 >= (long long)(params1.duration*1000000000)))
-                    break; 
+                    break;
             //}
 
             // every second we check if we need to adjust size, rate or both
@@ -1492,7 +1509,7 @@ int function_send() {
                 last3s_ns.tv_nsec = now_ns.tv_nsec;
 
                 //if we need do the rate (bandwidth) ramp mode
-                if (params1.steprate != 0) { 
+                if (params1.steprate != 0) {
                     if ( (period2 > (params1.period-2)) && (params1.period>0) ) {
                         params1.rate = params1.rate + params1.steprate;
                         if ((params1.steprate > 0) && (params1.rate > params1.stoprate)) {
@@ -1504,7 +1521,7 @@ int function_send() {
                         params1.delay = (long long)(params1.rate*1000) / (params1.size*8);
                         params1.delay = 1000000000 / params1.delay;
                         period2 = 0;
-                        
+
                     }
                     else
                     period2++;
@@ -1519,7 +1536,7 @@ int function_send() {
                         period2 = 0;
                         if (params1.my_pattern == 1) {
                             strncpy(params1.ptr+params1.size-1, params1.ptr+params1.size-params1.stepsize-1, 1);
-                            strncpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
+                            memcpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
                         }
                     }
                     else
@@ -1528,7 +1545,7 @@ int function_send() {
                 //if we want to keep the rate the same, we need to change the delay
                 if (params1.ConstantRate == 1) {
                     params1.delay = (long long)(1000 * params1.rate) / (params1.size*8);
-                    params1.delay = 1000000000  / params1.delay;    
+                    params1.delay = 1000000000  / params1.delay;
                 }
             }
         }
@@ -1540,7 +1557,7 @@ int function_send() {
 
 /*------------------------------------------------------------------------------*/
 int interface_setup()
-{    
+{
     int i=0;
 
     if (strlen(params1.iftext) == 0 ) {
@@ -1573,7 +1590,8 @@ int interface_setup()
 
     /* which interface would you like to use? */
     memset(&params1.ifr, 0, sizeof(params1.ifr));
-    strncpy (params1.ifr.ifr_name, params1.iftext, sizeof(params1.ifr.ifr_name) - 1);
+    /* strncpy (params1.ifr.ifr_name, params1.iftext, sizeof(params1.ifr.ifr_name) - 1); */
+    strncpy_safe(params1.ifr.ifr_name, sizeof(params1.ifr.ifr_name), params1.iftext, sizeof(params1.iftext));
     params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
 
     /* does the interface exists? */
@@ -1593,7 +1611,8 @@ int interface_setup()
 
     if (params1.mode == 9) {
         /* Set interface to promiscuous mode - do we need to do this every time? */
-        strncpy(params1.ifopts.ifr_name, params1.iftext, sizeof(params1.ifopts.ifr_name)-1);
+        /* strncpy(params1.ifopts.ifr_name, params1.iftext, sizeof(params1.ifopts.ifr_name)-1); */
+        strncpy_safe(params1.ifopts.ifr_name, sizeof(params1.ifopts.ifr_name), params1.iftext, sizeof(params1.iftext));
         ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifopts);
         params1.ifopts.ifr_flags |= IFF_PROMISC;
         ioctl(params1.fd, SIOCSIFFLAGS, &params1.ifopts);
@@ -1616,9 +1635,9 @@ int interface_setup()
             perror("Interface bind error");
             exit (0);
         }
-    }    
+    }
 
-    return 1;   
+    return 1;
 }
 
 /*------------------------------------------------------------------------------*/
@@ -1657,20 +1676,20 @@ int read_packet_from_file(char *filename) {
     for (i=0; i < params1.seqnum; i++) {
         /* next the  pcap packet header */
         freads = fread(params1.pkt_temp, sizeof(params1.ph), 1, file_p);
-    
+
             /* if EOF, exit */
             if (freads == 0) {
                 printf("\nWrong sequence number? Or wrong pcap file format?\n\n");
                 exit(7);
             }
-    
+
             /* copy the 16 bytes into ph structure */
-            memcpy(&params1.ph, params1.pkt_temp, 16);    
+            memcpy(&params1.ph, params1.pkt_temp, 16);
             params1.ptr = params1.pkt_temp + sizeof(params1.ph);
-    
+
             /* and the packet itself, but only up to the capture length */
             freads = fread(params1.ptr, params1.ph.incl_len, 1, file_p);
-    
+
             /* if EOF, exit */
             if (freads == 0) {
                 printf("\nWrong sequence number? Or wrong pcap file format?\n\n");
@@ -1684,7 +1703,7 @@ int read_packet_from_file(char *filename) {
 
 /*------------------------------------------------------------------------------*/
 void print_intermidiate(long packets_sent, long packets_last_sent, int packet_size, int print_interval) {
-    
+
     long  mbps, packets_pps, link;
     float Mbps, Link;
 
@@ -1693,7 +1712,7 @@ void print_intermidiate(long packets_sent, long packets_last_sent, int packet_si
     Mbps = (float)mbps/1000;
     link = packets_pps * (packet_size + 24) / 125; /* +12 bytes for interframe gap time and 12 for preamble, sfd and checksum */
     Link = (float)link/1000;
-    
+
     printf("  Sent %ld packets on %s; %d bytes packet length; %ld packets/s; %.3f Mbit/s data rate; %.3f Mbit/s link utilization\n", packets_sent, params1.iftext, packet_size, packets_pps, Mbps, Link);
     fflush(stdout);
 }
@@ -1714,8 +1733,8 @@ void print_final(struct timeval first, long packets_sent, char *interface_name)
     fflush(stdout);
     close(params1.fd);
     if (params1.mode == 5)
-        cleanupRules(params1.num_rules);  
-    exit(1);  
+        cleanupRules(params1.num_rules);
+    exit(1);
 }
 
 /*------------------------------------------------------------------------------*/
@@ -1733,7 +1752,7 @@ inline __sum16
 ip_fast_csum(const void *iph, unsigned int ihl)
 {
     unsigned int sum;
-    
+
     asm("  movl (%1), %0\n"
         "  subl $4, %2\n"
         "  jbe 2f\n"
@@ -1765,27 +1784,27 @@ TCPChecksum(uint16_t* buf1, int buf1len, uint16_t* buf2, int buf2len)
 {
     uint32_t sum = 0;
     uint16_t tmp = 0;
-    
+
     assert(buf2 == NULL || buf1len % 2 == 0);
-    
+
     while (buf1len > 1) {
         sum += *buf1++;
         buf1len -= 2;
     }
-    
+
     /*  Add left-over byte, if any */
     if (buf1len > 0) {
         tmp = 0;
         *(uint8_t *) &tmp = *(uint8_t *) buf1;
         sum += tmp;
     }
-    
+
     if (buf2) {
         while (buf2len > 1) {
             sum += *buf2++;
             buf2len -= 2;
         }
-        
+
         /*  Add left-over byte, if any */
         if (buf2len > 0) {
             tmp = 0;
@@ -1793,11 +1812,11 @@ TCPChecksum(uint16_t* buf1, int buf1len, uint16_t* buf2, int buf2len)
             sum += tmp;
         }
     }
-    
+
     /* fold 32-bit sum to 16 bits */
     sum = (sum >> 16) + (sum & 0xffff);
     sum += (sum >> 16);
-    
+
     return (uint16_t)~sum;
 }
 /*------------------------------------------------------------------------------*/
@@ -1805,7 +1824,7 @@ inline uint32_t
 MyRandom(uint64_t *seed)
 {
     *seed = *seed * 1103515245 + 12345;
-    return (uint32_t)(*seed >> 32); 
+    return (uint32_t)(*seed >> 32);
 }
 /*------------------------------------------------------------------------------*/
 char *
@@ -1830,7 +1849,7 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
     static uint64_t attack_meter = 0;
     uint64_t attack_index;
     uint8_t attack_packet = 0;
-    
+
     /* build ether header (14B) */
     ethh = (struct ether_header *)buffer;
     memcpy(ethh->ether_dhost, ether_dhost, ETH_ALEN);
@@ -1838,10 +1857,10 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
     ethh->ether_type = htons(ETHERTYPE_IP);
 
     tot_len = pktsize - sizeof(struct ether_header);
-    
+
     /* build ip header (20B) */
     iph = (struct iphdr *)(ethh + 1);
-    memset(iph, 0, sizeof (struct iphdr));      
+    memset(iph, 0, sizeof (struct iphdr));
     iph->ihl = (unsigned int)(sizeof(struct iphdr)>>2);
     iph->version = 4;
     iph->ttl = 32;
@@ -1855,7 +1874,7 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
     /* build tcp header (20B) */
     tcph = (struct tcphdr *)((char *)buffer + sizeof(struct ether_header) +
                  sizeof(struct iphdr));
-    memset(tcph, 0, sizeof (struct tcphdr));    
+    memset(tcph, 0, sizeof (struct tcphdr));
     tcph->source = TCP_SRC_PORT;
     tcph->dest = TCP_DST_PORT;
     tcph->seq = MyRandom(seed);
@@ -1895,7 +1914,7 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
             memcpy((char *)buffer + sizeof(struct ether_header) +
                    sizeof(struct iphdr) + sizeof(struct tcphdr),
                    g_content[*rule_idx], tot_len + sizeof(struct ether_header));
-            attack_packet = 1;          
+            attack_packet = 1;
         }
         else
             memcpy((char *)buffer + sizeof(struct ether_header) +
@@ -1938,23 +1957,23 @@ build_packet(char *buffer, int pktsize, int tot_rules, int *rule_idx, uint64_t *
                   tot_len);
 
     attack_meter++;
-    
+
     return buffer;
 }
 /*------------------------------------------------------------------------------*/
 /* IDS mode */
 
 //int four(char *iftext, long delay, long pkt2send, char* filename, char *sizetmp, int period, int attack)
-int send_ids_mode() 
+int send_ids_mode()
 {
     int count, flag=0;
-    
+
     int wordcount = 0;
     char *p;
     char tmp7[10];
     char ch;
-    
-    if (params1.paramnum == 1) {  
+
+    if (params1.paramnum == 1) {
         usage_5();
         exit(0);
     }
@@ -1974,26 +1993,26 @@ int send_ids_mode()
         printf("   -d 0                - maximum speed with counters\n");
         printf("   -b <bandwidth>      - desired bandwidth in kbit/s\n");
         printf("   -B <bandwidth>      - desired bandwidth in Mbit/s\n\n");
-        exit(7);    
+        exit(7);
     }
     else if ((params1.delay_mode == 1) && (params1.delay == -1)) {
         printf("\n Option -d -1 not allowed with this mode\n\n");
         exit(7);
     }
-    
+
     if (params1.delay_mode == 1)
         params1.delay = params1.delay * 1000;
-    else if (params1.delay_mode == 2) 
+    else if (params1.delay_mode == 2)
         params1.delay = params1.delay;
     else if (params1.delay_mode == 4)
         params1.delay = (long long)(1000000 * (long long)params1.ph.incl_len * 8 / params1.bw);
-    else if (params1.delay_mode == 8) 
+    else if (params1.delay_mode == 8)
         params1.delay = (long long)(1000 * (long long)params1.ph.incl_len * 8 / params1.BW);
 
     if (params1.delay > 999000000) {
-            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n"); 
+            printf ("\n Warning! Rate is below 1pps, statistics will be displayed only when a packet will be sent.\n\n");
     }
-    
+
     if ((params1.number == -2) && (params1.duration == -2)) {
         printf("\n Missing number of packets to send or time in seconds to transmit.\n Specify -n <number of packets> or -t <seconds to transmit>.\n");
         printf(" Set -n 0 to send infinite number of packets. \n\n");
@@ -2004,7 +2023,7 @@ int send_ids_mode()
         printf(" Set -n 0 to send until the ramp finishes. \n\n");
         exit(7);
     }
-    
+
     if ((params1.number == -2) && (params1.duration > 0)) {
         params1.number = 0;
     }
@@ -2041,24 +2060,24 @@ int send_ids_mode()
         fprintf(stderr, "Rules file is empty!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (strlen(params1.sizeramp) > 0 ) {
         for (count = 0; count <= strlen(params1.sizeramp); count ++){
             ch = params1.sizeramp[count];
-            if((isblank(ch)) || (params1.sizeramp[count] == '\0')){ 
-                strncpy(tmp7, &params1.sizeramp[flag],count-flag); 
+            if((isblank(ch)) || (params1.sizeramp[count] == '\0')){
+                strncpy(tmp7, &params1.sizeramp[flag],count-flag);
                 tmp7[count-flag]='\0';
-                if (wordcount==0) 
+                if (wordcount==0)
                     params1.startsize = strtol(tmp7, &p, 10);
                 else if (wordcount == 1)
                     params1.stopsize = strtol(tmp7, &p, 10);
                 else if (wordcount == 2)
                     params1.stepsize = strtol(tmp7, &p, 10);
-                
+
                 wordcount += 1;
                 flag = count;
             }
-            
+
         }
         if (params1.startsize > params1.stopsize) {
             printf("\nstartsize is greater than stopzize\n\n");
@@ -2069,13 +2088,13 @@ int send_ids_mode()
         if (params1.startsize < 60) {
             printf("\nstartsize must be >60\n\n");
             close(params1.fd);
-            cleanupRules(params1.num_rules);            
+            cleanupRules(params1.num_rules);
             return 1;
         }
         if (params1.stopsize > MAX_MTU) {
             printf("\nstopsize must be <%d\n\n", MAX_MTU);
             close(params1.fd);
-            cleanupRules(params1.num_rules);            
+            cleanupRules(params1.num_rules);
             return 1;
         }
         params1.size = params1.startsize;
@@ -2084,9 +2103,24 @@ int send_ids_mode()
         params1.size = params1.packetsize;
 
     function_send();
-              
+
     return 1;
 }
+
+/*------------------------------------------------------------------------------*/
+/* Safe strncpy: strncpy_safe */
+char *strncpy_safe(char *out, size_t outsz, const char *in, size_t insz)
+{
+    assert(outsz > 0);
+    while (--outsz > 0 && insz > 0 && *in) {
+        *out++ = *in++;
+        insz--;
+    }
+    *out = '\0';
+
+    return out;
+}
+
 
 void usage(void) {
     printf("\nUsage: ./packETHcli -m <mode > -i <interface> -f <file> [options]\n");
@@ -2109,7 +2143,7 @@ void usage(void) {
 
 void usage_1(void) {
     printf(" -m 1   - SEND PACKET ONCE (default mode): send packet from the pcap file once \n");
-    printf("          Usage: ./packETHcli -m 1 -i <interface> -f <pacp file> [-c]\n");  
+    printf("          Usage: ./packETHcli -m 1 -i <interface> -f <pacp file> [-c]\n");
     printf("          Optional parameter:\n");
     printf("               -c <number>  - sequence number of packet stored in pcap file (by default first packet will be sent)\n");
     printf("                              to see sequence numbers of packets inside pcap file: tcpdump -# -r filename\n");
@@ -2118,7 +2152,7 @@ void usage_1(void) {
 
 void usage_2(void) {
     printf(" -m 2   - SEND PACKETS CONTINUOUSLY WITH CONSTANT RATE: send (first) packet from pcap file at constant rate\n");
-    printf("          Usage: ./packETHcli -m 2 -i <interface> -f <pcap file> [options]\n");  
+    printf("          Usage: ./packETHcli -m 2 -i <interface> -f <pcap file> [options]\n");
     printf("          Required parameters:\n");
     printf("              Number of packets to send or duration in seconds (only one option possible)\n");
     printf("               -n <number, 0> - number of packets to send or 0 for infinite\n");
@@ -2145,7 +2179,7 @@ void usage_2(void) {
 
  void usage_3(void) {
     printf(" -m 3   - SEND PACKETS CONTINUOUSLY WITH VARIABLE RATE (SPEED RAMP)\n");
-    printf("          Usage: ./packETHcli -m 3 -i <interface> -f <pcap file> [options]\n");  
+    printf("          Usage: ./packETHcli -m 3 -i <interface> -f <pcap file> [options]\n");
     printf("          Required parameters:\n");
     printf("              Number of packets to send or duration in seconds (only one option possible)\n");
     printf("               -n <number, 0> - number of packets to send or 0 for infinite\n");
@@ -2170,7 +2204,7 @@ void usage_2(void) {
 
 void usage_4(void) {
     printf(" -m 4   - SEND PACKETS CONTINUOUSLY WITH VARIABLE SIZE (SIZE RAMP)\n");
-    printf("          Usage: ./packETHcli -m 4 -i <interface> -f <pcap file> [options]\n");  
+    printf("          Usage: ./packETHcli -m 4 -i <interface> -f <pcap file> [options]\n");
     printf("          Required parameters:\n");
     printf("              Number of packets to send or duration in seconds (only one option possible)\n");
     printf("               -n <number, 0> - number of packets to send or 0 for infinite\n");
@@ -2195,7 +2229,7 @@ void usage_5(void) {
     printf(" -m 5   - SEND SEQUENCE OF PACKETS (IDS TEST MODE)\n");
     printf("          Usage: ./packETHcli -m 5 -i <interface> -f <attack definitions file> [options]\n");
     printf("          Required parameters\n");
-    printf("            -f <attack definitions file in Snort rule format> \n"); 
+    printf("            -f <attack definitions file in Snort rule format> \n");
     printf("            -a <numbers from 0 to 4> - innocent traffic for 0, 25%% attack for 1, 50%% attack for 2, 75%% attack for 3, 100%% attack for 4> \n");
     printf("            -S <packet size in bytes OR -s \"<startsize stopsize stepsize>\" -p <step period>\n");
     printf("            -d <us, 0, -1> - delay between packets OR -b <bandwidth in kbit/s>  OR -B <bandwidth in Mbit/s\n");
@@ -2206,7 +2240,7 @@ void usage_5(void) {
 
 void usage_6(void) {
     printf(" -m 6   - SEND PACKETS IN BURST MODE (CONSTANT BURST)\n");
-    printf("          Usage: ./packETHcli -m 4 -i <interface> -f <pcap file> [options]\n");  
+    printf("          Usage: ./packETHcli -m 4 -i <interface> -f <pcap file> [options]\n");
     printf("          Required parameters:\n");
     printf("              Number of packets to send or duration in seconds (only one option possible)\n");
     printf("               -n <number, 0> - number of packets to send or 0 for infinite\n");
@@ -2253,11 +2287,11 @@ void examples(void) {
     printf("   ./packETHcli -i eth0 -m 2 -d 0 -n 0 -f p1.pcap                                - send at max speed, infinite times, display counters every seconf\n");
     printf("   ./packETHcli -i eth0 -m 2 -d -1 -n 0 -f p1.pcap                               - send at max speed, infinite times, no counters\n");
     printf("   ./packETHcli -i eth0 -m 2 -d 1000 -n 300 -f p1.pcap                           - send 300 packets with 1000 us (1ms) between them\n");
-    printf("   ./packETHcli -i eth0 -m 2 -b 1500 -t 30 -f p1.pcap -I 5                       - send packets with rate 1500 kbit/s for 30s, display results every 5s\n");        
-    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap -c 7                     - send 7th packet 10000 times, with rate 100 Mbit/s\n");        
-    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 0 -f p1.pcap -x                           - send infinite times with rate 100 Mbit/s, add predifined pattern and counter\n");        
-    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 0 -f p1.pcap -o 60 -q 70 -w 12345         - send infinite times with rate 100 Mbit/s, add counter at byte 60 and pattern 12345 at byte 70\n");        
-    printf("\n"); 
+    printf("   ./packETHcli -i eth0 -m 2 -b 1500 -t 30 -f p1.pcap -I 5                       - send packets with rate 1500 kbit/s for 30s, display results every 5s\n");
+    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 10000 -f p1.pcap -c 7                     - send 7th packet 10000 times, with rate 100 Mbit/s\n");
+    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 0 -f p1.pcap -x                           - send infinite times with rate 100 Mbit/s, add predifined pattern and counter\n");
+    printf("   ./packETHcli -i eth0 -m 2 -B 100 -n 0 -f p1.pcap -o 60 -q 70 -w 12345         - send infinite times with rate 100 Mbit/s, add counter at byte 60 and pattern 12345 at byte 70\n");
+    printf("\n");
     printf("  mode 3 - send packets with different rates (speed ramp):\n");
     printf("   ./packETHcli -i eth1 -m   -n 0 -z \"100 1500 100\" -p 10 -f p1.pcap             - start sendind at 100kbit/s for 10s, then increase rate by 100kbit/s each 10s up to 1500 kbit/s\n");
     printf("   ./packETHcli -i eth1 -m 3 -t 3600 -Z \"500 100 1\" -p 5 -f p1.pcap              - send with 500Mbit/s for 5s, then decrease rate by 1Mbit/s each 5s. Stop after 3600s if not finished\n");
@@ -2281,6 +2315,5 @@ void examples(void) {
     printf("   ./packETHcli -i eth1 -m 9 -o 60 -q 70 -w 12345                                - receive and count packets that have counter at byte 60 and the pattern is 12345 at byte 70\n");
     printf("\n");
     printf("\n\n");
-    exit (8);    
+    exit (8);
 }
-
