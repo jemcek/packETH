@@ -248,7 +248,8 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'i': {
-                strcpy(params1.iftext, optarg);
+                strncpy_safe(params1.iftext, sizeof(params1.iftext),
+                             optarg, strnlen(optarg, sizeof(params1.iftext) - 1));
                 // waht values are allowed
                 break;
             }
@@ -343,13 +344,11 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'z': {
-                /* strncpy(params1.rateramp, optarg, 50); */
                 strncpy_safe(params1.rateramp, sizeof(params1.rateramp),
                              optarg, strnlen(optarg, sizeof(params1.rateramp) - 1));
                 break;
             }
             case 'Z': {
-                /* strncpy(params1.rateRAMP, optarg, 50); */
                 strncpy_safe(params1.rateRAMP, sizeof(params1.rateRAMP),
                              optarg, strnlen(optarg, sizeof(params1.rateRAMP) - 1));
                 break;
@@ -381,7 +380,8 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'w': {
-                strncpy_safe(params1.pattern, sizeof(params1.pattern), optarg, strlen(optarg));
+                strncpy_safe(params1.pattern, sizeof(params1.pattern),
+                             optarg, strnlen(optarg, sizeof(params1.pattern) - 1));
                 params1.my_pattern = params1.my_pattern + 8;
                 break;
             }
@@ -390,7 +390,8 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'f': {
-                strncpy(params1.filename, optarg, 99);
+                strncpy_safe(params1.filename, sizeof(params1.filename),
+                             optarg, strnlen(optarg, sizeof(params1.filename) - 1));
                 break;
             }
             default: {
@@ -826,7 +827,6 @@ int send_constant_stream() {
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
         bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
         strncpy_safe(params1.ptr + params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
@@ -932,11 +932,13 @@ int send_variable_rate() {
     params1.size = params1.ph.incl_len;
 
     if (strlen(params1.rateramp) > 0 ) {
-        strncpy(tmp8, params1.rateramp, 50);
+        strncpy_safe(tmp8, sizeof(tmp8),
+                     params1.rateramp, strnlen(params1.rateramp, sizeof(tmp8) - 1));
         Mega = 0;
     }
     else if (strlen(params1.rateRAMP) > 0) {
-        strncpy(tmp8, params1.rateRAMP, 50);
+        strncpy_safe(tmp8, sizeof(tmp8),
+                     params1.rateRAMP, strnlen(params1.rateRAMP, sizeof(tmp8) - 1));
         Mega = 1;
     }
     else {
@@ -948,8 +950,7 @@ int send_variable_rate() {
     for (count = 0; count <= strlen(tmp8); count ++){
         ch = tmp8[count];
         if((isblank(ch)) || (tmp8[count] == '\0')){
-            strncpy(tmp7, &tmp8[flag],count-flag);
-            tmp7[count-flag]='\0';
+            strncpy_safe(tmp7, sizeof(tmp7), &tmp8[flag], count - flag);
             if (wordcount==0)
                 params1.startrate = strtol(tmp7, &p, 10);
             else if (wordcount ==1)
@@ -1007,8 +1008,8 @@ int send_variable_rate() {
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
         bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
-        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
-        strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
+        strncpy_safe(params1.ptr+params1.offset_pattern, bufsz,
+                     params1.pattern, strnlen(params1.pattern, bufsz - 1));
     }
 
     function_send();
@@ -1099,8 +1100,7 @@ int send_variable_size() {
     for (count = 0; count <= strlen(params1.sizeramp); count ++){
         ch = params1.sizeramp[count];
         if((isblank(ch)) || (params1.sizeramp[count] == '\0')){
-            strncpy(tmp7, &params1.sizeramp[flag],count-flag);
-            tmp7[count-flag]='\0';
+            strncpy_safe(tmp7, sizeof(tmp7), &params1.sizeramp[flag], count - flag);
             if (wordcount==0)
                 params1.startsize = strtol(tmp7, &p, 10);
             else if (wordcount ==1)
@@ -1114,7 +1114,7 @@ int send_variable_size() {
 
         }
     if (params1.startsize > params1.stopsize) {
-        printf("\nstartsize is greater than stopzize (or did you forget the quotation marks?)\n\n");
+        printf("\nstartsize is greater than stopsize (or did you forget the quotation marks?)\n\n");
         return 1;
     }
     if (params1.startsize < 60) {
@@ -1177,7 +1177,6 @@ int send_variable_size() {
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
         bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
         strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
@@ -1243,8 +1242,7 @@ int send_burst_constant_mode() {
     for (count = 0; count <= strlen(params1.burstargs); count ++){
         ch = params1.burstargs[count];
         if((isblank(ch)) || (params1.burstargs[count] == '\0')){
-            strncpy(tmp7, &params1.burstargs[flag],count-flag);
-            tmp7[count-flag]='\0';
+            strncpy_safe(tmp7, sizeof(tmp7), &params1.burstargs[flag], count - flag);
             if (wordcount==0)
                 params1.burst_packets_in_burst = strtol(tmp7, &p, 10) ;
             else if (wordcount ==1)
@@ -1316,7 +1314,6 @@ int send_burst_constant_mode() {
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
         size_t bufsz = sizeof(params1.pkt_temp) - sizeof(params1.ph) - params1.offset_pattern;
-        /* strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern)); */
         strncpy_safe(params1.ptr+params1.offset_pattern, bufsz, params1.pattern, strlen(params1.pattern));
     }
 
@@ -1611,7 +1608,6 @@ int interface_setup()
 
     if (params1.mode == 9) {
         /* Set interface to promiscuous mode - do we need to do this every time? */
-        /* strncpy(params1.ifopts.ifr_name, params1.iftext, sizeof(params1.ifopts.ifr_name)-1); */
         strncpy_safe(params1.ifopts.ifr_name, sizeof(params1.ifopts.ifr_name), params1.iftext, sizeof(params1.iftext));
         ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifopts);
         params1.ifopts.ifr_flags |= IFF_PROMISC;
@@ -2065,8 +2061,7 @@ int send_ids_mode()
         for (count = 0; count <= strlen(params1.sizeramp); count ++){
             ch = params1.sizeramp[count];
             if((isblank(ch)) || (params1.sizeramp[count] == '\0')){
-                strncpy(tmp7, &params1.sizeramp[flag],count-flag);
-                tmp7[count-flag]='\0';
+                strncpy_safe(tmp7, sizeof(tmp7), &params1.sizeramp[flag], count - flag);
                 if (wordcount==0)
                     params1.startsize = strtol(tmp7, &p, 10);
                 else if (wordcount == 1)
