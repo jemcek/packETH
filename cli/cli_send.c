@@ -333,19 +333,19 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'L': {
-                strncpy(params1.burstargs, optarg, 50);
+                memcpy(params1.burstargs, optarg, 50);
                 break;
             }
             case 's': {
-                strncpy(params1.sizeramp, optarg, 20);
+                memcpy(params1.sizeramp, optarg, 20);
                 break;
             }
             case 'z': {
-                strncpy(params1.rateramp, optarg, 50);
+                memcpy(params1.rateramp, optarg, 50);
                 break;
             }
             case 'Z': {
-                strncpy(params1.rateRAMP, optarg, 50);
+                memcpy(params1.rateRAMP, optarg, 50);
                 break;
             }
             case 'p': {
@@ -375,7 +375,7 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'w': {
-                strncpy(params1.pattern, optarg, 20);
+                memcpy(params1.pattern, optarg, 20);
                 params1.my_pattern = params1.my_pattern + 8;
                 break;
             }
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
                 break;
             }
             case 'f': {
-                strncpy(params1.filename, optarg, 99);
+                memcpy(params1.filename, optarg, 99);
                 break;
             }
             default: {
@@ -811,14 +811,14 @@ int send_constant_stream() {
 
     // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        memcpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
     }
 
     params1.size = params1.ph.incl_len; 
@@ -921,11 +921,11 @@ int send_variable_rate() {
     params1.size = params1.ph.incl_len;
 
     if (strlen(params1.rateramp) > 0 ) {
-        strncpy(tmp8, params1.rateramp, 50);
+        memcpy(tmp8, params1.rateramp, 50);
         Mega = 0;
     }
     else if (strlen(params1.rateRAMP) > 0) {
-        strncpy(tmp8, params1.rateRAMP, 50);
+        memcpy(tmp8, params1.rateRAMP, 50);
         Mega = 1;
     }
     else {
@@ -937,7 +937,7 @@ int send_variable_rate() {
     for (count = 0; count <= strlen(tmp8); count ++){
         ch = tmp8[count];
         if((isblank(ch)) || (tmp8[count] == '\0')){ 
-            strncpy(tmp7, &tmp8[flag],count-flag); 
+            memcpy(tmp7, &tmp8[flag],count-flag); 
             tmp7[count-flag]='\0';
             if (wordcount==0) 
                 params1.startrate = strtol(tmp7, &p, 10);
@@ -988,14 +988,14 @@ int send_variable_rate() {
     
     // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        memcpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
     }
    
     function_send();
@@ -1085,7 +1085,7 @@ int send_variable_size() {
     for (count = 0; count <= strlen(params1.sizeramp); count ++){
         ch = params1.sizeramp[count];
         if((isblank(ch)) || (params1.sizeramp[count] == '\0')){ 
-            strncpy(tmp7, &params1.sizeramp[flag],count-flag); 
+            memcpy(tmp7, &params1.sizeramp[flag],count-flag); 
             tmp7[count-flag]='\0';
             if (wordcount==0) 
                 params1.startsize = strtol(tmp7, &p, 10);
@@ -1156,14 +1156,14 @@ int send_variable_size() {
 
     // if we inser my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.size-2, 0, 1);
         memset(params1.ptr+params1.size-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        memcpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
     }
     function_send();
     return 1;
@@ -1227,7 +1227,7 @@ int send_burst_constant_mode() {
     for (count = 0; count <= strlen(params1.burstargs); count ++){
         ch = params1.burstargs[count];
         if((isblank(ch)) || (params1.burstargs[count] == '\0')){ 
-            strncpy(tmp7, &params1.burstargs[flag],count-flag); 
+            memcpy(tmp7, &params1.burstargs[flag],count-flag); 
             tmp7[count-flag]='\0';
             if (wordcount==0) 
                 params1.burst_packets_in_burst = strtol(tmp7, &p, 10) ;
@@ -1292,14 +1292,14 @@ int send_burst_constant_mode() {
 
     // if we insert my_pattern, this will be inserted from last 10 to last 2 bytes. Last 2 bytes themselves are reserved for counter 
     if (params1.my_pattern == 1) {
-        strncpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
+        memcpy(params1.ptr+params1.ph.incl_len-10, MY_PATTERN, 8);
         memset(params1.ptr+params1.ph.incl_len-2, 0, 1);
         memset(params1.ptr+params1.ph.incl_len-1, 1, 1);
     }
 
     // in case we use custom pattern and offset
     if(params1.my_pattern > 1) {
-        strncpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
+        memcpy(params1.ptr+params1.offset_pattern, params1.pattern, strlen(params1.pattern));
     }
 
 
@@ -1518,8 +1518,8 @@ int function_send() {
                         }
                         period2 = 0;
                         if (params1.my_pattern == 1) {
-                            strncpy(params1.ptr+params1.size-1, params1.ptr+params1.size-params1.stepsize-1, 1);
-                            strncpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
+                            memcpy(params1.ptr+params1.size-1, params1.ptr+params1.size-params1.stepsize-1, 1);
+                            memcpy(params1.ptr+params1.size-10, MY_PATTERN, 8);
                         }
                     }
                     else
@@ -1573,7 +1573,7 @@ int interface_setup()
 
     /* which interface would you like to use? */
     memset(&params1.ifr, 0, sizeof(params1.ifr));
-    strncpy (params1.ifr.ifr_name, params1.iftext, sizeof(params1.ifr.ifr_name) - 1);
+    memcpy (params1.ifr.ifr_name, params1.iftext, sizeof(params1.ifr.ifr_name) - 1);
     params1.ifr.ifr_name[sizeof(params1.ifr.ifr_name)-1] = '\0';
 
     /* does the interface exists? */
@@ -1593,7 +1593,7 @@ int interface_setup()
 
     if (params1.mode == 9) {
         /* Set interface to promiscuous mode - do we need to do this every time? */
-        strncpy(params1.ifopts.ifr_name, params1.iftext, sizeof(params1.ifopts.ifr_name)-1);
+        memcpy(params1.ifopts.ifr_name, params1.iftext, sizeof(params1.ifopts.ifr_name)-1);
         ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifopts);
         params1.ifopts.ifr_flags |= IFF_PROMISC;
         ioctl(params1.fd, SIOCSIFFLAGS, &params1.ifopts);
@@ -2046,7 +2046,7 @@ int send_ids_mode()
         for (count = 0; count <= strlen(params1.sizeramp); count ++){
             ch = params1.sizeramp[count];
             if((isblank(ch)) || (params1.sizeramp[count] == '\0')){ 
-                strncpy(tmp7, &params1.sizeramp[flag],count-flag); 
+                memcpy(tmp7, &params1.sizeramp[flag],count-flag); 
                 tmp7[count-flag]='\0';
                 if (wordcount==0) 
                     params1.startsize = strtol(tmp7, &p, 10);
