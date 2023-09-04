@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
 <interface>
+  <requires lib="gtk+" version="3.16"/>
   <object class="GtkDialog" id="udp_payload_dialog">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Select UDP payload</property>
@@ -16,19 +17,19 @@
     <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
     <property name="focus_on_map">True</property>
     <property name="urgency_hint">False</property>
-    <property name="has_separator">True</property>
     <signal name="destroy" handler="on_udp_payload_dialog_destroy"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox4">
+      <object class="GtkBox" id="dialog-vbox4">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area4">
+          <object class="GtkButtonBox" id="dialog-action_area4">
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <object class="GtkHBox" id="hbox77">
+              <object class="GtkBox" id="hbox77">
                 <property name="visible">True</property>
                 <property name="homogeneous">False</property>
                 <property name="spacing">0</property>
@@ -92,17 +93,17 @@
                 <property name="label_yalign">0.5</property>
                 <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                 <child>
-                  <object class="GtkVBox" id="vbox54">
+                  <object class="GtkBox" id="vbox54">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="homogeneous">False</property>
                     <property name="spacing">0</property>
                     <child>
-                      <object class="GtkTable" id="table2">
+                      <!-- n-columns=6 n-rows=7 -->
+                      <object class="GtkGrid" id="table2">
                         <property name="border_width">10</property>
                         <property name="visible">True</property>
-                        <property name="n_rows">7</property>
-                        <property name="n_columns">6</property>
-                        <property name="homogeneous">False</property>
+                        <property name="column-homogeneous">False</property>
                         <property name="row_spacing">2</property>
                         <property name="column_spacing">5</property>
                         <child>
@@ -125,11 +126,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
-                            <property name="right_attach">6</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -152,11 +149,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
-                            <property name="right_attach">6</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -179,11 +172,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
-                            <property name="right_attach">6</property>
                             <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -206,11 +195,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
-                            <property name="right_attach">6</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -233,11 +218,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -260,11 +241,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -287,11 +264,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -314,11 +287,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -341,11 +310,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -368,11 +333,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">5</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -389,11 +350,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -410,11 +367,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -431,11 +384,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -453,11 +402,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -480,11 +425,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -507,11 +448,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -534,11 +471,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -561,11 +494,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -588,11 +517,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -610,11 +535,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
                             <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -637,11 +558,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="right_attach">1</property>
                             <property name="top_attach">6</property>
-                            <property name="bottom_attach">7</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -664,11 +581,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
                             <property name="top_attach">6</property>
-                            <property name="bottom_attach">7</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -686,11 +599,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -700,6 +609,7 @@
                             <property name="editable">True</property>
                             <property name="visibility">True</property>
                             <property name="max_length">32</property>
+                            <property name="width-chars">32</property>
                             <property name="text" translatable="yes"/>
                             <property name="has_frame">True</property>
                             <property name="invisible_char">&#x2022;</property>
@@ -707,11 +617,8 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">3</property>
+                            <property name="width">2</property>
                             <property name="top_attach">6</property>
-                            <property name="bottom_attach">7</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
@@ -721,6 +628,7 @@
                             <property name="editable">True</property>
                             <property name="visibility">True</property>
                             <property name="max_length">32</property>
+                            <property name="width-chars">32</property>
                             <property name="text" translatable="yes"/>
                             <property name="has_frame">True</property>
                             <property name="invisible_char">&#x2022;</property>
@@ -728,15 +636,12 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">6</property>
+                            <property name="width">2</property>
                             <property name="top_attach">6</property>
-                            <property name="bottom_attach">7</property>
-                            <property name="x_options"/>
-                            <property name="y_options"/>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox84">
+                          <object class="GtkBox" id="hbox84">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -747,6 +652,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">5</property>
+                                <property name="width-chars">5</property>
                                 <property name="text" translatable="yes">0</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -785,15 +691,11 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">5</property>
                             <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox85">
+                          <object class="GtkBox" id="hbox85">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -804,6 +706,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">2</property>
+                                <property name="width-chars">2</property>
                                 <property name="text" translatable="yes">0</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -842,15 +745,12 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">3</property>
+                            <property name="width">2</property>
                             <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox86">
+                          <object class="GtkBox" id="hbox86">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -861,6 +761,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">1</property>
+                                <property name="width-chars">1</property>
                                 <property name="text" translatable="yes">2</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -899,15 +800,12 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="right_attach">3</property>
+                            <property name="width">2</property>
                             <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox87">
+                          <object class="GtkBox" id="hbox87">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -918,6 +816,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">3</property>
+                                <property name="width-chars">3</property>
                                 <property name="text" translatable="yes">8</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -952,15 +851,12 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">6</property>
+                            <property name="width">2</property>
                             <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox93">
+                          <object class="GtkBox" id="hbox93">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -971,6 +867,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">10</property>
+                                <property name="width-chars">10</property>
                                 <property name="text" translatable="yes">0</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -1009,15 +906,11 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">5</property>
                             <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox94">
+                          <object class="GtkBox" id="hbox94">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -1028,6 +921,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">10</property>
+                                <property name="width-chars">10</property>
                                 <property name="text" translatable="yes">0</property>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -1066,11 +960,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">4</property>
-                            <property name="right_attach">5</property>
                             <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">fill</property>
-                            <property name="y_options">fill</property>
                           </packing>
                         </child>
                       </object>
@@ -1081,7 +971,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHSeparator" id="hseparator4">
+                      <object class="GtkSeparator" id="hseparator4">
                         <property name="visible">True</property>
                       </object>
                       <packing>
@@ -1122,7 +1012,7 @@
                         <property name="label_yalign">0.5</property>
                         <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                         <child>
-                          <object class="GtkHBox" id="hbox95">
+                          <object class="GtkBox" id="hbox95">
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
@@ -1157,6 +1047,7 @@
                                 <property name="editable">True</property>
                                 <property name="visibility">True</property>
                                 <property name="max_length">2920</property>
+                                <property name="width-chars">2920</property>
                                 <property name="text" translatable="yes"/>
                                 <property name="has_frame">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -1185,12 +1076,13 @@
                         <property name="label_yalign">0.5</property>
                         <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                         <child>
-                          <object class="GtkVBox" id="vbox61">
+                          <object class="GtkBox" id="vbox61">
+                            <property name="orientation">vertical</property>
                             <property name="visible">True</property>
                             <property name="homogeneous">False</property>
                             <property name="spacing">0</property>
                             <child>
-                              <object class="GtkHBox" id="hbox88">
+                              <object class="GtkBox" id="hbox88">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">False</property>
                                 <property name="spacing">0</property>
@@ -1225,6 +1117,7 @@
                                     <property name="editable">True</property>
                                     <property name="visibility">True</property>
                                     <property name="max_length">4</property>
+                                    <property name="width-chars">4</property>
                                     <property name="text" translatable="yes"/>
                                     <property name="has_frame">True</property>
                                     <property name="invisible_char">&#x2022;</property>
@@ -1315,6 +1208,7 @@
                                     <property name="editable">True</property>
                                     <property name="visibility">True</property>
                                     <property name="max_length">4</property>
+                                    <property name="width-chars">4</property>
                                     <property name="text" translatable="yes"/>
                                     <property name="has_frame">True</property>
                                     <property name="invisible_char">&#x2022;</property>
@@ -1358,7 +1252,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox100">
+                              <object class="GtkBox" id="hbox100">
                                 <property name="visible">True</property>
                                 <property name="homogeneous">False</property>
                                 <property name="spacing">0</property>

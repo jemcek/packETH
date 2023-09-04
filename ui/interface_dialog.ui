@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
 <interface>
+  <requires lib="gtk+" version="3.16"/>
   <object class="GtkDialog" id="interface_dialog">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Options</property>
@@ -16,19 +17,19 @@
     <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
     <property name="focus_on_map">True</property>
     <property name="urgency_hint">False</property>
-    <property name="has_separator">True</property>
     <signal name="destroy" handler="on_interface_dialog_destroy"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkBox" id="dialog-vbox2">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
+          <object class="GtkButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <object class="GtkHBox" id="hbox65">
+              <object class="GtkBox" id="hbox65">
                 <property name="visible">True</property>
                 <property name="homogeneous">False</property>
                 <property name="spacing">0</property>
@@ -75,7 +76,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox66">
+          <object class="GtkBox" id="hbox66">
             <property name="border_width">15</property>
             <property name="visible">True</property>
             <property name="homogeneous">False</property>
@@ -116,6 +117,7 @@
                     <property name="editable">True</property>
                     <property name="visibility">True</property>
                     <property name="max_length">0</property>
+                    <property name="width-chars">0</property>
                     <property name="text" translatable="yes"/>
                     <property name="has_frame">True</property>
                     <property name="invisible_char">&#x2022;</property>

@@ -46,9 +46,6 @@ struct pcaprec_hdr {
     guint32     orig_len;       /* actual length of packet */
 };
 
-/* Link-layer type; */
-static unsigned long pcap_link_type = 1;   /* Default is DLT-EN10MB */
-
 /* struct for clist */
 struct clist_hdr {
 	gint16 pnrb;	/* packet number */

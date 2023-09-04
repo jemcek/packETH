@@ -1,5 +1,11 @@
 bin_PROGRAMS=packETH 
+
+packETH_built_sources = \
+	src/pixmaps.c src/pixmaps.h \
+	src/ui.c src/ui.h
+
 packETH_SOURCES= \
+	$(packETH_built_sources) \
 	src/main.c \
 	src/support.c src/support.h \
 	src/interface.c src/interface.h \
@@ -11,23 +17,18 @@ packETH_SOURCES= \
 	src/headers.h
 
 pixmaps= \
+  src/pixmaps/pixmaps.gresource.xml \
   src/pixmaps/Build.xpm  \
-  src/pixmaps/donate.xpm  \
-  src/pixmaps/future.xpm  \
-  src/pixmaps/Gen.xpm   \
   src/pixmaps/interface.xpm  \
   src/pixmaps/load.xpm \
   src/pixmaps/preference.xpm  \
   src/pixmaps/reset.xpm \
   src/pixmaps/save.xpm \
-  src/pixmaps/save16.xpm  \
   src/pixmaps/send.xpm \
   src/pixmaps/X.xpm
 
-pixmapdir=$(pkgdatadir)/pixmaps
-pixmap_DATA=$(pixmaps)
-
 ui= \
+  ui/ui.gresource.xml \
   ui/about_dialog.ui \
   ui/error_dialog.ui \
   ui/fileselection1.ui \
@@ -39,9 +40,6 @@ ui= \
   ui/tos_dialog.ui \
   ui/udp_payload_dialog.ui \
   ui/window1.ui
-
-uidir=$(pkgdatadir)/ui
-ui_DATA=$(ui)
 
 DEFS= \
   -DPKGDATADIR=\"$(pkgdatadir)/\"
@@ -58,5 +56,23 @@ AM_CPPFLAGS = \
   -Wl,--export-dynamic \
   $(DEPS_CFLAGS)
 
-# Include the dev and pixmaps in the distribution (make dist)
-EXTRA_DIST=dev src/pixmaps $(ui)
+# Include the pixmaps and ui in the distribution (make dist)
+EXTRA_DIST=$(pixmaps) $(ui)
+
+BUILT_SOURCES = \
+	$(packETH_built_sources)
+
+CLEANFILES = \
+	$(packETH_built_sources)
+
+src/pixmaps.c: $(pixmaps)
+	$(AM_V_GEN) glib-compile-resources --generate-source --sourcedir=src/pixmaps --target=$@ src/pixmaps/pixmaps.gresource.xml
+
+src/pixmaps.h: $(pixmaps)
+	$(AM_V_GEN) glib-compile-resources --generate-header --sourcedir=src/pixmaps --target=$@ src/pixmaps/pixmaps.gresource.xml
+
+src/ui.c: $(ui)
+	$(AM_V_GEN) glib-compile-resources --generate-source --sourcedir=ui --target=$@ ui/ui.gresource.xml
+
+src/ui.h: $(ui)
+	$(AM_V_GEN) glib-compile-resources --generate-header --sourcedir=ui --target=$@ ui/ui.gresource.xml

@@ -343,7 +343,7 @@ on_about1_activate                      (GtkMenuItem     *menuitem,
 
 
 void
-on_window1_destroy                     (GtkObject       *object,
+on_window1_destroy                     (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	gtk_main_quit();
@@ -351,7 +351,7 @@ on_window1_destroy                     (GtkObject       *object,
 
 
 void
-on_fileselection1_destroy              (GtkObject       *object,
+on_fileselection1_destroy              (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	file_menu = NULL;
@@ -609,7 +609,7 @@ on_cancel_button2_clicked              (GtkButton       *button,
 
 
 void
-on_fileselection2_destroy              (GtkObject       *object,
+on_fileselection2_destroy              (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	save_file_menu = NULL;
@@ -867,7 +867,7 @@ on_sel1_cancel_bt_clicked              (GtkButton       *button,
 
 
 void
-on_sel1_dialog_destroy                 (GtkObject       *object,
+on_sel1_dialog_destroy                 (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	selection1_dialog = NULL;
@@ -2179,7 +2179,7 @@ on_Interface_button_clicked                    (GtkButton       *button,
 	ptr = buff;
 	while (pif->if_index) {
 		snprintf(ptr, 100, "%s", pif->if_name);
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX(combo), ptr);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), ptr);
 		ptr = ptr + strlen(pif->if_name) + 1;
 		length = length + strlen(pif->if_name) + 1;
 		pif++;
@@ -2214,7 +2214,7 @@ on_button50_clicked                    (GtkButton       *button,
 
 	combo = lookup_widget(GTK_WIDGET (interface_dialog_menu), "combo1");
 
-	snprintf(iftext, 19, "%s", gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(combo)));
+	snprintf(iftext, 19, "%s", gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo)));
 
 	gtk_grab_remove(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 	gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
@@ -2232,7 +2232,7 @@ on_button51_clicked                    (GtkButton       *button,
 
 
 void
-on_interface_dialog_destroy            (GtkObject       *object,
+on_interface_dialog_destroy            (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	interface_dialog_menu = NULL;
@@ -2249,7 +2249,7 @@ on_button52_clicked                    (GtkButton       *button,
 
 
 void
-on_error_dialog_destroy                (GtkObject       *object,
+on_error_dialog_destroy                (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	error_dialog_menu = NULL;
@@ -2419,7 +2419,7 @@ on_rtp_apply_button_clicked            (GtkButton       *button,
 
 
 void
-on_udp_payload_dialog_destroy          (GtkObject       *object,
+on_udp_payload_dialog_destroy          (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	udp_payload_dialog = NULL;	
@@ -2972,18 +2972,20 @@ on_ok_button3_clicked                  (GtkButton       *button,
 {
 	FILE *file_p;
 	gchar *fname;
+	size_t fname_len;
 
 	fname = g_strdup(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(lookup_widget(gtk_widget_get_toplevel(GTK_WIDGET(button)),"fileselection3"))));
+	fname_len = strlen(fname);
 
-	if (strlen(fname) == 0)
+	if (fname_len == 0)
 		return;	
 
-	if (strlen(fname) > 99) {
-                error("Error: database file name too long (>100 chars)");
+	if (fname_len >= sizeof(address_filename)) {
+		error("Error: database file name too long (>=100 chars)");
 		return;	
 	}
 
-	strncpy(address_filename, fname, strlen(fname));
+	strncpy(address_filename, fname, sizeof(address_filename));
 
 	if((file_p = fopen(fname, "a")) == NULL) { 
                 //printf("can not open or create database file\n");
@@ -3007,7 +3009,7 @@ on_cancel_button3_clicked              (GtkButton       *button,
 
 
 void
-on_fileselection3_destroy              (GtkObject       *object,
+on_fileselection3_destroy              (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	database_file_menu = NULL;
@@ -3017,7 +3019,7 @@ on_fileselection3_destroy              (GtkObject       *object,
 
 
 void
-on_about_dialog_destroy                (GtkObject       *object,
+on_about_dialog_destroy                (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	about_dialog_menu = NULL;
@@ -3035,7 +3037,7 @@ on_button75_clicked                    (GtkButton       *button,
 
 
 void
-on_tos_dialod_destroy                  (GtkObject       *object,
+on_tos_dialod_destroy                  (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	tos_dialog_menu = NULL;
@@ -3352,7 +3354,7 @@ on_button80_clicked                    (GtkButton       *button,
 
 
 void
-on_fragmentation_dialog_destroy        (GtkObject       *object,
+on_fragmentation_dialog_destroy        (GtkWidget       *object,
                                         gpointer         user_data)
 {
 	fragment_dialog_menu = NULL;
@@ -4505,22 +4507,17 @@ on_radiobutton80_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
-	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+	GtkWidget *rb2, *rb3, *rb5, *rb6;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
         hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
         hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
         cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
         rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
         rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
         rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
         rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
-        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
-        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
-        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, TRUE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, FALSE);
@@ -4532,8 +4529,6 @@ on_radiobutton80_activate              (GtkButton       *button,
         gtk_widget_set_sensitive(rb6, FALSE);
         gtk_widget_set_sensitive(cb1, TRUE);
 	//gtk_entry_set_text(GTK_ENTRY(en2), "");
-
-
 }
 
 
@@ -4542,22 +4537,17 @@ on_radiobutton81_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
-	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+	GtkWidget *rb2, *rb3, *rb5, *rb6;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
         hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
         hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
         cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
         rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
         rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
         rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
         rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
-        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
-        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
-        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, TRUE);
         gtk_widget_set_sensitive(en3, FALSE);
@@ -4568,7 +4558,6 @@ on_radiobutton81_activate              (GtkButton       *button,
         gtk_widget_set_sensitive(rb5, TRUE);
         gtk_widget_set_sensitive(rb6, TRUE);
         gtk_widget_set_sensitive(cb1, TRUE);
-
 }
 
 
@@ -4577,22 +4566,17 @@ on_radiobutton82_activate              (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
-	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+	GtkWidget *rb2, *rb3, *rb5, *rb6;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
         hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
         hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
         cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
         rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
         rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
         rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
         rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
-        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
-        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
-        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, FALSE);
@@ -4603,7 +4587,6 @@ on_radiobutton82_activate              (GtkButton       *button,
         gtk_widget_set_sensitive(rb5, FALSE);
         gtk_widget_set_sensitive(rb6, FALSE);
         gtk_widget_set_sensitive(cb1, TRUE);
-
 }
 
 
@@ -4612,22 +4595,17 @@ on_radiobutton87_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
-	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+	GtkWidget *rb2, *rb3, *rb5, *rb6;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
         hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
         hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
         cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
         rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
         rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
         rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
         rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
-        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
-        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
-        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, TRUE);
@@ -4638,7 +4616,6 @@ on_radiobutton87_clicked               (GtkButton       *button,
         gtk_widget_set_sensitive(rb5, FALSE);
         gtk_widget_set_sensitive(rb6, FALSE);
         gtk_widget_set_sensitive(cb1, TRUE);
-
 }
 
 
@@ -4893,22 +4870,17 @@ on_radiobutton95_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *en1, *en2, *en3, *hb1, *hb2, *cb1;
-	GtkWidget *rb1, *rb2, *rb3, *rb4, *rb5, *rb6, *rb7, *rb8, *rb9;
+	GtkWidget *rb2, *rb3, *rb5, *rb6;
         en1 = lookup_widget(GTK_WIDGET(button), "entry206");
         en2 = lookup_widget(GTK_WIDGET(button), "entry110");
         en3 = lookup_widget(GTK_WIDGET(button), "entry221");
         hb1 = lookup_widget(GTK_WIDGET(button), "hbox1519");
         hb2 = lookup_widget(GTK_WIDGET(button), "vbox93");
         cb1 = lookup_widget(GTK_WIDGET(button), "checkbutton66");
-        rb1 = lookup_widget(GTK_WIDGET(button), "radiobutton80");
         rb2 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
         rb3 = lookup_widget(GTK_WIDGET(button), "radiobutton84");
-        rb4 = lookup_widget(GTK_WIDGET(button), "radiobutton81");
         rb5 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
         rb6 = lookup_widget(GTK_WIDGET(button), "radiobutton86");
-        rb7 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
-        rb8 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
-        rb9 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
         gtk_widget_set_sensitive(en1, FALSE);
         gtk_widget_set_sensitive(en2, FALSE);
         gtk_widget_set_sensitive(en3, FALSE);
@@ -4919,7 +4891,6 @@ on_radiobutton95_clicked               (GtkButton       *button,
         gtk_widget_set_sensitive(rb5, FALSE);
         gtk_widget_set_sensitive(rb6, FALSE);
         gtk_widget_set_sensitive(cb1, FALSE);
-
 }
 
 

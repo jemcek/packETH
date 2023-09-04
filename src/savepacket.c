@@ -31,6 +31,9 @@
 extern int number;
 extern unsigned char packet[9300];
 
+/* Link-layer type; */
+static unsigned long pcap_link_type = 1;   /* Default is DLT-EN10MB */
+
 /* this one saves the paremeters from builder window into a file */
 int save_packet(GtkButton *button, gpointer user_data, FILE *file_p) {
 
