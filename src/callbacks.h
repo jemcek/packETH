@@ -22,7 +22,7 @@
 // moj del:
 //GtkWidget *clist1;
 void selection_dialog_show(GtkButton *button, gpointer user_data);
-void on_optionmenu7_clicked(GtkButton *button, gpointer user_data);
+void on_optionmenu7_clicked(GtkComboBox *combo_box, gpointer user_data);
 void error(gchar *error_type);
 //
 
@@ -111,7 +111,7 @@ on_L_src_select_bt_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_L_optmenu1_bt_clicked               (GtkButton       *button,
+on_L_optmenu1_bt_clicked               (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -131,7 +131,7 @@ on_L_8023_llcsnap_tbt_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_optionmenu6_clicked                 (GtkButton       *button,
+on_optionmenu6_clicked                 (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -163,7 +163,7 @@ on_button78_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_optionmenu3_clicked                 (GtkButton       *button,
+on_optionmenu3_clicked                 (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -251,7 +251,7 @@ on_select_tpc_payload_bt_clicked       (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_optionmenu4_clicked                 (GtkButton       *button,
+on_optionmenu4_clicked                 (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -259,7 +259,7 @@ on_checkbutton16_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_optionmenu5_clicked                 (GtkButton       *button,
+on_optionmenu5_clicked                 (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -279,7 +279,7 @@ on_button38_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_igmpmessage_type_clicked            (GtkButton       *button,
+on_igmpmessage_type_clicked            (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -323,7 +323,7 @@ on_entry160_changed                    (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_optionmenu14_clicked                (GtkButton       *button,
+on_optionmenu14_clicked                (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -331,7 +331,7 @@ on_entry162_changed                    (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_optionmenu15_clicked                (GtkButton       *button,
+on_optionmenu15_clicked                (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -511,31 +511,12 @@ on_button80_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_0x1_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_0x2_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_0x3_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_0x4_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_Gen_p_clicked                       (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_clist2_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_clist2_selection_changed            (GtkTreeSelection *treeselection,
+                                        gpointer          user_data);
 
 void
 on_button84_clicked                    (GtkButton       *button,
@@ -686,87 +667,7 @@ on_radiobutton78_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_0_activate                          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs1_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs2_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs3_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs4_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs5_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs6_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_cs7_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af11_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af12_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af13_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af21_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_a22_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af23_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af31_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af32_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af33_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af41_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af42_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_af43_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_ef1_activate                        (GtkMenuItem     *menuitem,
+on_optionmenu22_changed                (GtkComboBox     *combo_box,
                                         gpointer         user_data);
 
 void
@@ -834,10 +735,6 @@ on_change_value_for_byte_x_and_y1_activate
 void
 on_ipv6_set_random_source_address_1_activate
                                         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_optionmenu23_clicked                (GtkButton       *button,
                                         gpointer         user_data);
 
 void

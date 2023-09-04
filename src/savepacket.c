@@ -81,7 +81,7 @@ int save_gen_b(GtkButton *button, FILE *file_p) {
 	/* YYY we don't save this value, since we don't know how to load it. We don't know what packet this is */
 	//index = g_list_index (GTK_MENU_SHELL (bt7)->children, bt8);
 
-	if (GTK_TOGGLE_BUTTON(bt5)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bt5))) {
 		count = -3;
 	}
 	else {
@@ -143,12 +143,12 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 	bt1_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt6));
 	bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt7));
 
-	if (GTK_TOGGLE_BUTTON(bt1)->active)
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bt1)))
 		timeflag = 1;
 	else
 		timeflag = 0;
 
-	if (GTK_TOGGLE_BUTTON(bt5)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bt5))) {
 		count = -3;
 	}
 	else {
@@ -254,7 +254,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 		  /* enable or disable */
 		snprintf(buff4, 100, "checkbutton%d", 25+i);
 		bt1 = lookup_widget(GTK_WIDGET(button), buff4);
-		if (GTK_TOGGLE_BUTTON(bt1)->active)
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bt1)))
 			partable[i][4] = 0;
 		else
 			partable[i][4] = 1;

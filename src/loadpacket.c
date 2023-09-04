@@ -391,9 +391,11 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 	}
 
 	else { 
-	
+		GtkTreeModel *model;
+
 		clis = lookup_widget(GTK_WIDGET (button), "clist2");
-		gtk_clist_clear(GTK_CLIST(clis));
+		model = gtk_tree_view_get_model (GTK_TREE_VIEW (clis));
+		gtk_list_store_clear (GTK_LIST_STORE (model));
 	
 		for (j=0; j<howmanypackets; j++) {
 	
@@ -444,22 +446,21 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 			secu = ph.ts_sec;
 			usecu = ph.ts_usec;
 
-			/* insert a new row into clist */
-			load_gen_p_data(button, clis, field, &ph, j+1, &clh, timediff, timebeg);
+			/* insert a new row into model */
+			load_gen_p_data(button, model, field, &ph, j+1, &clh, timediff, timebeg);
 		}
 		if (j == howmanypackets) 
 			error("Only first 1000 packets loaded!\nTo change this modify #define on top of callbacks.c");
 	}
 
 	return 1;
-
 }
 	
 
 /* this one loads the parameters from file into notebook2 (Genp page) */
-int load_gen_p_data(GtkButton *button, GtkWidget *clis, char *fieldek, struct pcaprec_hdr *ph2, 
+int load_gen_p_data(GtkButton *button, GtkTreeModel *model, char *fieldek, struct pcaprec_hdr *ph2, 
 					int pkt_nr, struct clist_hdr *clptr, double timediff, double timebeg) {
-
+	GtkTreeIter iter;
 	gchar *datap[8];
 	gchar fieldp[7][41];
 	gchar field_p[1][31000];
@@ -531,10 +532,19 @@ int load_gen_p_data(GtkButton *button, GtkWidget *clis, char *fieldek, struct pc
 
 	g_snprintf(field_p[0], 2*(32+(*ph2).incl_len), "%s", fieldek);
 		
-	gtk_clist_append(GTK_CLIST(clis), datap);
-	
-	return 1;
+	gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+                       /*COL_NR*/0, datap[0],
+                       /*COL_TIME*/1, datap[1],
+                       /*COL_DELTA_TIME*/2, datap[2],
+                       /*COL_LENGTH*/3, datap[3],
+                       /*COL_SOURCE*/4, datap[4],
+                       /*COL_DESTINATION*/5, datap[5],
+                       /*COL_PROTOCOL*/6, datap[6],
+                       /*COL_INFO*/7, datap[7],
+                       -1);
 
+	return 1;
 }
 
 /* this routine was changed. it loads the packet into notebook2 (Builder page) or it checks the file containing the packets
@@ -626,13 +636,13 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				gtk_widget_set_sensitive (w7, TRUE);
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w5), TRUE);
 				if (i==33024)
-					gtk_option_menu_set_history (GTK_OPTION_MENU (w8), 0);
+					gtk_combo_box_set_active (GTK_COMBO_BOX (w8), 0);
 				else if (i==34984)
-					gtk_option_menu_set_history (GTK_OPTION_MENU (w8), 3);
+					gtk_combo_box_set_active (GTK_COMBO_BOX (w8), 3);
 				else if (i==37120)
-					gtk_option_menu_set_history (GTK_OPTION_MENU (w8), 1);
+					gtk_combo_box_set_active (GTK_COMBO_BOX (w8), 1);
 				else if (i==37376)
-					gtk_option_menu_set_history (GTK_OPTION_MENU (w8), 2);
+					gtk_combo_box_set_active (GTK_COMBO_BOX (w8), 2);
 
 				inspar(button, "entry165", ptrf, 4);
 			}
@@ -664,7 +674,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 			gtk_widget_set_sensitive (w2, TRUE);
 		
-			gtk_option_menu_set_history (GTK_OPTION_MENU (w3), (i>>1));
+			gtk_combo_box_set_active (GTK_COMBO_BOX (w3), (i>>1));
 
 			if ( (i%2) == 0)
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w4), FALSE);
@@ -1026,33 +1036,33 @@ int igmp_header(GtkButton *button, int whocalled) {
 	w2 = lookup_widget(GTK_WIDGET(button), "notebook8");
 	if (x == 17) {
 		if (remain > 4) {
-	        	gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 1);
-			gtk_notebook_set_page(GTK_NOTEBOOK(w2), 1);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 1);
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 1);
 			}
 		else	{
-	        	gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 0);
-			gtk_notebook_set_page(GTK_NOTEBOOK(w2), 0);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 0);
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 			}
 	}
 	else if (x == 18) {
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 2);
-		gtk_notebook_set_page(GTK_NOTEBOOK(w2), 0);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 2);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 		}
 	else if (x == 22) {
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 3);
-		gtk_notebook_set_page(GTK_NOTEBOOK(w2), 0);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 3);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 		}
 	else if (x == 34) {
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 4);
-		gtk_notebook_set_page(GTK_NOTEBOOK(w2), 2);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 4);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 2);
 		}
 	else if (x == 23) {
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 5);
-		gtk_notebook_set_page(GTK_NOTEBOOK(w2), 0);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 5);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 		}
 	else	{
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 6);
-		gtk_notebook_set_page(GTK_NOTEBOOK(w2), 0);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 6);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 		}
 
 	inspar(button, "entry167", ptrf, 2);
@@ -1148,19 +1158,19 @@ int icmp_header(GtkButton *button, int whocalled) {
 
 	w1 = lookup_widget(GTK_WIDGET(button), "optionmenu4");
 	if (x == 0)
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 0);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 0);
 	else if (x == 3) 
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 1);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 1);
 	else if (x == 8) 
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 2);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 2);
 	else
-	        gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 3);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 3);
 
 
 	if (x == 0) { /* echo reply */
 		/* insert code, checksum, identifier and seq number and data if there is some */
 		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
-		gtk_notebook_set_page(GTK_NOTEBOOK(w1), 0);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 0);
 		inspar(button, "entry62", ptrf, 2);
 		//inspar(button, "entry63", ptrf, 4);
 		ptrf = ptrf + 4;
@@ -1185,7 +1195,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 	}
 	else if (x == 3) { /* destination unreacheable */
 		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
-		gtk_notebook_set_page(GTK_NOTEBOOK(w1), 2);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 2);
 		/* which code? */
 		x = char2x(ptrf);
 		/* insert code */
@@ -1193,9 +1203,9 @@ int icmp_header(GtkButton *button, int whocalled) {
 
 		w1 = lookup_widget(GTK_WIDGET(button), "optionmenu5");
 		if ( (x >= 0) && (x <= 15) )
-			gtk_option_menu_set_history (GTK_OPTION_MENU (w1), x);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), x);
 		else
-			gtk_option_menu_set_history (GTK_OPTION_MENU (w1), 16);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 16);
 		
 		/* insert code, checksum, identifier and seq number and data if there is some */
 		//inspar(button, "entry59", ptrf, 4);
@@ -1220,7 +1230,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 	}
 	else if (x == 8) { /* echo request */
 		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
-		gtk_notebook_set_page(GTK_NOTEBOOK(w1), 5);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 5);
 		/* insert code, checksum, identifier and seq number and data if there is some */
 		inspar(button, "entry74", ptrf, 2);
 		//inspar(button, "entry77", ptrf, 4);
@@ -1246,7 +1256,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 	}
 	else { /* all the rest */
 		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
-		gtk_notebook_set_page(GTK_NOTEBOOK(w1), 1);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 1);
 		/* insert code, checksum and data if there is some */
 		inspar(button, "entry157", ptrf, 2);
 		//inspar(button, "entry158", ptrf, 4);
@@ -1686,7 +1696,7 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 
 	//w2 = lookup_widget(GTK_WIDGET(button), "frame7");
 	//gtk_widget_set_sensitive (w2, TRUE);
-	//gtk_notebook_set_page(GTK_NOTEBOOK(w3), 1);
+	//gtk_notebook_set_current_page(GTK_NOTEBOOK(w3), 1);
 
 	w1 = lookup_widget(GTK_WIDGET(button), "entry5");
 	//inspar(button, "entry5", ptrf, 4);

@@ -20,7 +20,7 @@ AC_CHECK_LIB([pthread], [pthread_create])
 AC_CHECK_HEADERS([libintl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h sys/timeb.h unistd.h])
 
 # We need GTK
-pkg_modules="gtk+-2.0 >= 2.4 glib-2.0 >= 2.4 gthread-2.0 >= 2.4"
+pkg_modules="gtk+-2.0 >= 2.4 glib-2.0 >= 2.4 gthread-2.0 >= 2.4 gmodule-export-2.0 >= 2.4"
 PKG_CHECK_MODULES(DEPS, [$pkg_modules])
 
 # Checks for library functions.

@@ -238,8 +238,8 @@ int gtk_timer(GtkButton *button) {
 int send_packet(GtkButton *button, gpointer user_data)
 {
 	GtkWidget *statusbar, *notebk, *reltime, *en5, *en6;
-	GtkWidget *en1, *en2, *en3, *en4, *ckbt1, *ckbt2, *ckbt3, *ckbt4, *ckbt5, *xoptm, *yoptm, *xmenu_item, *ymenu_item; 
-	GtkWidget *optm1, *optm2, *optm3, *xmenu, *ymenu, *stopbt;
+	GtkWidget *en1, *en2, *en3, *en4, *ckbt1, *ckbt2, *ckbt3, *ckbt4, *ckbt5, *xoptm, *yoptm;
+	GtkWidget *optm1, *optm2, *optm3, *stopbt;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
 	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66, *ckbt67;
@@ -431,9 +431,9 @@ int send_packet(GtkButton *button, gpointer user_data)
 		params1.inc = 0;
 		//now set different bites for each parameter
 		// source mac
-		if ((GTK_TOGGLE_BUTTON(ckbt61)->active) ) params1.inc = params1.inc + 1;
+		if ((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt61))) ) params1.inc = params1.inc + 1;
 		//source ipv4
-		if ((GTK_TOGGLE_BUTTON(ckbt50)->active) ) {
+		if ((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt50))) ) {
 			params1.inc = params1.inc + 2;
 			//check what user has inserted for mask
 			en219_t = (char *)gtk_entry_get_text(GTK_ENTRY(en219));
@@ -449,9 +449,9 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: IPv4 mask must be between 0 and 32!");
 				return -1;
 			}
-		}               
+		}
 		//source ipv6
-		if ((GTK_TOGGLE_BUTTON(ckbt53)->active) ) {
+		if ((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt53))) ) {
 			params1.inc = params1.inc + 4;
 			//check what user has inserted for mask
 			en220_t = (char *)gtk_entry_get_text(GTK_ENTRY(en220));
@@ -467,35 +467,35 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: IPv6 mask must be between 0 and 128!");
 				return -1;
 			}
-		}               
+		}
 		//source udp port
-		if (GTK_TOGGLE_BUTTON(ckbt52)->active)  params1.inc = params1.inc + 8;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt52)))  params1.inc = params1.inc + 8;
 		//source tcp port
-		if (GTK_TOGGLE_BUTTON(ckbt51)->active)  params1.inc = params1.inc + 16;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt51)))  params1.inc = params1.inc + 16;
 		//udp first payload byte
-		if (GTK_TOGGLE_BUTTON(ckbt54)->active)  params1.inc = params1.inc + 32;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt54)))  params1.inc = params1.inc + 32;
 		// rtp set nr and timestamp 10ms
-		if (GTK_TOGGLE_BUTTON(ckbt55)->active)  params1.inc = params1.inc + 64;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt55)))  params1.inc = params1.inc + 64;
 		// rtp set nr and timestamp 20ms
-		if (GTK_TOGGLE_BUTTON(ckbt56)->active)  params1.inc = params1.inc + 128;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt56)))  params1.inc = params1.inc + 128;
 		// rtp set nr and timestamp 30ms
-		if (GTK_TOGGLE_BUTTON(ckbt57)->active)  params1.inc = params1.inc + 256;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt57)))  params1.inc = params1.inc + 256;
 		// change byte x
-		if (GTK_TOGGLE_BUTTON(ckbt58)->active)  params1.inc = params1.inc + 512;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt58)))  params1.inc = params1.inc + 512;
 		//change byte y
-		if (GTK_TOGGLE_BUTTON(ckbt59)->active)  params1.inc = params1.inc + 1024;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt59)))  params1.inc = params1.inc + 1024;
 		//arp reply random source ip and mac
-		if (GTK_TOGGLE_BUTTON(ckbt60)->active)  params1.inc = params1.inc + 2048;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt60)))  params1.inc = params1.inc + 2048;
 		// correct ipv4 checksum
-		if (GTK_TOGGLE_BUTTON(ckbt62)->active)  params1.inc = params1.inc + 4096;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt62)))  params1.inc = params1.inc + 4096;
 		// corrent icmp & icmpv6 checksums
-		if (GTK_TOGGLE_BUTTON(ckbt63)->active)  params1.inc = params1.inc + 8192;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt63)))  params1.inc = params1.inc + 8192;
 		// correct udp checksum
-		if (GTK_TOGGLE_BUTTON(ckbt64)->active)  params1.inc = params1.inc + 16384;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt64)))  params1.inc = params1.inc + 16384;
 		// correct tcp checksum
-		if (GTK_TOGGLE_BUTTON(ckbt65)->active)  params1.inc = params1.inc + 32768;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt65)))  params1.inc = params1.inc + 32768;
 		// correct tcp checksum
-		if (GTK_TOGGLE_BUTTON(ckbt67)->active)  params1.inc = params1.inc + 65536;
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt67)))  params1.inc = params1.inc + 65536;
 
 		//printf("tokle je params1.inc %d\n", params1.inc);
 
@@ -584,9 +584,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 			/* option menu button for x byte */
 			xoptm = lookup_widget(GTK_WIDGET (button), "optionmenu14");
-			xmenu = GTK_OPTION_MENU(xoptm)->menu;
-			xmenu_item = gtk_menu_get_active (GTK_MENU (xmenu));
-			params1.xchange = g_list_index (GTK_MENU_SHELL (xmenu)->children, xmenu_item);
+			params1.xchange = gtk_combo_box_get_active (GTK_COMBO_BOX (xoptm));
 			memcpy(params1.xstart, &packet[params1.xbyte-1], 4);
 
 			if ((params1.xchange==1) || (params1.xchange==2)) {
@@ -626,10 +624,8 @@ int send_packet(GtkButton *button, gpointer user_data)
 			}
 			params1.ybyte = strtol(en6_t, (char **)NULL, 10);
 			yoptm = lookup_widget(GTK_WIDGET (button), "optionmenu15");
-			ymenu = GTK_OPTION_MENU(yoptm)->menu;
-			ymenu_item = gtk_menu_get_active (GTK_MENU (ymenu));
 			memcpy(params1.ystart, &packet[params1.ybyte-1], 4);
-			params1.ychange = g_list_index (GTK_MENU_SHELL (ymenu)->children, ymenu_item);
+			params1.ychange = gtk_combo_box_get_active (GTK_COMBO_BOX (yoptm));
 
 			if ((params1.ychange==1) || (params1.ychange==2)) {
 				en6 = lookup_widget(GTK_WIDGET (button), "entry163");
@@ -651,12 +647,12 @@ int send_packet(GtkButton *button, gpointer user_data)
 		}
 
 		/* Infinite -  just keep on sending till stop is pressed */
-		if (GTK_TOGGLE_BUTTON(rdbt91)->active) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rdbt91))) {
 			params1.count = -3;
 			params1.duration = 0;
 		}
 		/* number of packets to send*/
-		else if (GTK_TOGGLE_BUTTON(rdbt89)->active) {
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rdbt89))) {
 			/* there can be rubbish in this field */
 			if (check_digit(en1_t, strlen(en1_t), "Error: Number of packets to send field") == -1)
 					return -1;
@@ -688,7 +684,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		// speed & bandwidth selection
 		// bandwidth
-		if (GTK_TOGGLE_BUTTON(ckbt2)->active) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt2))) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			ramp_submode = 0;
 			/* there can be rubbish in this field */
@@ -697,7 +693,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 			params1.del = strtoll(en3_t, (char **)NULL, 10);
 
-			if (GTK_TOGGLE_BUTTON(ckbt5)->active)  //Mbit/s
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt5)))  //Mbit/s
 				params1.del = params1.del * 1000;
 
 			params1.ramp_speed = params1.del;
@@ -726,7 +722,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		}
 		// delay between packets
-		else if (GTK_TOGGLE_BUTTON(ckbt3)->active) {
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt3))) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			ramp_submode = 1;
 			/* there can be rubbish in this field */
@@ -740,7 +736,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 				error("Error: Delay between packets value (1-999999999)");
 				return -1;
 			}
-			if ((GTK_TOGGLE_BUTTON(rdbt85)->active) ) {
+			if ((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rdbt85))) ) {
 				params1.del = params1.del * 1000;
 				if (number < 60)
 					desired_bw = (long)(1000000*60*8/params1.del); 
@@ -760,7 +756,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			//printf("v pcl %lld\n", params1.del);
 		}
 		// packets per second
-		else if (GTK_TOGGLE_BUTTON(ckbt4)->active) {
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt4))) {
 			params1.ramp_mode = 0; // we will overide this in case speed ramp (1) or size ramp (2)
 			ramp_submode = 2;
 			/* there can be rubbish in this field */
@@ -784,7 +780,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			//printf("v pcl %lld\n", params1.del);
 		}
 		// ramp
-		else if (GTK_TOGGLE_BUTTON(rdbt95)->active) {
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rdbt95))) {
 			params1.ramp_mode = 1;
 			ramp_submode = 3;
 			/* there can be rubbish in this field */
@@ -847,7 +843,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		}
 
 		// it the ramp for size is active
-		if ( (GTK_TOGGLE_BUTTON(ckbt66)->active) && !(GTK_TOGGLE_BUTTON(rdbt95)->active) ){
+		if ( (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt66))) && !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rdbt95))) ){
 			//which ramp submode is on? if this is bandwith, then delay between packets will chande with different mode
 			// all other submodes have same delay, so bandwidth will change due to longer/shorter packets
 			params1.ramp_mode = 2;
@@ -927,7 +923,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		params1.ip_proto_in_use = ip_proto_used;
 		params1.l4_proto_in_use = l4_proto_used;
 
-		//if (GTK_TOGGLE_BUTTON(reltime)->active) 
+		//if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(reltime))) 
 			params1.timeflag = 1;
 		//else
 		//      params1.timeflag = 0;
@@ -978,13 +974,13 @@ int send_packet(GtkButton *button, gpointer user_data)
 		button6 = lookup_widget(GTK_WIDGET (button), "Gensbt");
 		rndbt = lookup_widget(GTK_WIDGET (button), "radiobutton78");
 
-		if (GTK_TOGGLE_BUTTON(reltime)->active) 
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(reltime))) 
 			params1.timeflag = 1;
 		else
 			params1.timeflag = 0;
 
 		
-		if (GTK_TOGGLE_BUTTON(rndbt)->active) 
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rndbt))) 
 			params1.random = 1;
 		else
 			params1.random = 0;
@@ -1014,7 +1010,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			/* enable or disable */
 			snprintf(buff4, 100, "checkbutton%d", 25+i);
 			ckbt1 = lookup_widget(GTK_WIDGET(button), buff4);
-			if (GTK_TOGGLE_BUTTON(ckbt1)->active) {
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt1))) {
 				params1.partable[i][5] = 0;
 				continue;
 			}
@@ -1140,7 +1136,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		en3_t = (char *)gtk_entry_get_text(GTK_ENTRY(optm22));
 
 		// number of cycles, convert this in number of packets
-		if (GTK_TOGGLE_BUTTON(optm1)->active) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(optm1))) {
 			double tmp=0;
 
 			/* there can be rubbish in this field */
@@ -1160,7 +1156,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 			params1.count = params1.count * tmp;
 		}
 		// number of packets
-		else if (GTK_TOGGLE_BUTTON(optm11)->active) {
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(optm11))) {
 			/* there can be rubbish in this field */
 			if (check_digit(en3_t, strlen(en3_t), 
 							"Error: Number of total packets field") == -1)
@@ -1290,7 +1286,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 	usedef = lookup_widget(GTK_WIDGET (button), "usedef2_radibt");
 
 	/* what about next layer: ipv4, ipv6, arp or manually attached payload? */
-	if (GTK_TOGGLE_BUTTON(ipv4)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ipv4))) {
 		
 		/* now we get the link layer info */
 		if (link_level_get(button, user_data) == -1) {
@@ -1313,7 +1309,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 		
 		return 1;
 	}
-	else if (GTK_TOGGLE_BUTTON(ipv6)->active) {
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ipv6))) {
 		/* now we get the link layer info */
 		if (link_level_get(button, user_data) == -1) {
 			return -1;
@@ -1326,7 +1322,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 		}
 		return 1;
 	}
-	else if (GTK_TOGGLE_BUTTON(arp)->active) {
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(arp))) {
 	 
 		/* now we get the link layer info */
 		if (link_level_get(button, user_data) == -1) {
@@ -1348,7 +1344,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 		return 1;
 	}
 	
-	else if (GTK_TOGGLE_BUTTON(usedef)->active) {
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(usedef))) {
 		/* if usedef is active we will manually get the link layer info */
 		if (link_level_get(button, user_data) == -1) {
 			//printf("Error: problem on link layer\n");
@@ -1478,7 +1474,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	number++;
 
 	/* total length */
-	if (GTK_TOGGLE_BUTTON(payloadlength_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(payloadlength_bt))) {
 		length_start_field = number;
 		number++;
 		number++;
@@ -1561,28 +1557,28 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 
 	/* so we came to the end of ip header. what is next? */
 	/* tcp, udp, icmp or manually attached payload? */
-	if (GTK_TOGGLE_BUTTON(udp_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(udp_bt))) {
 		if (udp_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with UDP information\n");
 			return -1;
 		}
 	}
-	
-	else if (GTK_TOGGLE_BUTTON(tcp_bt)->active) {
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tcp_bt))) {
 		if (tcp_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
-	}       
-	
-	else if (GTK_TOGGLE_BUTTON(icmp6_bt)->active) {
+	}
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(icmp6_bt))) {
 		if (icmpv6_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
-	}       
-	
-	else if (GTK_TOGGLE_BUTTON(usedef_bt)->active) {
+	}
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(usedef_bt))) {
 			
 		pay_text_e = lookup_widget(GTK_WIDGET (button), "text2");
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pay_text_e));
@@ -1707,7 +1703,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	/* if auto is on then we have to calculate this, but we can do this
 	 * at the end, when we have the whole ip packet together. so if auto 
 	 * is enabled we set the marking and recaltulate it in the end */
-	if (GTK_TOGGLE_BUTTON(total_length_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(total_length_bt))) {
 		length_start = number;
 		number++;
 		number++;
@@ -1815,7 +1811,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	/* if auto is on then we have to calculate this, but we can do this
 	 * at the end and recaltulate it for now we store the current number into
 	 * another variable. we will calculate length in the end */
-	if (GTK_TOGGLE_BUTTON(header_cks_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(header_cks_bt))) {
 		header_cks_start = number;
 		packet[number] = (unsigned char)0;
 		number++;
@@ -1917,35 +1913,35 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 
 	/* so we came to the end of ip header. what is next? */
 	/* tcp, udp, icmp or manually attached payload? */
-	if (GTK_TOGGLE_BUTTON(udp_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(udp_bt))) {
 		if (udp_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with UDP information\n");
 			return -1;
 		}
 	}
-	
-	else if (GTK_TOGGLE_BUTTON(tcp_bt)->active) {
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tcp_bt))) {
 		if (tcp_get(button, user_data, pseudo_header_sum) == -1) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
-	}       
-	
-	else if (GTK_TOGGLE_BUTTON(icmp_bt)->active) {
+	}
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(icmp_bt))) {
 		if (icmp_get(button, user_data) == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
-	}       
-	
-	else if (GTK_TOGGLE_BUTTON(igmp_bt)->active) {
+	}
+
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(igmp_bt))) {
 		if (igmp_get(button, user_data) == -1) {
 			//printf("Error: Problem with IGMP information\n");
 			return -1;
 		}
-	}       
+	}
 
-	else if (GTK_TOGGLE_BUTTON(usedef_bt)->active) {
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(usedef_bt))) {
 			
 		pay_text_e = lookup_widget(GTK_WIDGET (button), "text2");
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pay_text_e));
@@ -2061,7 +2057,7 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	number++;       
 	
 	/* udp length */
-	if (GTK_TOGGLE_BUTTON(length_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(length_bt))) {
 		length_start = number;
 		number++;
 		number++;
@@ -2086,7 +2082,7 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	}
 	
 	/* udp checksum */
-	if (GTK_TOGGLE_BUTTON(checksum_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checksum_bt))) {
 		checksum_start = number;
 		packet[number] = (unsigned char)0;
 		number++;
@@ -2116,7 +2112,7 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		
 	/* udp payload */
 	/* so do we allow packet's longer than 1518 (1522) bytes or not ? Not.*/
-	if (GTK_TOGGLE_BUTTON(payload_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(payload_bt))) {
 		
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(payload));
 		payload_length = gtk_text_buffer_get_char_count(buffer);
@@ -2342,28 +2338,28 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 	number++;       
 
 	/* flags */
-	if (GTK_TOGGLE_BUTTON(flag_cwr)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_cwr))) {
 		flag_value = flag_value + 128;
 	}       
-	if (GTK_TOGGLE_BUTTON(flag_ecn)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_ecn))) {
 		flag_value = flag_value + 64;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_urg)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_urg))) {
 		flag_value = flag_value + 32;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_ack)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_ack))) {
 		flag_value = flag_value + 16;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_psh)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_psh))) {
 		flag_value = flag_value + 8;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_rst)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_rst))) {
 		flag_value = flag_value + 4;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_syn)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_syn))) {
 		flag_value = flag_value + 2;
 	}
-	if (GTK_TOGGLE_BUTTON(flag_fin)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(flag_fin))) {
 		flag_value = flag_value + 1;
 	}
 	packet[number] = (char)flag_value;
@@ -2386,7 +2382,7 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 	number++;       
 
 	/* tcp checksum */
-	if (GTK_TOGGLE_BUTTON(checksum_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checksum_bt))) {
 		checksum_start = number;
 		packet[number] = (unsigned char)0;
 		number++;
@@ -2455,7 +2451,7 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 	}
 
 	/* tcp payload */       
-	if (GTK_TOGGLE_BUTTON(payload_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(payload_bt))) {
 		
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(payload));
 		payload_length = gtk_text_buffer_get_char_count(buffer);
@@ -2522,7 +2518,7 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 
 int igmp_get(GtkButton *button, gpointer user_data) {
 	
-	GtkWidget *type, *menux, *menu, *menu_item; 
+	GtkWidget *type, *menux;
 
 	GtkWidget *maxresptime, *checksum, *cks_bt, *groupaddress, *resv, *nosf, *sourceaddresses;
 
@@ -2550,7 +2546,6 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	number++;
 
 	maxresptime = lookup_widget(GTK_WIDGET(button), "entry167");
-	menux = lookup_widget(GTK_WIDGET(button), "optionmenu20");
 	checksum = lookup_widget(GTK_WIDGET(button), "entry168");
 	cks_bt = lookup_widget(GTK_WIDGET(button), "checkbutton41");
 
@@ -2569,7 +2564,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	number++;
 			
 	/* checksum */  
-	if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 		checksum_start = number;
 		packet[number] = (unsigned char)0;
 		number++;
@@ -2597,10 +2592,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	}
 			
 	menux = lookup_widget(GTK_WIDGET(button), "optionmenu20");
-
-	menu = GTK_OPTION_MENU(menux)->menu;
-	menu_item = gtk_menu_get_active (GTK_MENU (menu));
-	menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+	menu_index = gtk_combo_box_get_active (GTK_COMBO_BOX (menux));
 
 	/* IGMP V3 query */
 	if (menu_index == 1) {
@@ -2857,7 +2849,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* checksum */  
-			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
 				number++;
@@ -2917,8 +2909,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* data */
-			if (GTK_TOGGLE_BUTTON(data_bt)->active) {
-				
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data_bt))) {
 				if (strlen(data_t) != 2) {
 					error("Error: Wrong icmp data pattern");
 					return -1;
@@ -2993,7 +2984,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* checksum */  
-			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
 				number++;
@@ -3053,8 +3044,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* data */
-			if (GTK_TOGGLE_BUTTON(data_bt)->active) {
-				
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data_bt))) {
 				if (strlen(data_t) != 2) {
 					error("Error: Wrong icmp data pattern");
 					return -1;
@@ -3127,7 +3117,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* checksum */  
-			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
 				number++;
@@ -3185,8 +3175,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* data */
-			if (GTK_TOGGLE_BUTTON(data_bt)->active) {
-				
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data_bt))) {
 				if (strlen(data_t) != 2) {
 					error("Error: Wrong icmp data pattern");
 					return -1;
@@ -3254,7 +3243,7 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 			number++;
 			
 			/* checksum */  
-			if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 				checksum_start = number;
 				packet[number] = (unsigned char)0;
 				number++;
@@ -3415,20 +3404,20 @@ int arp_get(GtkButton *button, gpointer user_data)
 	number++;
 
 	/* which opcode */
-	if (GTK_TOGGLE_BUTTON(rbt10)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rbt10))) {
 		packet[number] = 0x00;
 		number++;
 		packet[number] = 0x01;
 		number++;
 		
 	}
-	else if (GTK_TOGGLE_BUTTON(rbt11)->active) { 
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rbt11))) { 
 		packet[number] = 0x00;
 		number++;
 		packet[number] = 0x02;
 		number++;
 	}
-	else if (GTK_TOGGLE_BUTTON(rbt17)->active) { 
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rbt17))) { 
 		if (char2x(en81_t) == -1) {
 			//printf("Error: entry arp opcode\n");
 			error("Error: entry arp opcode");
@@ -3586,20 +3575,20 @@ int link_level_get(GtkButton *button, gpointer user_data)
 	number = 12;
 
 	/* is 802.1q active - do we need to add 4 or 8 bytes? */
-	if (GTK_TOGGLE_BUTTON(_801q_cbt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(_801q_cbt))) {
 		if (get_8021q(button) == -1) {
 			//printf("Error: 802.1q field\n");
 			return -1;
 		}
 	}
-	if (GTK_TOGGLE_BUTTON(_8023_tbt)->active) { /* uporabimo ethernet vezije 802.3 */
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(_8023_tbt))) { /* uporabimo ethernet vezije 802.3 */
 		if (get_8023(button) == -1) {
 			//printf("Error: 802.3 field");
 			return -1;
 		}
 	}
 
-	else if (GTK_TOGGLE_BUTTON(ver2_tbt)->active){ /* pol pa verzijo 2 */ 
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ver2_tbt))){ /* pol pa verzijo 2 */ 
 		autolength = 0;
 		ethtype_e = lookup_widget(GTK_WIDGET (button), "L_ethtype");
 		ethtype_t = (char *)gtk_entry_get_text(GTK_ENTRY(ethtype_e));
@@ -3639,7 +3628,7 @@ int get_8023(GtkButton *button)
 
 	/* do we need to calculate the length field or will be suplied manually */
 	autolength_bt = lookup_widget(GTK_WIDGET (button), "checkbutton2");
-	if (GTK_TOGGLE_BUTTON(autolength_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(autolength_bt))) {
 		autolength = number;
 		packet[number] = 0x0; number++; packet[number] = 0x0; number++;
 	}
@@ -3697,7 +3686,7 @@ int get_8023(GtkButton *button)
 	number++;
 
 	/* do we need snap encapsulation */ 
-	if (GTK_TOGGLE_BUTTON(L8023llcsnap_tbt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(L8023llcsnap_tbt))) {
 		Loui_e = lookup_widget(GTK_WIDGET (button), "L_oui");
 		Lpid_e = lookup_widget(GTK_WIDGET (button), "L_pid");
 		
@@ -3753,7 +3742,7 @@ int get_8023(GtkButton *button)
 /* function parses 802.1q field */
 int get_8021q(GtkButton *button)
 {
-	GtkWidget *vlan_e, *priority_m, *cfi1_rbt, *vlanid_e, *menu, *menu_item, *QinQ_bt, *QinQ, *QinQpvid;
+	GtkWidget *vlan_e, *priority_m, *cfi1_rbt, *vlanid_e, *QinQ_bt, *QinQ, *QinQpvid;
 	gchar *vlan_t, *vlanid_t, *QinQ_t; 
 	gint menu_index, cfi =0;
 	char tmp[2];
@@ -3761,13 +3750,11 @@ int get_8021q(GtkButton *button)
 	QinQ_bt = lookup_widget(GTK_WIDGET (button), "checkbutton40");
 
 	/* what about QinQ field? */
-	if (GTK_TOGGLE_BUTTON(QinQ_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(QinQ_bt))) {
 		QinQpvid = lookup_widget(GTK_WIDGET (button), "optionmenu21");
 		QinQ = lookup_widget(GTK_WIDGET (button), "entry165");
 		
-		menu = GTK_OPTION_MENU(QinQpvid)->menu;
-		menu_item = gtk_menu_get_active (GTK_MENU (menu));
-		menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+		menu_index = gtk_combo_box_get_active (GTK_COMBO_BOX (QinQpvid));
 
 		switch (menu_index) {
 			case 0: {
@@ -3842,12 +3829,10 @@ int get_8021q(GtkButton *button)
 	number++;       
 	
 	/* next we need the priority */
-	menu = GTK_OPTION_MENU(priority_m)->menu;
-	menu_item = gtk_menu_get_active (GTK_MENU (menu));
-	menu_index = g_list_index (GTK_MENU_SHELL (menu)->children, menu_item);
+	menu_index = gtk_combo_box_get_active (GTK_COMBO_BOX (priority_m));
 
 	/* what about CFI bit? */
-	if (GTK_TOGGLE_BUTTON(cfi1_rbt)->active)
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cfi1_rbt)))
 		cfi = 1;
 	else 
 		cfi = 0;
@@ -4528,7 +4513,7 @@ int icmpv6_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	number++;
 
 	/* checksum */
-	if (GTK_TOGGLE_BUTTON(cks_bt)->active) {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cks_bt))) {
 		checksum_start = number;
 		packet[number] = (unsigned char)0;
 		number++;
@@ -4572,8 +4557,7 @@ int icmpv6_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	}
 
 	/* data */
-	if (GTK_TOGGLE_BUTTON(data_bt)->active) {
-
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data_bt))) {
 		if (strlen(data_t_pat) != 2) {
 			error("Error: Wrong icmpv6 data pattern");
 			return -1;

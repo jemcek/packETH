@@ -27,6 +27,22 @@ pixmaps= \
 pixmapdir=$(pkgdatadir)/pixmaps
 pixmap_DATA=$(pixmaps)
 
+ui= \
+  ui/about_dialog.ui \
+  ui/error_dialog.ui \
+  ui/fileselection1.ui \
+  ui/fileselection2.ui \
+  ui/fileselection3.ui \
+  ui/fragmentation_dialog.ui \
+  ui/interface_dialog.ui \
+  ui/sel1_dialog.ui \
+  ui/tos_dialog.ui \
+  ui/udp_payload_dialog.ui \
+  ui/window1.ui
+
+uidir=$(pkgdatadir)/ui
+ui_DATA=$(ui)
+
 DEFS= \
   -DPKGDATADIR=\"$(pkgdatadir)/\"
 
@@ -39,7 +55,8 @@ AM_CPPFLAGS = \
   -Wmissing-prototypes \
   -Wmissing-declarations \
   -Wunused \
+  -Wl,--export-dynamic \
   $(DEPS_CFLAGS)
 
 # Include the dev and pixmaps in the distribution (make dist)
-EXTRA_DIST=dev src/pixmaps
+EXTRA_DIST=dev src/pixmaps $(ui)
