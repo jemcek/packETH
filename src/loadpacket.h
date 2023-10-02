@@ -20,7 +20,7 @@
 
 #include "headers.h"
 
-int load_gen_p_data(GtkButton *button, GtkWidget *clis, char *, struct pcaprec_hdr *, int, struct clist_hdr *clptri,
+int load_gen_p_data(GtkButton *button, GtkTreeModel *model, char *, struct pcaprec_hdr *, int, struct clist_hdr *clptri,
                                                                double timediff, double timebeg);
 int load_packet_disector(GtkButton *button, char *, int whocalled, struct clist_hdr *clptr, int);
 int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr);

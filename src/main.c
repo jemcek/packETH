@@ -27,6 +27,8 @@
 #include "interface.h"
 #include "support.h"
 
+GtkBuilder *builder;
+
 int
 main (int argc, char *argv[])
 {
@@ -57,8 +59,7 @@ main (int argc, char *argv[])
 
   gtk_init (&argc, &argv);
 
-  add_pixmap_directory (PKGDATADIR"/pixmaps");
-//  add_pixmap_directory ("pixmaps");
+  builder = gtk_builder_new ();
 
   /*
    * The following code was added by Glade to create one of each component
@@ -96,4 +97,3 @@ main (int argc, char *argv[])
 
   return 0;
 }
-
