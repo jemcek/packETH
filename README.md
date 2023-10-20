@@ -4,7 +4,7 @@ packETH is GUI and CLI packet generator tool for ethernet. It allows you to crea
 
 With the GUI version (packETH) you can create and send packets. With the CLI version (packETHcli) you can only send already stored packets from pcap file. The CLI version also has a receiver mode, that can count packets and check if all packets that were sent were also received.
 
-More information about installation, usage, GUI and CLI version and FAQ can be found [here](https://packeth.sourceforge.net/packeth/Home.html).
+Some more information about installation, usage, GUI and CLI version and FAQ can also be found [here](https://packeth.sourceforge.net/packeth/Home.html).
 
 [Blog](https://packeth.wordpress.com) with some use cases.
 
