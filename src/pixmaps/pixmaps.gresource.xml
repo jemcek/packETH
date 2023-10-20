@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/packeth/pixmaps">
+    <file>Build.xpm</file>
+    <file>interface.xpm</file>
+    <file>load.xpm</file>
+    <file>preference.xpm</file>
+    <file>reset.xpm</file>
+    <file>save.xpm</file>
+    <file>send.xpm</file>
+    <file>X.xpm</file>
+  </gresource>
+</gresources>

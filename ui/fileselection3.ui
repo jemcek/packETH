@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
 <interface>
+  <requires lib="gtk+" version="3.16"/>
   <object class="GtkFileChooserDialog" id="fileselection3">
     <property name="border_width">5</property>
     <property name="visible">True</property>
@@ -24,12 +25,13 @@
     <property name="urgency_hint">False</property>
     <signal name="destroy" handler="on_fileselection3_destroy" last_modification_time="Wed, 09 Aug 2006 10:32:53 GMT"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox10">
+      <object class="GtkBox" id="dialog-vbox10">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">24</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area10">
+          <object class="GtkButtonBox" id="dialog-action_area10">
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
@@ -37,8 +39,8 @@
                 <property name="visible">True</property>
                 <property name="can_default">True</property>
                 <property name="can_focus">True</property>
-                <property name="label">gtk-cancel</property>
-                <property name="use_stock">True</property>
+                <property name="label">_Cancel</property>
+                <property name="use-underline">True</property>
                 <property name="relief">GTK_RELIEF_NORMAL</property>
                 <property name="focus_on_click">True</property>
                 <signal name="clicked" handler="on_cancel_button3_clicked" last_modification_time="Wed, 09 Aug 2006 10:34:12 GMT"/>
@@ -50,8 +52,8 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="can_focus">True</property>
-                <property name="label">gtk-open</property>
-                <property name="use_stock">True</property>
+                <property name="label">_Open</property>
+                <property name="use-underline">True</property>
                 <property name="relief">GTK_RELIEF_NORMAL</property>
                 <property name="focus_on_click">True</property>
                 <signal name="clicked" handler="on_ok_button3_clicked" last_modification_time="Wed, 09 Aug 2006 10:33:52 GMT"/>

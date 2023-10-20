@@ -27,7 +27,7 @@ void error(gchar *error_type);
 //
 
 void
-on_window1_destroy                     (GtkObject       *object,
+on_window1_destroy                     (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -379,7 +379,7 @@ on_button74_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_fileselection1_destroy              (GtkObject       *object,
+on_fileselection1_destroy              (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -391,7 +391,7 @@ on_cancel_button1_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_fileselection2_destroy              (GtkObject       *object,
+on_fileselection2_destroy              (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -403,7 +403,7 @@ on_cancel_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_sel1_dialog_destroy                 (GtkObject       *object,
+on_sel1_dialog_destroy                 (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -423,7 +423,7 @@ on_sel1_cancel_bt_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_interface_dialog_destroy            (GtkObject       *object,
+on_interface_dialog_destroy            (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -435,7 +435,7 @@ on_button51_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_error_dialog_destroy                (GtkObject       *object,
+on_error_dialog_destroy                (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -443,7 +443,7 @@ on_button52_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_udp_payload_dialog_destroy          (GtkObject       *object,
+on_udp_payload_dialog_destroy          (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -459,7 +459,7 @@ on_rtp_ok_bt_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_fileselection3_destroy              (GtkObject       *object,
+on_fileselection3_destroy              (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -471,7 +471,7 @@ on_cancel_button3_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_about_dialog_destroy                (GtkObject       *object,
+on_about_dialog_destroy                (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -479,7 +479,7 @@ on_button75_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_tos_dialod_destroy                  (GtkObject       *object,
+on_tos_dialod_destroy                  (GtkWidget       *object,
                                         gpointer         user_data);
 
 void
@@ -499,7 +499,7 @@ on_button77_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_fragmentation_dialog_destroy        (GtkObject       *object,
+on_fragmentation_dialog_destroy        (GtkWidget       *object,
                                         gpointer         user_data);
 
 void

@@ -44,18 +44,11 @@ main (int argc, char *argv[])
   GtkWidget *tos_dialod;
   GtkWidget *fragmentation_dialog; */
 
-  //g_thread_init(NULL);
-  gdk_threads_init();     
-  gdk_threads_enter();
-
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #endif
-
-  gtk_set_locale ();
-
 
   gtk_init (&argc, &argv);
 
@@ -89,11 +82,7 @@ main (int argc, char *argv[])
   fragmentation_dialog = create_fragmentation_dialog ();
   gtk_widget_show (fragmentation_dialog); */
 
-
-  //gtk_main ();
-
   gtk_main();
-  gdk_threads_leave();
 
   return 0;
 }

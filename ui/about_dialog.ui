@@ -1,128 +1,117 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <!--*- mode: xml -*-->
 <interface>
+  <requires lib="gtk+" version="3.16"/>
   <object class="GtkDialog" id="about_dialog">
     <property name="width_request">250</property>
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">About</property>
-    <property name="type">GTK_WINDOW_TOPLEVEL</property>
-    <property name="window_position">GTK_WIN_POS_NONE</property>
-    <property name="modal">False</property>
-    <property name="resizable">True</property>
-    <property name="destroy_with_parent">False</property>
-    <property name="decorated">True</property>
-    <property name="skip_taskbar_hint">False</property>
-    <property name="skip_pager_hint">False</property>
-    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
-    <property name="focus_on_map">True</property>
-    <property name="urgency_hint">False</property>
-    <property name="has_separator">True</property>
-    <signal name="destroy" handler="on_about_dialog_destroy"/>
+    <property name="type_hint">dialog</property>
+    <signal name="destroy" handler="on_about_dialog_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox5">
+      <object class="GtkBox" id="dialog-vbox5">
         <property name="visible">True</property>
-        <property name="homogeneous">False</property>
-        <property name="spacing">0</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area5">
+          <object class="GtkButtonBox" id="dialog-action_area5">
             <property name="visible">True</property>
-            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button75">
+                <property name="label" translatable="yes">Close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="label" translatable="yes">Close</property>
+                <property name="receives_default">False</property>
                 <property name="use_underline">True</property>
-                <property name="relief">GTK_RELIEF_NORMAL</property>
-                <property name="focus_on_click">True</property>
-                <signal name="clicked" handler="on_button75_clicked"/>
+                <signal name="clicked" handler="on_button75_clicked" swapped="no"/>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
           </object>
           <packing>
-            <property name="padding">0</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="pack_type">GTK_PACK_END</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox63">
+          <object class="GtkBox" id="vbox63">
             <property name="visible">True</property>
-            <property name="homogeneous">False</property>
-            <property name="spacing">0</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="pixmap17">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0.5</property>
                 <property name="yalign">0.5</property>
                 <property name="xpad">0</property>
                 <property name="ypad">0</property>
               </object>
               <packing>
-                <property name="padding">15</property>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="padding">15</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label275">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">packETH - 1.9</property>
-                <property name="use_underline">False</property>
-                <property name="use_markup">False</property>
-                <property name="justify">GTK_JUSTIFY_CENTER</property>
-                <property name="wrap">False</property>
-                <property name="selectable">False</property>
-                <property name="xalign">0.5</property>
-                <property name="yalign">0.5</property>
+                <property name="can_focus">False</property>
                 <property name="xpad">0</property>
                 <property name="ypad">0</property>
-                <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-                <property name="width_chars">-1</property>
-                <property name="single_line_mode">False</property>
-                <property name="angle">0</property>
+                <property name="label" translatable="yes">packETH</property>
+                <property name="justify">center</property>
+                <property name="xalign">0.5</property>
+                <property name="yalign">0.5</property>
               </object>
               <packing>
-                <property name="padding">10</property>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="padding">10</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label276">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xpad">0</property>
+                <property name="ypad">0</property>
                 <property name="label" translatable="yes">ethernet packet generator
-         Copyright2003 - 2017
+         Copyright2003 - 2023
            Miha Jemec          
 jemcek@gmail.com
 http://packeth.sourceforge.net/</property>
-                <property name="use_underline">False</property>
-                <property name="use_markup">False</property>
-                <property name="justify">GTK_JUSTIFY_CENTER</property>
-                <property name="wrap">False</property>
-                <property name="selectable">False</property>
+                <property name="justify">center</property>
                 <property name="xalign">0.5</property>
                 <property name="yalign">0.5</property>
-                <property name="xpad">0</property>
-                <property name="ypad">0</property>
-                <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-                <property name="width_chars">-1</property>
-                <property name="single_line_mode">False</property>
-                <property name="angle">0</property>
               </object>
               <packing>
-                <property name="padding">10</property>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="padding">10</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="padding">0</property>
             <property name="expand">True</property>
             <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>

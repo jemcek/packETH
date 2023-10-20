@@ -243,7 +243,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
 	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66, *ckbt67;
-	GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt82, *rdbt95, *rdbt89, *rdbt90, *rdbt91;
+	GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt95, *rdbt89, *rdbt91;
 	GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230;
 
 	int c, i, m, length, ramp_submode;
@@ -252,7 +252,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 	gint context_id;
 	char buff[100], buf2[80];
 	struct tm *ptr;
-	struct timeb tp;
+	struct timespec tp;
 	time_t now;
 	pthread_t thread_id;
 
@@ -300,16 +300,23 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		/* let's send the packet */
 		c = packet_go_on_the_link(packet, number);
-		
+
 		if ( c == -2) {
 			//printf("problems with sending\n");
 			snprintf(buff, 100, "  Problems with sending!");
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 			return -1;
 		}
+                else if (c == -1) {
+			snprintf(buff, 100, "  0 bytes sent on %s", iftext);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+                        error(" Could not sent packet. Is interface MTU larger than packet length?");
+			return -1;
+                        
+                }
 		else {
-			ftime(&tp);
-			now=tp.time;
+			clock_gettime(CLOCK_REALTIME, &tp);
+			now=tp.tv_sec;
 			ptr=localtime(&now);
 			strftime(buf2,80, "%H:%M:%S", ptr);
 			snprintf(buff, 100, " %s  -----> %d bytes sent on %s", buf2, c, iftext);
@@ -402,10 +409,8 @@ int send_packet(GtkButton *button, gpointer user_data)
 		ckbt4 = lookup_widget(GTK_WIDGET(button), "radiobutton87");
 		ckbt5 = lookup_widget(GTK_WIDGET(button), "radiobutton83");
 		rdbt85 = lookup_widget(GTK_WIDGET(button), "radiobutton85");
-		rdbt82 = lookup_widget(GTK_WIDGET(button), "radiobutton82");
 		rdbt95 = lookup_widget(GTK_WIDGET(button), "radiobutton95");
 		rdbt89 = lookup_widget(GTK_WIDGET(button), "radiobutton89");
-		rdbt90 = lookup_widget(GTK_WIDGET(button), "radiobutton90");
 		rdbt91 = lookup_widget(GTK_WIDGET(button), "radiobutton91");
 
 		ckbt50 = lookup_widget (GTK_WIDGET (button), "checkbutton50");

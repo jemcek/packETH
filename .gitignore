@@ -9,6 +9,8 @@ missing
 packETH
 src/*.o
 src/.deps/*
+src/pixmaps.[ch]
+src/ui.[ch]
 cli/*.o
 stamp-h1
 !configure.ac

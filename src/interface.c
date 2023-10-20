@@ -15,8 +15,10 @@
 #include "interface.h"
 #include "support.h"
 
+#define RESOURCE_PATH_UI "/org/packeth/ui"
+
 static GtkWidget*
-load_widget_from_ui_file (const gchar *ui_file, const gchar *name)
+load_widget_from_resource (const gchar *resource, const gchar *name)
 {
   GError *error = NULL;
 
@@ -25,28 +27,15 @@ load_widget_from_ui_file (const gchar *ui_file, const gchar *name)
     return NULL;
   }
 
-  if (!gtk_builder_add_from_file (builder, ui_file, &error))
+  if (!gtk_builder_add_from_resource (builder, resource, &error))
   {
-    g_critical ("Failed to load from file %s: %s.", ui_file, error->message);
+    g_critical ("Failed to load from resource %s: %s.", resource, error->message);
     g_error_free (error);
     return NULL;
   }
   gtk_builder_connect_signals (builder, NULL);
 
   return GTK_WIDGET (gtk_builder_get_object (builder, name));
-}
-
-/* For unknown reason GtkComboBoxText.active property doesn't activate item */
-static void
-activate_first_combo_box_item (const gchar *name)
-{
-  GtkWidget *combo_box;
-
-  combo_box = lookup_widget (NULL, name);
-  if (combo_box)
-  {
-    gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
-  }
 }
 
 /* For unknown reason GtkToggleButton.active property doesn't activate item */
@@ -67,20 +56,7 @@ create_window1 (void)
 {
   GtkWidget *window1;
 
-  window1 = load_widget_from_ui_file (PKGDATADIR "/ui/window1.ui", "window1");
-  if (window1)
-  {
-    activate_first_combo_box_item ("L_optmenu1_bt");
-    activate_first_combo_box_item ("optionmenu21");
-    activate_first_combo_box_item ("L_optmenu2_bt");
-    activate_first_combo_box_item ("optionmenu6");
-    activate_first_combo_box_item ("optionmenu3");
-    activate_first_combo_box_item ("optionmenu4");
-    activate_first_combo_box_item ("optionmenu5");
-    activate_first_combo_box_item ("optionmenu20");
-    activate_first_combo_box_item ("optionmenu14");
-    activate_first_combo_box_item ("optionmenu15");
-  }
+  window1 = load_widget_from_resource (RESOURCE_PATH_UI "/window1.ui", "window1");
 
   return window1;
 }
@@ -90,7 +66,7 @@ create_sel1_dialog (void)
 {
   GtkWidget *sel1_dialog;
 
-  sel1_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/sel1_dialog.ui", "sel1_dialog");
+  sel1_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/sel1_dialog.ui", "sel1_dialog");
 
   return sel1_dialog;
 }
@@ -100,7 +76,7 @@ create_interface_dialog (void)
 {
   GtkWidget *interface_dialog;
 
-  interface_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/interface_dialog.ui", "interface_dialog");
+  interface_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/interface_dialog.ui", "interface_dialog");
 
   return interface_dialog;
 }
@@ -110,7 +86,7 @@ create_error_dialog (void)
 {
   GtkWidget *error_dialog;
 
-  error_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/error_dialog.ui", "error_dialog");
+  error_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/error_dialog.ui", "error_dialog");
 
   return error_dialog;
 }
@@ -120,12 +96,7 @@ create_udp_payload_dialog (void)
 {
   GtkWidget *udp_payload_dialog;
 
-  udp_payload_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/udp_payload_dialog.ui", "udp_payload_dialog");
-  if (udp_payload_dialog)
-  {
-    activate_first_combo_box_item ("optionmenu7");
-    activate_first_combo_box_item ("optionmenu12");
-  }
+  udp_payload_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/udp_payload_dialog.ui", "udp_payload_dialog");
 
   return udp_payload_dialog;
 }
@@ -135,7 +106,7 @@ create_about_dialog (void)
 {
   GtkWidget *about_dialog;
 
-  about_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/about_dialog.ui", "about_dialog");
+  about_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/about_dialog.ui", "about_dialog");
 
   return about_dialog;
 }
@@ -145,11 +116,9 @@ create_tos_dialod (void)
 {
   GtkWidget *tos_dialod;
 
-  tos_dialod = load_widget_from_ui_file (PKGDATADIR "/ui/tos_dialog.ui", "tos_dialog");
+  tos_dialod = load_widget_from_resource (RESOURCE_PATH_UI "/tos_dialog.ui", "tos_dialog");
   if (tos_dialod)
   {
-    activate_first_combo_box_item ("optionmenu13");
-    activate_first_combo_box_item ("optionmenu22");
     activate_toggle_button ("radiobutton39");
   }
 
@@ -161,7 +130,7 @@ create_fragmentation_dialog (void)
 {
   GtkWidget *fragmentation_dialog;
 
-  fragmentation_dialog = load_widget_from_ui_file (PKGDATADIR "/ui/fragmentation_dialog.ui", "fragmentation_dialog");
+  fragmentation_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/fragmentation_dialog.ui", "fragmentation_dialog");
 
   return fragmentation_dialog;
 }
@@ -171,7 +140,7 @@ create_fileselection1 (void)
 {
   GtkWidget *fileselection1;
 
-  fileselection1 = load_widget_from_ui_file (PKGDATADIR "/ui/fileselection1.ui", "fileselection1");
+  fileselection1 = load_widget_from_resource (RESOURCE_PATH_UI "/fileselection1.ui", "fileselection1");
 
   return fileselection1;
 }
@@ -181,7 +150,7 @@ create_fileselection2 (void)
 {
   GtkWidget *fileselection2;
 
-  fileselection2 = load_widget_from_ui_file (PKGDATADIR "/ui/fileselection2.ui", "fileselection2");
+  fileselection2 = load_widget_from_resource (RESOURCE_PATH_UI "/fileselection2.ui", "fileselection2");
 
   return fileselection2;
 }
@@ -191,7 +160,7 @@ create_fileselection3 (void)
 {
   GtkWidget *fileselection3;
 
-  fileselection3 = load_widget_from_ui_file (PKGDATADIR "/ui/fileselection3.ui", "fileselection3");
+  fileselection3 = load_widget_from_resource (RESOURCE_PATH_UI "/fileselection3.ui", "fileselection3");
 
   return fileselection3;
 }
