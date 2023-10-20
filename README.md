@@ -10,6 +10,10 @@ More information about installation, usage, GUI and CLI version and FAQ can be f
 
 ## NEWS
 
+### OCT 2023
+
+- migrated to GTK3 (many thanks to @qarkai) 
+
 ### JUL 2019  
 
 - packETHcli added burst mode (-m -6)
