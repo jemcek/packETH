@@ -102,16 +102,6 @@ create_udp_payload_dialog (void)
 }
 
 GtkWidget*
-create_about_dialog (void)
-{
-  GtkWidget *about_dialog;
-
-  about_dialog = load_widget_from_resource (RESOURCE_PATH_UI "/about_dialog.ui", "about_dialog");
-
-  return about_dialog;
-}
-
-GtkWidget*
 create_tos_dialod (void)
 {
   GtkWidget *tos_dialod;
@@ -163,4 +153,23 @@ create_fileselection3 (void)
   fileselection3 = load_widget_from_resource (RESOURCE_PATH_UI "/fileselection3.ui", "fileselection3");
 
   return fileselection3;
+}
+
+void
+show_about_dialog (void)
+{
+  const gchar *authors[] = {
+    "Miha Jemec <jemcek@gmail.com>",
+    NULL
+  };
+
+  gtk_show_about_dialog (NULL,
+                         "authors", authors,
+                         "comments", "ethernet packet generator",
+                         "copyright", "Copyright \302\251 2003 - 2023",
+                         "logo-icon-name", "application-x-executable",
+                         "program-name", PACKAGE_NAME,
+                         "version", PACKAGE_VERSION,
+                         "website", PACKAGE_URL,
+                         NULL);
 }

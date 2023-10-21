@@ -40,7 +40,6 @@ main (int argc, char *argv[])
   GtkWidget *error_dialog;
   GtkWidget *udp_payload_dialog;
   GtkWidget *fileselection3;
-  GtkWidget *about_dialog;
   GtkWidget *tos_dialod;
   GtkWidget *fragmentation_dialog; */
 
@@ -75,8 +74,7 @@ main (int argc, char *argv[])
   gtk_widget_show (udp_payload_dialog);
   fileselection3 = create_fileselection3 ();
   gtk_widget_show (fileselection3);
-  about_dialog = create_about_dialog ();
-  gtk_widget_show (about_dialog);
+  show_about_dialog ();
   tos_dialod = create_tos_dialod ();
   gtk_widget_show (tos_dialod);
   fragmentation_dialog = create_fragmentation_dialog ();

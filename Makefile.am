@@ -29,7 +29,6 @@ pixmaps= \
 
 ui= \
   ui/ui.gresource.xml \
-  ui/about_dialog.ui \
   ui/error_dialog.ui \
   ui/fileselection1.ui \
   ui/fileselection2.ui \
@@ -40,9 +39,6 @@ ui= \
   ui/tos_dialog.ui \
   ui/udp_payload_dialog.ui \
   ui/window1.ui
-
-DEFS= \
-  -DPKGDATADIR=\"$(pkgdatadir)/\"
 
 LIBS=$(DEPS_LIBS) -lm
 

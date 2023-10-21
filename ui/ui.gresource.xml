@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/packeth/ui">
-    <file>about_dialog.ui</file>
     <file>error_dialog.ui</file>
     <file>fileselection1.ui</file>
     <file>fileselection2.ui</file>

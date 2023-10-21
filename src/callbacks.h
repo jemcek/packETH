@@ -471,14 +471,6 @@ on_cancel_button3_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_about_dialog_destroy                (GtkWidget       *object,
-                                        gpointer         user_data);
-
-void
-on_button75_clicked                    (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
 on_tos_dialod_destroy                  (GtkWidget       *object,
                                         gpointer         user_data);
 

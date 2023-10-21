@@ -55,7 +55,6 @@ static	GtkWidget *save_file_menu = NULL;
 static	GtkWidget *database_file_menu = NULL;
 static	GtkWidget *interface_dialog_menu = NULL;
 static	GtkWidget *error_dialog_menu = NULL;
-static	GtkWidget *about_dialog_menu = NULL;
 static	GtkWidget *tos_dialog_menu = NULL;
 static	GtkWidget *fragment_dialog_menu = NULL;
 static	GtkWidget *selection1_dialog = NULL;
@@ -328,17 +327,10 @@ on_exit1_activate                      (GtkMenuItem     *menuitem,
 
 
 void
-on_about1_activate                      (GtkMenuItem     *menuitem,
+on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (about_dialog_menu != NULL) {
-		gdk_window_show(gtk_widget_get_window(about_dialog_menu));
-		gdk_window_raise(gtk_widget_get_window(about_dialog_menu));
-		return;
-	}
-
-	about_dialog_menu = create_about_dialog();
-	gtk_widget_show(about_dialog_menu);
+	show_about_dialog();
 }
 
 
@@ -3016,24 +3008,6 @@ on_fileselection3_destroy              (GtkWidget       *object,
 }
 
 
-
-
-void
-on_about_dialog_destroy                (GtkWidget       *object,
-                                        gpointer         user_data)
-{
-	about_dialog_menu = NULL;
-}
-
-
-/* ok butoon for about dialog */
-void
-on_button75_clicked                    (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	gtk_grab_remove(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-	gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-}
 
 
 void

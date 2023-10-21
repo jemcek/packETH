@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([packETH], [1.7], [jemcek@gmail.com])
+AC_INIT([packETH], [3.0], [https://github.com/jemcek/packETH/issues], [], [https://packeth.sourceforge.net/])
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_HEADERS([config.h])
