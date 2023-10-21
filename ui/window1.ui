@@ -1312,7 +1312,7 @@
                                                             <property name="editable">False</property>
                                                             <property name="max_length">4</property>
                                                             <property name="invisible_char">•</property>
-                                                            <property name="width_chars">4</property>
+                                                            <property name="width_chars">5</property>
                                                             <property name="text" translatable="yes">0800</property>
                                                             </object>
                                                             <packing>
@@ -1453,8 +1453,8 @@
                                                             </child>
                                                           </object>
                                                           <packing>
-                                                            <property name="expand">True</property>
-                                                            <property name="fill">True</property>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">False</property>
                                                             <property name="position">2</property>
                                                           </packing>
                                                         </child>
@@ -1896,7 +1896,7 @@
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
                                                             <property name="invisible_char">•</property>
-                                                            <property name="width_chars">2</property>
+                                                            <property name="width_chars">3</property>
                                                             <property name="text" translatable="yes">AA</property>
                                                             </object>
                                                             <packing>
@@ -1929,7 +1929,7 @@
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
                                                             <property name="invisible_char">•</property>
-                                                            <property name="width_chars">2</property>
+                                                            <property name="width_chars">3</property>
                                                             <property name="text" translatable="yes">AA</property>
                                                             </object>
                                                             <packing>
