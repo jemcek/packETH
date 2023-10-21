@@ -300,13 +300,20 @@ int send_packet(GtkButton *button, gpointer user_data)
 
 		/* let's send the packet */
 		c = packet_go_on_the_link(packet, number);
-		
+
 		if ( c == -2) {
 			//printf("problems with sending\n");
 			snprintf(buff, 100, "  Problems with sending!");
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 			return -1;
 		}
+                else if (c == -1) {
+			snprintf(buff, 100, "  0 bytes sent on %s", iftext);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
+                        error(" Could not sent packet. Is interface MTU larger than packet length?");
+			return -1;
+                        
+                }
 		else {
 			clock_gettime(CLOCK_REALTIME, &tp);
 			now=tp.tv_sec;
