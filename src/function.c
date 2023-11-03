@@ -310,7 +310,7 @@ int send_packet(GtkButton *button, gpointer user_data)
                 else if (c == -1) {
 			snprintf(buff, 100, "  0 bytes sent on %s", iftext);
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-                        error(" Could not sent packet. Is interface MTU larger than packet length?");
+                        error(" Could not sent packet:\n\nIs interface up?\nIs interface MTU larger than packet length?");
 			return -1;
                         
                 }
