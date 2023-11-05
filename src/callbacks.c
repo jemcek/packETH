@@ -2433,30 +2433,26 @@ on_rtp_ok_bt_clicked                   (GtkButton       *button,
 {
 	char tmp[31000], tmp2[31000];
 	int ij = 0, i, j;
- 	GtkWidget *version, *csrc_nr, *payload_type, *seq_nr, *timestamp, *ssrc, *csrc, *extension;
-	GtkWidget *padding_true, *extension_true, *marker_true;
-	//GtkWidget *padding_false, *extension_false, *marker_false;
+	GtkWidget *version, *csrc_nr, *payload_type, *seq_nr, *timestamp, *ssrc, *csrc, *extension;
+	GtkWidget *padding_switch, *extension_switch, *marker_switch;
 	GtkWidget *rtp_payload;
 	gchar *vers_t, *csrc_nr_t, *payload_type_t, *seq_nr_t, *timestamp_t, *ssrc_t;
 	gchar *csrc_t, *extension_t, *rtp_payload_t;
 	int sum, intversion, intpadding, intmarker, intextension, intcsrc, inttype;
 	guint16 intseq;
 	guint32 inttimestamp, intssrc; 
-	
-        version = lookup_widget(GTK_WIDGET(button), "entry91");
-        csrc_nr = lookup_widget(GTK_WIDGET(button), "entry92");
-        payload_type = lookup_widget(GTK_WIDGET(button), "entry102");
-        seq_nr = lookup_widget(GTK_WIDGET(button), "entry101");
-        timestamp = lookup_widget(GTK_WIDGET(button), "entry97");
-        ssrc = lookup_widget(GTK_WIDGET(button), "entry96");
-        csrc = lookup_widget(GTK_WIDGET(button), "entry98");
-        extension = lookup_widget(GTK_WIDGET(button), "entry99");
-        padding_true = lookup_widget(GTK_WIDGET(button), "radiobutton23");
-        //padding_false = lookup_widget(GTK_WIDGET(button), "radiobutton24");
-        extension_true = lookup_widget(GTK_WIDGET(button), "radiobutton25");
-        //extension_false = lookup_widget(GTK_WIDGET(button), "radiobutton26");
-        marker_true = lookup_widget(GTK_WIDGET(button), "radiobutton27");
-        //marker_false = lookup_widget(GTK_WIDGET(button), "radiobutton28");
+
+	version = lookup_widget(GTK_WIDGET(button), "entry91");
+	csrc_nr = lookup_widget(GTK_WIDGET(button), "entry92");
+	payload_type = lookup_widget(GTK_WIDGET(button), "entry102");
+	seq_nr = lookup_widget(GTK_WIDGET(button), "entry101");
+	timestamp = lookup_widget(GTK_WIDGET(button), "entry97");
+	ssrc = lookup_widget(GTK_WIDGET(button), "entry96");
+	csrc = lookup_widget(GTK_WIDGET(button), "entry98");
+	extension = lookup_widget(GTK_WIDGET(button), "entry99");
+	padding_switch = lookup_widget(NULL, "padding_switch");
+	extension_switch = lookup_widget(NULL, "extension_switch");
+	marker_switch = lookup_widget(NULL, "marker_switch");
 	rtp_payload = lookup_widget(GTK_WIDGET(button), "entry103");
 
 	vers_t = (char *)gtk_entry_get_text(GTK_ENTRY(version));
@@ -2478,16 +2474,16 @@ on_rtp_ok_bt_clicked                   (GtkButton       *button,
 	}
 
 	/* there can be rubbish in this field */
-        if (check_digit(vers_t, strlen(vers_t), "Error: RTP version value") == -1)
-                                return;
-	
+	if (check_digit(vers_t, strlen(vers_t), "Error: RTP version value") == -1)
+		return;
+
 	/* should we add paddind automaticaly or not? no we do not do it */
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(padding_true))) 
+	if (gtk_switch_get_active(GTK_SWITCH(padding_switch)))
 		intpadding = 1;
 	else
 		intpadding = 0;
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(extension_true))) 
+	if (gtk_switch_get_active(GTK_SWITCH(extension_switch)))
 		intextension = 1;
 	else
 		intextension = 0;
@@ -2501,19 +2497,19 @@ on_rtp_ok_bt_clicked                   (GtkButton       *button,
 	}
 
 	/* there can be rubbish in this field */
-        if (check_digit(csrc_nr_t, strlen(csrc_nr_t), "Error: rtp csrc value") == -1)
-                                return;
-	
+	if (check_digit(csrc_nr_t, strlen(csrc_nr_t), "Error: rtp csrc value") == -1)
+		return;
+
 	/* first byte is version + padding + extension + csrc */
 	tmp[ij] = c4((intversion*4 + intpadding*2 + intextension)); ij++;
- 	tmp[ij] = c4(intcsrc); ij++;
+	tmp[ij] = c4(intcsrc); ij++;
 
 	/* next byte */	
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(marker_true))) 
+	if (gtk_switch_get_active(GTK_SWITCH(marker_switch)))
 		intmarker = 1;
 	else
 		intmarker = 0;
-	
+
 	inttype = strtol(payload_type_t, (char **)NULL, 10);
 	if ( (inttype > 127) || (inttype < 0) ) {
 		//printf("Error: RTP payload type number\n");
@@ -3294,22 +3290,26 @@ on_button79_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *w1, *w2;
+	gboolean a1, a2;
 	gchar tmp[2];
+
 	bzero(tmp,2);
 
 	w1 = lookup_widget(GTK_WIDGET(button), "radiobutton55");
-	w2 = lookup_widget(GTK_WIDGET(button), "radiobutton57");
+	a1 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w1));
 
-	if ( (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w1))) && (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w2))) )
+	w2 = lookup_widget(GTK_WIDGET(button), "radiobutton57");
+	a2 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w2));
+
+	if (a1 && a2)
 		tmp[0] = '3';
-	else if ( (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w1))) && !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w2))) )
+	else if (a1 && !a2)
 		tmp[0] = '2';
-	else if ( !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w1))) && (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w2))) )
+	else if (!a1 && a2)
 		tmp[0] = '1';
 	else
 		tmp[0] = '0';
 
-	gtk_entry_set_max_length(GTK_ENTRY(entry_field_fragment),1);
 	gtk_entry_set_text(GTK_ENTRY(entry_field_fragment),tmp);
 
 	gtk_grab_remove(gtk_widget_get_toplevel(GTK_WIDGET(button)));
