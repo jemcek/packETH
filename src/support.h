@@ -36,9 +36,6 @@ extern GtkBuilder *builder;
 
 /*
  * This function returns a widget in a component created by Glade.
- * Call it with the toplevel widget in the component (i.e. a window/dialog),
- * or alternatively any widget in the component, and the name of the widget
- * you want returned.
+ * Call it with the name of the widget you want returned.
  */
-GtkWidget*  lookup_widget              (GtkWidget       *widget,
-                                        const gchar     *widget_name);
+GtkWidget*  lookup_widget              (const gchar     *widget_name);

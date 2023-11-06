@@ -50,10 +50,10 @@ int load_gen_b_data(GtkButton *button, FILE *file_p) {
         char buffc[11][200];
 	int c, j, k;
 
-	w3 = lookup_widget(GTK_WIDGET (button), "optionmenu9");
-	w4 = lookup_widget(GTK_WIDGET (button), "entry109");
-	w5 = lookup_widget(GTK_WIDGET (button), "entry110");
-	w6 = lookup_widget(GTK_WIDGET(button), "checkbutton35");
+	w3 = lookup_widget("optionmenu9");
+	w4 = lookup_widget("entry109");
+	w5 = lookup_widget("entry110");
+	w6 = lookup_widget("checkbutton35");
 	/* we read the file ohh python, where are you... */
 	k = 0;
 	j = 0;
@@ -191,11 +191,11 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 		     }
 	}
 
-	w1 = lookup_widget(GTK_WIDGET (button), "radiobutton36");
-	w2 = lookup_widget(GTK_WIDGET (button), "radiobutton37");
-	w4 = lookup_widget(GTK_WIDGET (button), "entry151");
-	w5 = lookup_widget(GTK_WIDGET (button), "entry152");
-	w6 = lookup_widget(GTK_WIDGET(button), "checkbutton36");
+	w1 = lookup_widget("radiobutton36");
+	w2 = lookup_widget("radiobutton37");
+	w4 = lookup_widget("entry151");
+	w5 = lookup_widget("entry152");
+	w6 = lookup_widget("checkbutton36");
 
 	/* first line should have three parameters */
 	/* first is absolute or relative delay, allowed values 0 and 1 */
@@ -244,19 +244,19 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 	/* we have to clean everything */
 	for (j = 0; j < 10; j++) {
 		snprintf(buff, 10, "entry%d", 111+j);
-		w2 = lookup_widget(GTK_WIDGET (button), buff);
+		w2 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w2), "");
 		snprintf(buff, 100, "entry%d", 121+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), "");
 		snprintf(buff, 100, "entry%d", 131+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), "");
 		snprintf(buff, 100, "entry%d", 141+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), "");
 		snprintf(buff, 100, "checkbutton%d", 25+j);
-		w2 = lookup_widget(GTK_WIDGET(button), buff);
+		w2 = lookup_widget(buff);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w2), 0);
 	}
 
@@ -268,7 +268,7 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 		*ptr2 = '\0';
 		if ( (strlen(&buffc[j][0]) > 0 ) && (strlen(&buffc[j][0]) < 70) ) {
 			snprintf(buff, 10, "entry%d", 110+j);
-			w2 = lookup_widget(GTK_WIDGET (button), buff);
+			w2 = lookup_widget(buff);
 			gtk_entry_set_text(GTK_ENTRY(w2), &buffc[j][0]);
 		}
 		else {
@@ -285,7 +285,7 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 			return -1;
 		}
 		snprintf(buff, 100, "entry%d", 120+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), ptr);
 
 		/* delay between packets */
@@ -299,7 +299,7 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 			return -1;
 		}
 		snprintf(buff, 100, "entry%d", 130+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), ptr);
 
 		/* delay to next */
@@ -313,13 +313,13 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 			return -1;
 		}
 		snprintf(buff, 100, "entry%d", 140+j);
-		w3 = lookup_widget(GTK_WIDGET (button), buff);
+		w3 = lookup_widget(buff);
 		gtk_entry_set_text(GTK_ENTRY(w3), ptr);
 
 		/* enable or disable */
 		ptr = ptr2; ptr++;
 		snprintf(buff, 100, "checkbutton%d", 24+j);
-		w2 = lookup_widget(GTK_WIDGET(button), buff);
+		w2 = lookup_widget(buff);
 		if (*ptr == '1')
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w2), 0);
 		else if (*ptr == '0')
@@ -393,7 +393,7 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 	else { 
 		GtkTreeModel *model;
 
-		clis = lookup_widget(GTK_WIDGET (button), "clist2");
+		clis = lookup_widget("clist2");
 		model = gtk_tree_view_get_model (GTK_TREE_VIEW (clis));
 		gtk_list_store_clear (GTK_LIST_STORE (model));
 	
@@ -578,7 +578,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	}
 
 	/* first there is destination mac */
-	w1 = lookup_widget(GTK_WIDGET(button), "L_dst_mac");
+	w1 = lookup_widget("L_dst_mac");
 	for (i=1; i<=18; i++, ptrt++) {
 		if (i%3 == 0) 
 			*ptrt = ':';
@@ -595,7 +595,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 
 	/* and source mac */
 	ptrt = temp;
-	w2 = lookup_widget(GTK_WIDGET(button), "L_src_mac");
+	w2 = lookup_widget("L_src_mac");
 	for (i=1; i<=18; i++, ptrt++) {
 		if (i%3 == 0) 
 			*ptrt = ':';
@@ -616,16 +616,16 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	remain = remain - 14;
 
 	/* in case of a vlan tag 0x8100 == 33024) */
-	w1 = lookup_widget(GTK_WIDGET(button), "bt_8021q");
-	w2 = lookup_widget(GTK_WIDGET(button), "frame6");
+	w1 = lookup_widget("bt_8021q");
+	w2 = lookup_widget("frame6");
 
 	if ((i == 33024) || (i==34984) || (i==37120) || (i==37376)) {
-		w3 = lookup_widget(GTK_WIDGET(button), "L_optmenu2_bt");
-		w4 = lookup_widget(GTK_WIDGET(button), "checkbutton39");
-		w5 = lookup_widget(GTK_WIDGET(button), "checkbutton40");
-		w6 = lookup_widget(GTK_WIDGET(button), "L_vlan_id");
-		w7 = lookup_widget(GTK_WIDGET(button), "entry165");
-		w8 = lookup_widget(GTK_WIDGET(button), "optionmenu21");
+		w3 = lookup_widget("L_optmenu2_bt");
+		w4 = lookup_widget("checkbutton39");
+		w5 = lookup_widget("checkbutton40");
+		w6 = lookup_widget("L_vlan_id");
+		w7 = lookup_widget("entry165");
+		w8 = lookup_widget("optionmenu21");
 		
 	        //if we have 8100 after the next 4 bytes we do QinQ	
 		if ( ((char2x(ptrf+8)*256 + char2x(ptrf+10))==33024) && remain>=8) 
@@ -736,7 +736,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		/* if the return value from parsing ipv4 header was != 0, then the header parameters 
 		 * are ok and we can open ipv4 notebook page activate toggle button (button calls 
 		 * the callback then!!! */
-		w1 = lookup_widget(GTK_WIDGET(button), "ippkt_radibt");
+		w1 = lookup_widget("ippkt_radibt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
 		/* here we do the further parsing: tcp, udp, icmp, ...*/
@@ -748,7 +748,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				return -1;
 			/* ok, lets activate the icmp notebook */
 			else {
-				w1 = lookup_widget(GTK_WIDGET(button), "icmp_bt");
+				w1 = lookup_widget("icmp_bt");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 			}
 		}
@@ -760,7 +760,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				return -1;
 			/* ok, lets activate the igmp notebook */
 			else {
-				w1 = lookup_widget(GTK_WIDGET(button), "igmp_bt");
+				w1 = lookup_widget("igmp_bt");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 			}
 		}
@@ -772,7 +772,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				return -1;
 			/* ok, lets activate the tcp notebook */
 			else {
-				w1 = lookup_widget(GTK_WIDGET(button), "tcp_bt");
+				w1 = lookup_widget("tcp_bt");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 			}
 
@@ -787,7 +787,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				return -1;
 			/* ok, lets activate the udp notebook */
 			else {
-				w1 = lookup_widget(GTK_WIDGET(button), "udp_bt");
+				w1 = lookup_widget("udp_bt");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 			}
 
@@ -796,7 +796,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		/* protocol we do not support yet; user defined window */
 		else {
 			next_prot = usedef_insert(button, "text2", whocalled);
-			w1 = lookup_widget(GTK_WIDGET(button), "ip_user_data_bt");
+			w1 = lookup_widget("ip_user_data_bt");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		}
 	}
@@ -807,7 +807,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		if (next_prot == -1)
 			return -1;
 
-		w1 = lookup_widget(GTK_WIDGET(button), "arppkt_radiobt");
+		w1 = lookup_widget("arppkt_radiobt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	}
 
@@ -819,7 +819,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
                 if (next_prot == -1)
                         return -1;
 
-		w1 = lookup_widget(GTK_WIDGET(button), "IPv6_rdbt");
+		w1 = lookup_widget("IPv6_rdbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
                 /* here we do the further parsing: tcp, udp, icmp, ...*/
@@ -831,7 +831,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
                                 return -1;
                         /* ok, lets activate the icmpv6 notebook */
                         else {
-                                w1 = lookup_widget(GTK_WIDGET(button), "radiobutton69");
+                                w1 = lookup_widget("radiobutton69");
                                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
                         }
                 }
@@ -843,7 +843,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
                                 return -1;
                         /* ok, lets activate the tcp notebook */
                         else {
-                                w1 = lookup_widget(GTK_WIDGET(button), "radiobutton68");
+                                w1 = lookup_widget("radiobutton68");
                                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
                         }
 		}
@@ -855,14 +855,14 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
                                 return -1;
                         /* ok, lets activate the udp notebook */
                         else {
-                                w1 = lookup_widget(GTK_WIDGET(button), "radiobutton67");
+                                w1 = lookup_widget("radiobutton67");
                                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
                         }
                 }
                 /* protocol we do not support yet; user defined window */
                 else {
                         next_prot = usedef_insert(button, "text2", whocalled);
-                        w1 = lookup_widget(GTK_WIDGET(button), "radiobutton71");
+                        w1 = lookup_widget("radiobutton71");
                         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
                 }
 
@@ -871,7 +871,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	else {
 		/* setting "usedef2_radibt" toggle button to true will call the callback which will clear 
 		eth II type field and 802.3 pid field, so we have to fill this later */
-		w1 = lookup_widget(GTK_WIDGET(button), "usedef2_radibt");
+		w1 = lookup_widget("usedef2_radibt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		
 		/* we still have c to distinguish between ver II and 802.3 */
@@ -925,24 +925,24 @@ int arp_header(GtkButton *button, int whocalled) {
 
 	/* opcode is next */
 	if ( (*ptrf == '0') && (*(ptrf+1) == '0') && (*(ptrf+2) == '0') && (*(ptrf+3) == '1') ) {
-		w1 = lookup_widget(GTK_WIDGET(button), "radiobutton10");
+		w1 = lookup_widget("radiobutton10");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		ptrf = ptrf + 4;
 	}
 	else if ( (*ptrf == '0') && (*(ptrf+1) == '0') && (*(ptrf+2) == '0') && (*(ptrf+3) == '2') ) {
-		w1 = lookup_widget(GTK_WIDGET(button), "radiobutton11");
+		w1 = lookup_widget("radiobutton11");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		ptrf = ptrf + 4;
 	}
 	else {
-		w1 = lookup_widget(GTK_WIDGET(button), "radiobutton17");
+		w1 = lookup_widget("radiobutton17");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		inspar(button, "entry81", ptrf, 4);
 	}
 
 	/* sender mac */
 	ptrt = temp;
-	w1 = lookup_widget(GTK_WIDGET(button), "A_sendermac");
+	w1 = lookup_widget("A_sendermac");
 	for (i=1; i<=18; i++, ptrt++) {
 		if (i%3 == 0) 
 			*ptrt = ':';
@@ -956,7 +956,7 @@ int arp_header(GtkButton *button, int whocalled) {
 	/* sender ip */
 	ptrt = temp;
 	memset(temp, 0, 20);
-	w1 = lookup_widget(GTK_WIDGET(button), "A_senderip");
+	w1 = lookup_widget("A_senderip");
 	for (i=1; i<=12; i++, ptrt++) {
 		if (i%3 == 0) {			
 			x = char2x(tmp);
@@ -974,7 +974,7 @@ int arp_header(GtkButton *button, int whocalled) {
 
 	/* target mac */
 	ptrt = temp;
-	w1 = lookup_widget(GTK_WIDGET(button), "A_targetmac");
+	w1 = lookup_widget("A_targetmac");
 	for (i=1; i<=18; i++, ptrt++) {
 		if (i%3 == 0) 
 			*ptrt = ':';
@@ -988,7 +988,7 @@ int arp_header(GtkButton *button, int whocalled) {
 	/* target ip */
 	ptrt = temp;
 	memset(temp, 0, 20);
-	w1 = lookup_widget(GTK_WIDGET(button), "A_targetip");
+	w1 = lookup_widget("A_targetip");
 	for (i=1; i<=12; i++, ptrt++) {
 		if (i%3 == 0) {			
 			x = char2x(tmp);
@@ -1032,8 +1032,8 @@ int igmp_header(GtkButton *button, int whocalled) {
 	/* insert version */
 	inspar(button, "entry166", ptrf, 2);
 
-	w1 = lookup_widget(GTK_WIDGET(button), "optionmenu20");
-	w2 = lookup_widget(GTK_WIDGET(button), "notebook8");
+	w1 = lookup_widget("optionmenu20");
+	w2 = lookup_widget("notebook8");
 	if (x == 17) {
 		if (remain > 4) {
 			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 1);
@@ -1068,7 +1068,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 	inspar(button, "entry167", ptrf, 2);
 
 	/* set checksum button on auto */
-	w2 = lookup_widget(GTK_WIDGET(button), "checkbutton41");
+	w2 = lookup_widget("checkbutton41");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 	ptrf = ptrf + 4;
 
@@ -1077,7 +1077,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 		/*insert group ip */
 		ptrt = temp;
 		memset(temp, 0, 20);
-		w1 = lookup_widget(GTK_WIDGET(button), "entry169");
+		w1 = lookup_widget("entry169");
 		for (i=1; i<=12; i++, ptrt++) {
 			if (i%3 == 0) {			
 				x = char2x(tmp);
@@ -1111,7 +1111,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 		/*insert group ip */
 		ptrt = temp;
 		memset(temp, 0, 20);
-		w1 = lookup_widget(GTK_WIDGET(button), "entry175");
+		w1 = lookup_widget("entry175");
 		for (i=1; i<=12; i++, ptrt++) {
 			if (i%3 == 0) {			
 				x = char2x(tmp);
@@ -1156,7 +1156,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 	/* insert version */
 	inspar(button, "entry57", ptrf, 2);
 
-	w1 = lookup_widget(GTK_WIDGET(button), "optionmenu4");
+	w1 = lookup_widget("optionmenu4");
 	if (x == 0)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 0);
 	else if (x == 3) 
@@ -1169,7 +1169,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 
 	if (x == 0) { /* echo reply */
 		/* insert code, checksum, identifier and seq number and data if there is some */
-		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
+		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 0);
 		inspar(button, "entry62", ptrf, 2);
 		//inspar(button, "entry63", ptrf, 4);
@@ -1177,15 +1177,15 @@ int icmp_header(GtkButton *button, int whocalled) {
 		inspar(button, "entry64", ptrf, 4);
 		inspar(button, "entry65", ptrf, 4);
 		/* set checksum button on auto */
-		w2 = lookup_widget(GTK_WIDGET(button), "checkbutton16");
+		w2 = lookup_widget("checkbutton16");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 
 		if (remain > 0) {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton17");
+			w1 = lookup_widget("checkbutton17");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		}
 		else {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton17");
+			w1 = lookup_widget("checkbutton17");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
 		inspar(button, "entry66", ptrf, 2);
@@ -1194,14 +1194,14 @@ int icmp_header(GtkButton *button, int whocalled) {
 		
 	}
 	else if (x == 3) { /* destination unreacheable */
-		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
+		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 2);
 		/* which code? */
 		x = char2x(ptrf);
 		/* insert code */
 		inspar(button, "entry58", ptrf, 2);
 
-		w1 = lookup_widget(GTK_WIDGET(button), "optionmenu5");
+		w1 = lookup_widget("optionmenu5");
 		if ( (x >= 0) && (x <= 15) )
 			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), x);
 		else
@@ -1212,15 +1212,15 @@ int icmp_header(GtkButton *button, int whocalled) {
 		ptrf = ptrf + 4;
 		inspar(button, "entry60", ptrf, 8);
 		/* set checksum button on auto */
-		w2 = lookup_widget(GTK_WIDGET(button), "checkbutton15");
+		w2 = lookup_widget("checkbutton15");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 
 		if (remain > 0) {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton24");
+			w1 = lookup_widget("checkbutton24");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		}
 		else {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton24");
+			w1 = lookup_widget("checkbutton24");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
 
@@ -1229,7 +1229,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 		inspar(button, "entry210", tmp5, 4);
 	}
 	else if (x == 8) { /* echo request */
-		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
+		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 5);
 		/* insert code, checksum, identifier and seq number and data if there is some */
 		inspar(button, "entry74", ptrf, 2);
@@ -1238,15 +1238,15 @@ int icmp_header(GtkButton *button, int whocalled) {
 		inspar(button, "entry75", ptrf, 4);
 		inspar(button, "entry78", ptrf, 4);
 		/* set checksum button on auto */
-		w2 = lookup_widget(GTK_WIDGET(button), "checkbutton20");
+		w2 = lookup_widget("checkbutton20");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 
 		if (remain > 0) {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton19");
+			w1 = lookup_widget("checkbutton19");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		}
 		else {
-			w1 = lookup_widget(GTK_WIDGET(button), "checkbutton19");
+			w1 = lookup_widget("checkbutton19");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
 		inspar(button, "entry66", ptrf, 2);
@@ -1255,14 +1255,14 @@ int icmp_header(GtkButton *button, int whocalled) {
 
 	}
 	else { /* all the rest */
-		w1 = lookup_widget(GTK_WIDGET(button), "notebook5");
+		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 1);
 		/* insert code, checksum and data if there is some */
 		inspar(button, "entry157", ptrf, 2);
 		//inspar(button, "entry158", ptrf, 4);
 		ptrf = ptrf + 4;
 		/* set checksum button on auto */
-		w2 = lookup_widget(GTK_WIDGET(button), "checkbutton38");
+		w2 = lookup_widget("checkbutton38");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 	}
 
@@ -1279,7 +1279,7 @@ int usedef_insert(GtkButton *button, char *entry, int whocalled) {
 	//	return 1;
 
 	/* get access to buffer of the text field */
-	w2 = lookup_widget(GTK_WIDGET(button), entry);
+	w2 = lookup_widget(entry);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(w2));
 
 	/* copy data to tmp field */
@@ -1348,7 +1348,7 @@ int tcp_header(GtkButton *button, int whocalled) {
 	
 	/* now we insert value for length */
 	snprintf(tmp2, 3, "%d", x*4);
-	w1 = lookup_widget(GTK_WIDGET(button), "entry50");
+	w1 = lookup_widget("entry50");
 	gtk_entry_set_text(GTK_ENTRY(w1), tmp2);
 
 	/* increase by one for length and for another one for 4 bits that are reserved */
@@ -1357,28 +1357,28 @@ int tcp_header(GtkButton *button, int whocalled) {
 	/* flags; next byte */	
 	ch = char2x(ptrf) % 0x0100;
 
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton22");
+	w1 = lookup_widget("checkbutton22");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x80) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton23");
+	w1 = lookup_widget("checkbutton23");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x40) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton7");
+	w1 = lookup_widget("checkbutton7");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x20) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton8");
+	w1 = lookup_widget("checkbutton8");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x10) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton9");
+	w1 = lookup_widget("checkbutton9");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x08) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton10");
+	w1 = lookup_widget("checkbutton10");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x04) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton11");
+	w1 = lookup_widget("checkbutton11");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x02) > 0 ? TRUE : FALSE);
 	
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton12");
+	w1 = lookup_widget("checkbutton12");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), (ch & 0x01) > 0 ? TRUE : FALSE);
 	
 	ptrf = ptrf + 2;
@@ -1387,7 +1387,7 @@ int tcp_header(GtkButton *button, int whocalled) {
 	insint(button, "entry51", ptrf, 4);
 	
 	/* checksum */
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton13");
+	w1 = lookup_widget("checkbutton13");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	//inspar(button, "entry52", ptrf, 4);
 	ptrf = ptrf + 4;
@@ -1402,11 +1402,11 @@ int tcp_header(GtkButton *button, int whocalled) {
 	remain = remain - x*4;
 
 	/* get access to buffer of the text field */
-	w2 = lookup_widget(GTK_WIDGET(button), "text4");
+	w2 = lookup_widget("text4");
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(w2));
 
 	if (remain > 0) {
-		w1 = lookup_widget(GTK_WIDGET(button), "checkbutton14");
+		w1 = lookup_widget("checkbutton14");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	
 		/* copy data to tmp field */
@@ -1427,7 +1427,7 @@ int tcp_header(GtkButton *button, int whocalled) {
 		gtk_text_buffer_set_text(buffer,tmp,-1);
 	}
 	else {	
-		w1 = lookup_widget(GTK_WIDGET(button), "checkbutton14");
+		w1 = lookup_widget("checkbutton14");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 	}
 
@@ -1462,23 +1462,23 @@ int udp_header(GtkButton *button, int whocalled) {
 	insint(button, "entry41", ptrf, 4);
 
 	/* length */
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton3");
+	w1 = lookup_widget("checkbutton3");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	//insint(button, "entry42", ptrf, 4);
 	ptrf = ptrf + 4;
 
 	/* checksum */
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton4");
+	w1 = lookup_widget("checkbutton4");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	//inspar(button, "entry43", "", 4);
 	ptrf = ptrf + 4;
 
 	/* get access to buffer of the text field */
-	w2 = lookup_widget(GTK_WIDGET(button), "text3");
+	w2 = lookup_widget("text3");
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(w2));
 
 	if (remain > 0) {
-		w1 = lookup_widget(GTK_WIDGET(button), "checkbutton5");
+		w1 = lookup_widget("checkbutton5");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	
 		/* copy data to tmp field */
@@ -1499,7 +1499,7 @@ int udp_header(GtkButton *button, int whocalled) {
 		gtk_text_buffer_set_text(buffer,tmp,-1);
 	}
 	else {	
-		w1 = lookup_widget(GTK_WIDGET(button), "checkbutton5");
+		w1 = lookup_widget("checkbutton5");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 	}
 
@@ -1554,7 +1554,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 		inspar(button, "entry28", ptrf, 2);
 
 		/* insert total length */
-		w1 = lookup_widget(GTK_WIDGET(button), "checkbutton21");
+		w1 = lookup_widget("checkbutton21");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		//insint(button, "entry29", ptrf, 4);
 	}
@@ -1577,7 +1577,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	x = x >> 1; /* use only first 3 bits */
 	
 	if (whocalled==1) {
-		w1 = lookup_widget(GTK_WIDGET(button), "entry31");
+		w1 = lookup_widget("entry31");
         	snprintf(tmp, 4, "%d", x);
         	gtk_entry_set_text(GTK_ENTRY(w1), tmp);
 	}
@@ -1608,7 +1608,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 		insint(button, "entry34", ptrf, 2);
 
 		/* insert header checksum */
-		w1 = lookup_widget(GTK_WIDGET(button), "ip_header_cks_cbt");
+		w1 = lookup_widget("ip_header_cks_cbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		//inspar(button, "entry35", ptrf, 4);
 	}
@@ -1621,7 +1621,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	ptrt = temp;
 	memset(temp, 0, 20);
 	if (whocalled==1)
-		w1 = lookup_widget(GTK_WIDGET(button), "entry38");
+		w1 = lookup_widget("entry38");
 	for (i=1; i<=12; i++, ptrt++) {
 		if (i%3 == 0) {			
 			x = char2x(tmp);
@@ -1645,7 +1645,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	ptrt = temp;
 	memset(temp, 0, 20);
 	if (whocalled==1)
-		w1 = lookup_widget(GTK_WIDGET(button), "entry37");
+		w1 = lookup_widget("entry37");
 	for (i=1; i<=12; i++, ptrt++) {
 		if (i%3 == 0) {			
 			x = char2x(tmp);
@@ -1691,19 +1691,19 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 	}
 	remain = remain - 3;
 
-	w1 = lookup_widget(GTK_WIDGET(button), "bt_8023");
+	w1 = lookup_widget("bt_8023");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
-	//w2 = lookup_widget(GTK_WIDGET(button), "frame7");
+	//w2 = lookup_widget("frame7");
 	//gtk_widget_set_sensitive (w2, TRUE);
 	//gtk_notebook_set_current_page(GTK_NOTEBOOK(w3), 1);
 
-	w1 = lookup_widget(GTK_WIDGET(button), "entry5");
+	w1 = lookup_widget("entry5");
 	//inspar(button, "entry5", ptrf, 4);
 	ptrf = ptrf + 4;
 	gtk_widget_set_sensitive (w1, FALSE);
 
-	w2 = lookup_widget(GTK_WIDGET(button), "checkbutton2");
+	w2 = lookup_widget("checkbutton2");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
 	
 	/*now the LLC / LLC-SNAP part */
@@ -1722,10 +1722,10 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 	/* in case dsap != ssap != 0xAA or ctrl != 0x03 or remain length < 5 bytes, we have only 
 	 * LLC without SNAP and we return value for user defined next layer */
 	if ( (dsap != 170 ) || (lsap != 170) || (ctrl != 3) || (remain < 5) ) {
-		w1 = lookup_widget(GTK_WIDGET(button), "L_8023_llc_tbt");
+		w1 = lookup_widget("L_8023_llc_tbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		w1 = lookup_widget(GTK_WIDGET(button), "L_oui");
-		w2 = lookup_widget(GTK_WIDGET(button), "L_pid");
+		w1 = lookup_widget("L_oui");
+		w2 = lookup_widget("L_pid");
 		gtk_widget_set_sensitive (w1, FALSE);
 		gtk_widget_set_sensitive (w2, FALSE);
 		/* this means we insert all the data as user defined field */
@@ -1734,10 +1734,10 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 	/* in this case everything is ok but oui in not 0 */
 	/*	   <--------------this is oui--------------------->   */	
 	else if ( (char2x(ptrf) + char2x(ptrf+2) + char2x(ptrf+4) != 0 ) ) {
-		w1 = lookup_widget(GTK_WIDGET(button), "L_8023_llc_tbt");
+		w1 = lookup_widget("L_8023_llc_tbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		w1 = lookup_widget(GTK_WIDGET(button), "L_oui");
-		w2 = lookup_widget(GTK_WIDGET(button), "L_pid");
+		w1 = lookup_widget("L_oui");
+		w2 = lookup_widget("L_pid");
 		gtk_widget_set_sensitive (w1, FALSE);
 		gtk_widget_set_sensitive (w2, FALSE);
 		/* this means we insert all the data as user defined field */
@@ -1749,7 +1749,7 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 
 	/* ok, so we have dsap and ssap == 0xAA, Ctlr == 0x03, OUI == 0x0 and lenght is long enough */
 	/* set llc-snap button */
-	w1 = lookup_widget(GTK_WIDGET(button), "L_8023_llcsnap_tbt");
+	w1 = lookup_widget("L_8023_llcsnap_tbt");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
 	/* insert 0x00 into oui field */
@@ -1770,7 +1770,7 @@ int ethernet_verII(GtkButton *button, int whocalled) {
 		protokol = ETH_II;
 
 	if (whocalled==1) {
-		w1 = lookup_widget(GTK_WIDGET(button), "bt_ver2");
+		w1 = lookup_widget("bt_ver2");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 	}
 
@@ -1792,7 +1792,7 @@ void inspar(GtkButton *button, char *entry, char *from, int length) {
 
 	ptr = malloc(length * sizeof(char) + 1);	
 
-	widg = lookup_widget(GTK_WIDGET(button), entry);
+	widg = lookup_widget(entry);
 
 	strncpy(ptr, from, length);
 	ptr[length] = '\0';
@@ -1814,7 +1814,7 @@ void insint(GtkButton *button, char *entry, char *from, int length) {
 	int i;
 	unsigned char x = 0;
 
-	widg = lookup_widget(GTK_WIDGET(button), entry);
+	widg = lookup_widget(entry);
 
 	for (i = 0; i < length; i++) {
 		if ( (*from >= '0') && (*from <= '9')) 
@@ -1925,7 +1925,7 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
                 inspar(button, "entry197", ptrf, 5);
 
                 /* insert total length */
-                w1 = lookup_widget(GTK_WIDGET(button), "checkbutton43");
+                w1 = lookup_widget("checkbutton43");
                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
                 //insint(button, "entry29", ptrf, 4);
         }
@@ -1956,7 +1956,7 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
         memset(temp6, 0, 40);
 
         if (whocalled==1)
-                w1 = lookup_widget(GTK_WIDGET(button), "entry201");
+                w1 = lookup_widget("entry201");
 
         for (i=1; i<8; i++) {
 		strncpy(ptrt, ptrf, 4);
@@ -1977,7 +1977,7 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
         ptrt = temp6;
         memset(temp6, 0, 40);
         if (whocalled==1)
-                w1 = lookup_widget(GTK_WIDGET(button), "entry202");
+                w1 = lookup_widget("entry202");
 
         for (i=1; i<8; i++) {
 		strncpy(ptrt, ptrf, 4);
@@ -2028,7 +2028,7 @@ int icmpv6_header(GtkButton *button, int whocalled) {
 
 	inspar(button, "entry216", ptrf, 2);
 
-	w1 = lookup_widget(GTK_WIDGET(button), "checkbutton48");
+	w1 = lookup_widget("checkbutton48");
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
         ptrf = ptrf + 4;
     
@@ -2046,14 +2046,14 @@ int icmpv6_header(GtkButton *button, int whocalled) {
 		return 1;
 	
 	/*if (remain > 0) {
-                w1 = lookup_widget(GTK_WIDGET(button), "checkbutton47");
+                w1 = lookup_widget("checkbutton47");
                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
          	inspar(button, "entry212", ptrf, 2);
          	sprintf(tmp5, "%d", remain);
          	inspar(button, "entry213", tmp5, 4);
          }
          else {
-                w1 = lookup_widget(GTK_WIDGET(button), "checkbutton47");
+                w1 = lookup_widget("checkbutton47");
                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
          } */
 

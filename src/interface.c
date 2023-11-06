@@ -44,7 +44,7 @@ activate_toggle_button (const gchar *name)
 {
   GtkWidget *toggle_button;
 
-  toggle_button = lookup_widget (NULL, name);
+  toggle_button = lookup_widget (name);
   if (toggle_button)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle_button), TRUE);
