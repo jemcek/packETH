@@ -681,7 +681,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 			else
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w4), TRUE);
 
-			inspar(button, "L_vlan_id", ptrf, 3);
+                        insint(button, "L_vlan_id", ptrf, 3);
 		}
 		else
 			ptrf = ptrf+3;

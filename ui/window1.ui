@@ -1737,7 +1737,7 @@
                                                             <property name="can_focus">False</property>
                                                             <property name="xpad">0</property>
                                                             <property name="ypad">0</property>
-                                                            <property name="label" translatable="yes">         VLAN ID  0x</property>
+                                                            <property name="label" translatable="yes">            VLAN ID  </property>
                                                             <property name="justify">center</property>
                                                             <property name="xalign">0.5</property>
                                                             <property name="yalign">0.5</property>
@@ -1753,10 +1753,10 @@
                                                             <property name="width_request">40</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="max_length">3</property>
+                                                            <property name="max_length">4</property>
                                                             <property name="invisible_char">•</property>
                                                             <property name="width_chars">5</property>
-                                                            <property name="text" translatable="yes">001</property>
+                                                            <property name="text" translatable="yes">1</property>
                                                             </object>
                                                             <packing>
                                                             <property name="expand">False</property>

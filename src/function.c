@@ -3750,7 +3750,7 @@ int get_8021q(GtkButton *button)
 	GtkWidget *vlan_e, *priority_m, *cfi1_rbt, *vlanid_e, *QinQ_bt, *QinQ, *QinQpvid;
 	gchar *vlan_t, *vlanid_t, *QinQ_t; 
 	gint menu_index, cfi =0;
-	char tmp[2];
+        guint32 vlan_value;
 
 	QinQ_bt = lookup_widget(GTK_WIDGET (button), "checkbutton40");
 
@@ -3842,29 +3842,24 @@ int get_8021q(GtkButton *button)
 	else 
 		cfi = 0;
 
-	/* in cfi we store the value of priority and cfi */
-	tmp[0] = (unsigned char)(menu_index * 2 + cfi);
-	snprintf(&(tmp[0]), 2, "%x", tmp[0]);
-
-	/* we need the vlan id */
-	tmp[1] = *vlanid_t;
-
-	if (char2x(tmp) == -1) {
-		//printf("Error: 802.1q: priority & cfi field & 1 byte vlan id\n");
-		error("Error: 802.1q: priority & cfi field & 1 byte vlan id");
-		return -1;
+        if ( (atoi(vlanid_t) > 4095) || (atoi(vlanid_t) < 0) ) {
+	        //printf("Error: vlan id value: (0 - 4095)\n");
+	        error("Error: Vlan Id value: (0 - 4095)");
+	        return -1;
 	}
-	packet[number] = (unsigned char)char2x(tmp);
 
-	vlanid_t++; number++;
+        /* there can be rubbish in this field */
+	if (check_digit(vlanid_t, strlen(vlanid_t),
+					"Error: Vlan Id field values ") == -1)
+	return -1;
 
-	if (char2x(vlanid_t) == -1) {
-		//printf("Error: 802.1q vlanid \n");
-		error("Error: 802.1q vlanid ");
-		return -1;
-	}
-	packet[number] = (unsigned char)char2x(vlanid_t);
-	number++;
+        vlan_value = (menu_index<<13   & 0xE000) |
+		     (cfi<<12 & 0x1000) |
+		     (atoi(vlanid_t) & 0x0FFF) ;
+        vlan_value = htons(vlan_value);
+        memcpy(&packet[number], &vlan_value, 2);
+        number++;
+        number++;
 
 	return 1;
 }

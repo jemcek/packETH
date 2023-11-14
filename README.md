@@ -10,9 +10,10 @@ Some more information about installation, usage, GUI and CLI version and FAQ can
 
 ## NEWS
 
-### OCT 2023
+### OCT&NOV 2023
 
 - migrated to GTK3 (many thanks to @qarkai) 
+- vlan id field now accepts interger instead of HEX value
 
 ### JUL 2019  
 
@@ -49,6 +50,7 @@ Depending on your Linux distribution and type of installation additional package
 ```sh
 yum groupinstall 'Development Tools'  
 yum install gtk3-devel.x86_64  
+yum install dbus-x11
 ```
 
 #### Ubuntu 18.04 server
@@ -58,6 +60,7 @@ sudo apt-get install build-essential
 sudo apt-get install autoconf  
 sudo apt-get install pkg-config  
 sudo apt-get install libgtk-3-dev
+sudo apt-get install dbus-x11
 ```
 
 ### CLI (you can also only compile cli version if you want)

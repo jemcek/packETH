@@ -21,8 +21,4 @@ Complete packETHcli rewrite with many new options to tune sending parameters. Pl
 - packETH added option to include predefined pattern (same as packETHcli -x option) that can be checked with packETHcli mode -9
 - packETHcli nanoseconds support
 
-July 2019
-- packETHcli added burst mode (-m -6)
 
-Oct 2023
-- migrated to GTK3 (many thanks to @qarkai)
