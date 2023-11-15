@@ -83,7 +83,7 @@
             <property name="label_yalign">0.5</property>
             <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
             <child>
-              <!-- n-columns=3 n-rows=2 -->
+              <!-- n-columns=1 n-rows=2 -->
               <object class="GtkGrid" id="table6">
                 <property name="border_width">23</property>
                 <property name="visible">True</property>
@@ -91,22 +91,11 @@
                 <property name="row_spacing">5</property>
                 <property name="column_spacing">20</property>
                 <child>
-                  <object class="GtkLabel" id="label301">
+                  <object class="GtkCheckButton" id="radiobutton55">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Don't fragment</property>
                     <property name="use_underline">False</property>
-                    <property name="use_markup">False</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
-                    <property name="wrap">False</property>
-                    <property name="selectable">False</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0.5</property>
-                    <property name="xpad">0</property>
-                    <property name="ypad">0</property>
-                    <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-                    <property name="width_chars">-1</property>
-                    <property name="single_line_mode">False</property>
-                    <property name="angle">0</property>
+                    <property name="active">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -114,95 +103,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label302">
+                  <object class="GtkCheckButton" id="radiobutton57">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">More fragments</property>
                     <property name="use_underline">False</property>
-                    <property name="use_markup">False</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
-                    <property name="wrap">False</property>
-                    <property name="selectable">False</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0.5</property>
-                    <property name="xpad">0</property>
-                    <property name="ypad">0</property>
-                    <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-                    <property name="width_chars">-1</property>
-                    <property name="single_line_mode">False</property>
-                    <property name="angle">0</property>
+                    <property name="active">False</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="radiobutton55">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">Set</property>
-                    <property name="use_underline">True</property>
-                    <property name="relief">GTK_RELIEF_NORMAL</property>
-                    <property name="focus_on_click">True</property>
-                    <property name="active">False</property>
-                    <property name="inconsistent">False</property>
-                    <property name="draw_indicator">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="radiobutton56">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">Not set</property>
-                    <property name="use_underline">True</property>
-                    <property name="relief">GTK_RELIEF_NORMAL</property>
-                    <property name="focus_on_click">True</property>
-                    <property name="active">False</property>
-                    <property name="inconsistent">False</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">radiobutton55</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="radiobutton57">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">Set</property>
-                    <property name="use_underline">True</property>
-                    <property name="relief">GTK_RELIEF_NORMAL</property>
-                    <property name="focus_on_click">True</property>
-                    <property name="active">False</property>
-                    <property name="inconsistent">False</property>
-                    <property name="draw_indicator">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="radiobutton58">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">Not set</property>
-                    <property name="use_underline">True</property>
-                    <property name="relief">GTK_RELIEF_NORMAL</property>
-                    <property name="focus_on_click">True</property>
-                    <property name="active">True</property>
-                    <property name="inconsistent">False</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">radiobutton57</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
                     <property name="top_attach">1</property>
                   </packing>
                 </child>
