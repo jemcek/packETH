@@ -19,7 +19,6 @@
  */
 
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -42,9 +41,27 @@ long i;
 int remain;
 protocol_type protokol;
 
+static int load_gen_p_data(GtkTreeModel *model, const char *fieldek, const struct pcaprec_hdr *ph2,
+                           int pkt_nr, const struct clist_hdr *clptr, double timediff, double timebeg);
+static int arp_header(int whocalled);
+static int igmp_header(int whocalled);
+static int icmp_header(int whocalled);
+static int usedef_insert(const char *entry, int whocalled);
+static int tcp_header(int whocalled);
+static int udp_header(int whocalled);
+static int ipv4_header(int whocalled, struct clist_hdr *clptr);
+static int ethernet_8023(int whocalled);
+static int ethernet_verII(int whocalled);
+static void inspar(const char *entry, const char *from, int length);
+static void insint(const char *entry, const char *from, int length);
+static signed int retint(const char *ch);
+static unsigned long retint2(const char *ch, int length);
+/*static void convert8field(char *to, const char *from);*/
+static int ipv6_header(int whocalled, struct clist_hdr *clptr);
+static int icmpv6_header(int whocalled);
+
 /* this one loads the parameters from file into notebook2 (Gen-b page) */
-int load_gen_b_data(GtkButton *button, FILE *file_p) {
-				
+int load_gen_b_data(FILE *file_p) {
 	long int buff4[5];
         char buff[10];
         char buffc[11][200];
@@ -148,8 +165,7 @@ int load_gen_b_data(GtkButton *button, FILE *file_p) {
 
 
 /* this one loads the parameters from file into notebook2 (Gen-s page) */
-int load_gen_s_data(GtkButton *button, FILE *file_p) {
-
+int load_gen_s_data(FILE *file_p) {
 	long int buff4[5];
         char buff[100];
         char buffc[11][200];
@@ -331,14 +347,12 @@ int load_gen_s_data(GtkButton *button, FILE *file_p) {
 	}
 
 	return 1;
-
 }
 
 /* opens the pcap file. 
  * if we call this function from the builder window only one - first, packet will be read 
  * from the Genp window, packets will be loaded untill EOF is reached */
-int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets) {
-	
+int load_data(FILE *file_p, int whocalled, int howmanypackets) {
 	struct pcap_hdr fh;
 	struct pcaprec_hdr ph;
 	struct clist_hdr clh;
@@ -385,7 +399,7 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 			c8(&field[2*ji], *(pkt_temp+ji)); 
 		field[2*ji+2] = '\0';
 		
-		load_packet_disector(button, field, 1, &clh, ph.incl_len);			
+		load_packet_disector(field, 1, &clh, ph.incl_len);
 
 		return 1; 
 	}
@@ -427,7 +441,7 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 			field[2*ji+2] = '\0';
 		
 			/* we have to dissect the packet to get information for the list */
-			load_packet_disector(button, field, 2, &clh, ph.incl_len);			
+			load_packet_disector(field, 2, &clh, ph.incl_len);
 
 			/* calculate the time information */
 			if (j==0) { 
@@ -447,7 +461,7 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 			usecu = ph.ts_usec;
 
 			/* insert a new row into model */
-			load_gen_p_data(button, model, field, &ph, j+1, &clh, timediff, timebeg);
+			load_gen_p_data(model, field, &ph, j+1, &clh, timediff, timebeg);
 		}
 		if (j == howmanypackets) 
 			error("Only first 1000 packets loaded!\nTo change this modify #define on top of callbacks.c");
@@ -455,11 +469,11 @@ int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets
 
 	return 1;
 }
-	
+
 
 /* this one loads the parameters from file into notebook2 (Genp page) */
-int load_gen_p_data(GtkButton *button, GtkTreeModel *model, char *fieldek, struct pcaprec_hdr *ph2, 
-					int pkt_nr, struct clist_hdr *clptr, double timediff, double timebeg) {
+static int load_gen_p_data(GtkTreeModel *model, const char *fieldek, const struct pcaprec_hdr *ph2,
+                           int pkt_nr, const struct clist_hdr *clptr, double timediff, double timebeg) {
 	GtkTreeIter iter;
 	gchar *datap[8];
 	gchar fieldp[7][41];
@@ -552,18 +566,17 @@ int load_gen_p_data(GtkButton *button, GtkTreeModel *model, char *fieldek, struc
  * if who called = 1 - we load the contents into builder field
  * if who called = 2 - we load the contenst into Genp window but we need the information for filling in the clist 
  */
-int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct clist_hdr *clptr, int dolpaketa) {
-
+int load_packet_disector(char *fieldek, int whocalled, struct clist_hdr *clptr, int dolpaketa) {
 	int c;
 
 	ptrf = fieldek;
 	ptrt = temp;
 
 	//printf("\n:\n%s\n", fieldek);
-	//convert8field(ptrt, ptrf);    insint(button, "entry179", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
-	//convert8field(ptrt, ptrf+8);  insint(button, "entry180", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
-	//convert8field(ptrt, ptrf+16); insint(button, "entry181", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
-	//convert8field(ptrt, ptrf+24); insint(button, "entry182", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
+	//convert8field(ptrt, ptrf);    insint("entry179", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
+	//convert8field(ptrt, ptrf+8);  insint("entry180", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
+	//convert8field(ptrt, ptrf+16); insint("entry181", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
+	//convert8field(ptrt, ptrf+24); insint("entry182", ptrt, 8); ptrt = temp; ptrf = ptrf-8;
 	remain = dolpaketa;
 	ptrf = ptrf + 32;
 
@@ -644,7 +657,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 				else if (i==37376)
 					gtk_combo_box_set_active (GTK_COMBO_BOX (w8), 2);
 
-				inspar(button, "entry165", ptrf, 4);
+				inspar("entry165", ptrf, 4);
 			}
 			else
 				ptrf = ptrf +3;
@@ -681,7 +694,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 			else
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w4), TRUE);
 
-                        insint(button, "L_vlan_id", ptrf, 3);
+			insint("L_vlan_id", ptrf, 3);
 		}
 		else
 			ptrf = ptrf+3;
@@ -703,7 +716,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	/* ok, from now one, we split the dissection in different routines, depending on what values */
 	/* now if length is <= 1500, we have 802.3 ethernet and this value means length of ethernet packet */
 	if (i <= 1500) 
-		next_prot = ethernet_8023(button, whocalled);
+		next_prot = ethernet_8023(whocalled);
 	/* Values between 1500 and 1536 are forbidden */
 	else if ( (i>1500) && (i<1536) ) {
 		error("Can't load packet: Wrong ethernet length/type field");
@@ -711,7 +724,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	}
 	/* if i >= 1536 - ethernet ver II */
 	else
-		next_prot = ethernet_verII(button, whocalled);
+		next_prot = ethernet_verII(whocalled);
 
 
 	/* ok, so we have dissected the ethernet layer and now move on two the next layer.
@@ -729,7 +742,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	/* ipv4 */
 	else if (next_prot == 2048) {
 		/* ok, ipv4 should follow, so we call the routine for parsing ipv4 header. */
-		next_prot = ipv4_header(button, whocalled, clptr);
+		next_prot = ipv4_header(whocalled, clptr);
 		if (next_prot == -1)
 			return -1;
 
@@ -742,7 +755,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		/* here we do the further parsing: tcp, udp, icmp, ...*/
 		if (next_prot == 1) {
 			/* try to parse icmp header */
-			next_prot = icmp_header(button, whocalled);
+			next_prot = icmp_header(whocalled);
 			/* not ok, return an error */
 			if (next_prot == -1)
 				return -1;
@@ -754,7 +767,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		}
 		else if (next_prot == 2) {
 			/* try to parse igmp header */
-			next_prot = igmp_header(button, whocalled);
+			next_prot = igmp_header(whocalled);
 			/* not ok, return an error */
 			if (next_prot == -1)
 				return -1;
@@ -766,7 +779,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		}
 		else if (next_prot == 6) {
 			/* try to parse tcp header */
-			next_prot = tcp_header(button, whocalled);
+			next_prot = tcp_header(whocalled);
 			/* not ok, return an error */
 			if (next_prot == -1)
 				return -1;
@@ -781,7 +794,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		}	
 		else if (next_prot == 17) {
 			/* try to parse udp header */
-			next_prot = udp_header(button, whocalled);
+			next_prot = udp_header(whocalled);
 			/* not ok, return an error */
 			if (next_prot == -1)
 				return -1;
@@ -795,7 +808,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		}	
 		/* protocol we do not support yet; user defined window */
 		else {
-			next_prot = usedef_insert(button, "text2", whocalled);
+			next_prot = usedef_insert("text2", whocalled);
 			w1 = lookup_widget("ip_user_data_bt");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 		}
@@ -803,7 +816,7 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	/*arp */
 	else if (next_prot == 2054) {
 		/* ok, arp header follows */
-		next_prot = arp_header(button, whocalled);
+		next_prot = arp_header(whocalled);
 		if (next_prot == -1)
 			return -1;
 
@@ -815,56 +828,56 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 	else if (next_prot == 34525) {
 
 		/* ok, ipv6 should follow, so we call the routine for parsing ipv6 header. */
-                next_prot = ipv6_header(button, whocalled, clptr);
-                if (next_prot == -1)
-                        return -1;
+		next_prot = ipv6_header(whocalled, clptr);
+		if (next_prot == -1)
+			return -1;
 
 		w1 = lookup_widget("IPv6_rdbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
-                /* here we do the further parsing: tcp, udp, icmp, ...*/
-                if (next_prot == 58) {
-                        /* try to parse icmpv6 header */
-                        next_prot = icmpv6_header(button, whocalled);
-                        /* not ok, return an error */
-                        if (next_prot == -1)
-                                return -1;
-                        /* ok, lets activate the icmpv6 notebook */
-                        else {
-                                w1 = lookup_widget("radiobutton69");
-                                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-                        }
-                }
-                else if (next_prot == 6) {
-                        /* try to parse tcp header */
-                        next_prot = tcp_header(button, whocalled);
-                        /* not ok, return an error */
-                        if (next_prot == -1)
-                                return -1;
-                        /* ok, lets activate the tcp notebook */
-                        else {
-                                w1 = lookup_widget("radiobutton68");
-                                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-                        }
+		/* here we do the further parsing: tcp, udp, icmp, ...*/
+		if (next_prot == 58) {
+			/* try to parse icmpv6 header */
+			next_prot = icmpv6_header(whocalled);
+			/* not ok, return an error */
+			if (next_prot == -1)
+				return -1;
+			/* ok, lets activate the icmpv6 notebook */
+			else {
+				w1 = lookup_widget("radiobutton69");
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+			}
+		}
+		else if (next_prot == 6) {
+			/* try to parse tcp header */
+			next_prot = tcp_header(whocalled);
+			/* not ok, return an error */
+			if (next_prot == -1)
+				return -1;
+			/* ok, lets activate the tcp notebook */
+			else {
+				w1 = lookup_widget("radiobutton68");
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+			}
 		}
 		else if (next_prot == 17) {
-                        /* try to parse udp header */
-                        next_prot = udp_header(button, whocalled);
-                        /* not ok, return an error */
-                        if (next_prot == -1)
-                                return -1;
-                        /* ok, lets activate the udp notebook */
-                        else {
-                                w1 = lookup_widget("radiobutton67");
-                                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-                        }
-                }
-                /* protocol we do not support yet; user defined window */
-                else {
-                        next_prot = usedef_insert(button, "text2", whocalled);
-                        w1 = lookup_widget("radiobutton71");
-                        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-                }
+			/* try to parse udp header */
+			next_prot = udp_header(whocalled);
+			/* not ok, return an error */
+			if (next_prot == -1)
+				return -1;
+			/* ok, lets activate the udp notebook */
+			else {
+				w1 = lookup_widget("radiobutton67");
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+			}
+		}
+		/* protocol we do not support yet; user defined window */
+		else {
+			next_prot = usedef_insert("text2", whocalled);
+			w1 = lookup_widget("radiobutton71");
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+		}
 
 	}
 	/* anything else - user defined */
@@ -873,28 +886,27 @@ int load_packet_disector(GtkButton *button, char *fieldek, int whocalled, struct
 		eth II type field and 802.3 pid field, so we have to fill this later */
 		w1 = lookup_widget("usedef2_radibt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		
+
 		/* we still have c to distinguish between ver II and 802.3 */
 		/* ver II */
 		if (c >= 1536) {
 			ptrf = ptrf - 4;
-   			inspar(button, "L_ethtype", ptrf, 4);
+			inspar("L_ethtype", ptrf, 4);
 		}
 		/* 802.3 and with LLC SNAP */
 		else if (next_prot != -2) {
 			ptrf = ptrf - 4;
-			inspar(button, "L_pid", ptrf, 4);
-		}		
+			inspar("L_pid", ptrf, 4);
+		}
 
-		next_prot = usedef_insert(button, "text1", whocalled);
+		next_prot = usedef_insert("text1", whocalled);
 	}
 
 	return 1;
 }
 
 
-int arp_header(GtkButton *button, int whocalled) {
-
+static int arp_header(int whocalled) {
 	char tmp[5];
 	int x;
 
@@ -912,16 +924,16 @@ int arp_header(GtkButton *button, int whocalled) {
 	remain = remain - 28;
 
 	/* hardware type */
-	inspar(button, "A_hwtype", ptrf, 4);
+	inspar("A_hwtype", ptrf, 4);
 
 	/* protocol type */
-	inspar(button, "A_prottype", ptrf, 4);
+	inspar("A_prottype", ptrf, 4);
 
 	/* hardware size */
-	inspar(button, "A_hwsize", ptrf, 2);
+	inspar("A_hwsize", ptrf, 2);
 
 	/* protocol size */
-	inspar(button, "A_protsize", ptrf, 2);
+	inspar("A_protsize", ptrf, 2);
 
 	/* opcode is next */
 	if ( (*ptrf == '0') && (*(ptrf+1) == '0') && (*(ptrf+2) == '0') && (*(ptrf+3) == '1') ) {
@@ -937,7 +949,7 @@ int arp_header(GtkButton *button, int whocalled) {
 	else {
 		w1 = lookup_widget("radiobutton17");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		inspar(button, "entry81", ptrf, 4);
+		inspar("entry81", ptrf, 4);
 	}
 
 	/* sender mac */
@@ -1005,12 +1017,10 @@ int arp_header(GtkButton *button, int whocalled) {
 	gtk_entry_set_text(GTK_ENTRY(w1), temp);
 
 	return 1;
-
 }
 
 
-int igmp_header(GtkButton *button, int whocalled) {
-
+static int igmp_header(int whocalled) {
 	int x, x1;
 	char tmp[5];
 
@@ -1030,7 +1040,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 	/* igmp type */
 	x = char2x(ptrf);
 	/* insert version */
-	inspar(button, "entry166", ptrf, 2);
+	inspar("entry166", ptrf, 2);
 
 	w1 = lookup_widget("optionmenu20");
 	w2 = lookup_widget("notebook8");
@@ -1065,7 +1075,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w2), 0);
 		}
 
-	inspar(button, "entry167", ptrf, 2);
+	inspar("entry167", ptrf, 2);
 
 	/* set checksum button on auto */
 	w2 = lookup_widget("checkbutton41");
@@ -1093,18 +1103,18 @@ int igmp_header(GtkButton *button, int whocalled) {
 		}
 		gtk_entry_set_text(GTK_ENTRY(w1), temp);
 
-		inspar(button, "entry171", ptrf, 4);
+		inspar("entry171", ptrf, 4);
 		x1 = (int)retint2(ptrf, 4);
-		inspar(button, "entry172", ptrf, 4);
-		/*#inspar(button, "entry173", ptrf, x1);*/
-		inspar(button, "entry173", ptrf, remain);
+		inspar("entry172", ptrf, 4);
+		/*#inspar("entry173", ptrf, x1);*/
+		inspar("entry173", ptrf, remain);
 		
 	}
 	else if (x==22) { /*IGMP V3 report */
-		inspar(button, "entry176", ptrf, 4);
+		inspar("entry176", ptrf, 4);
 		x1 = (int)retint2(ptrf, 4);
-		inspar(button, "entry177", ptrf, 4);
-		inspar(button, "entry178", ptrf, x1);
+		inspar("entry177", ptrf, 4);
+		inspar("entry178", ptrf, x1);
 		
 	}
 	else { /*all the other versions */
@@ -1133,8 +1143,7 @@ int igmp_header(GtkButton *button, int whocalled) {
 	return 1;
 }
 
-int icmp_header(GtkButton *button, int whocalled) {
-
+static int icmp_header(int whocalled) {
 	int x;
 	char tmp5[5];
 
@@ -1154,7 +1163,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 	/* icmp type */
 	x = char2x(ptrf);
 	/* insert version */
-	inspar(button, "entry57", ptrf, 2);
+	inspar("entry57", ptrf, 2);
 
 	w1 = lookup_widget("optionmenu4");
 	if (x == 0)
@@ -1171,11 +1180,11 @@ int icmp_header(GtkButton *button, int whocalled) {
 		/* insert code, checksum, identifier and seq number and data if there is some */
 		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 0);
-		inspar(button, "entry62", ptrf, 2);
-		//inspar(button, "entry63", ptrf, 4);
+		inspar("entry62", ptrf, 2);
+		//inspar("entry63", ptrf, 4);
 		ptrf = ptrf + 4;
-		inspar(button, "entry64", ptrf, 4);
-		inspar(button, "entry65", ptrf, 4);
+		inspar("entry64", ptrf, 4);
+		inspar("entry65", ptrf, 4);
 		/* set checksum button on auto */
 		w2 = lookup_widget("checkbutton16");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
@@ -1188,9 +1197,9 @@ int icmp_header(GtkButton *button, int whocalled) {
 			w1 = lookup_widget("checkbutton17");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
-		inspar(button, "entry66", ptrf, 2);
+		inspar("entry66", ptrf, 2);
 		sprintf(tmp5, "%d", remain);
-		inspar(button, "entry207", tmp5, 4);
+		inspar("entry207", tmp5, 4);
 		
 	}
 	else if (x == 3) { /* destination unreacheable */
@@ -1199,7 +1208,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 		/* which code? */
 		x = char2x(ptrf);
 		/* insert code */
-		inspar(button, "entry58", ptrf, 2);
+		inspar("entry58", ptrf, 2);
 
 		w1 = lookup_widget("optionmenu5");
 		if ( (x >= 0) && (x <= 15) )
@@ -1208,9 +1217,9 @@ int icmp_header(GtkButton *button, int whocalled) {
 			gtk_combo_box_set_active (GTK_COMBO_BOX (w1), 16);
 		
 		/* insert code, checksum, identifier and seq number and data if there is some */
-		//inspar(button, "entry59", ptrf, 4);
+		//inspar("entry59", ptrf, 4);
 		ptrf = ptrf + 4;
-		inspar(button, "entry60", ptrf, 8);
+		inspar("entry60", ptrf, 8);
 		/* set checksum button on auto */
 		w2 = lookup_widget("checkbutton15");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
@@ -1224,19 +1233,19 @@ int icmp_header(GtkButton *button, int whocalled) {
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
 
-		inspar(button, "entry66", ptrf, 2);
+		inspar("entry66", ptrf, 2);
 		sprintf(tmp5, "%d", remain);
-		inspar(button, "entry210", tmp5, 4);
+		inspar("entry210", tmp5, 4);
 	}
 	else if (x == 8) { /* echo request */
 		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 5);
 		/* insert code, checksum, identifier and seq number and data if there is some */
-		inspar(button, "entry74", ptrf, 2);
-		//inspar(button, "entry77", ptrf, 4);
+		inspar("entry74", ptrf, 2);
+		//inspar("entry77", ptrf, 4);
 		ptrf = ptrf + 4;
-		inspar(button, "entry75", ptrf, 4);
-		inspar(button, "entry78", ptrf, 4);
+		inspar("entry75", ptrf, 4);
+		inspar("entry78", ptrf, 4);
 		/* set checksum button on auto */
 		w2 = lookup_widget("checkbutton20");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w2), TRUE);
@@ -1249,17 +1258,17 @@ int icmp_header(GtkButton *button, int whocalled) {
 			w1 = lookup_widget("checkbutton19");
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
 		}
-		inspar(button, "entry66", ptrf, 2);
+		inspar("entry66", ptrf, 2);
 		sprintf(tmp5, "%d", remain);
-		inspar(button, "entry211", tmp5, 4);
+		inspar("entry211", tmp5, 4);
 
 	}
 	else { /* all the rest */
 		w1 = lookup_widget("notebook5");
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(w1), 1);
 		/* insert code, checksum and data if there is some */
-		inspar(button, "entry157", ptrf, 2);
-		//inspar(button, "entry158", ptrf, 4);
+		inspar("entry157", ptrf, 2);
+		//inspar("entry158", ptrf, 4);
 		ptrf = ptrf + 4;
 		/* set checksum button on auto */
 		w2 = lookup_widget("checkbutton38");
@@ -1270,8 +1279,7 @@ int icmp_header(GtkButton *button, int whocalled) {
 }
 
 
-int usedef_insert(GtkButton *button, char *entry, int whocalled) {
-
+static int usedef_insert(const char *entry, G_GNUC_UNUSED int whocalled) {
 	int i, j;
 	char tmp[31000];
 
@@ -1300,13 +1308,10 @@ int usedef_insert(GtkButton *button, char *entry, int whocalled) {
 	gtk_text_buffer_set_text(buffer,tmp,-1);
 
 	return 1;
-
-
 }
 
 
-int tcp_header(GtkButton *button, int whocalled) {
-
+static int tcp_header(int whocalled) {
 	int x, i, j;
 	char tmp[31000], tmp2[3], ch;
 
@@ -1335,16 +1340,16 @@ int tcp_header(GtkButton *button, int whocalled) {
 	}
 
 	/* source port */
-	insint(button, "entry46", ptrf, 4);
+	insint("entry46", ptrf, 4);
 	
 	/* destination port */
-	insint(button, "entry47", ptrf, 4);
+	insint("entry47", ptrf, 4);
 
 	/* sequence number */
-	insint(button, "entry48", ptrf, 8);
+	insint("entry48", ptrf, 8);
 
 	/* acknowledgement number */
-	insint(button, "entry49", ptrf, 8);
+	insint("entry49", ptrf, 8);
 	
 	/* now we insert value for length */
 	snprintf(tmp2, 3, "%d", x*4);
@@ -1384,20 +1389,20 @@ int tcp_header(GtkButton *button, int whocalled) {
 	ptrf = ptrf + 2;
 
 	/* window size */
-	insint(button, "entry51", ptrf, 4);
+	insint("entry51", ptrf, 4);
 	
 	/* checksum */
 	w1 = lookup_widget("checkbutton13");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-	//inspar(button, "entry52", ptrf, 4);
+	//inspar("entry52", ptrf, 4);
 	ptrf = ptrf + 4;
 
 	/* window size */
-	insint(button, "entry53", ptrf, 4);
+	insint("entry53", ptrf, 4);
 	
 	/* any options ? */
 	/* - 20 for standard header */
-	inspar(button, "entry54", ptrf, ( (x*4) - 20) * 2);
+	inspar("entry54", ptrf, ( (x*4) - 20) * 2);
 
 	remain = remain - x*4;
 
@@ -1437,8 +1442,7 @@ int tcp_header(GtkButton *button, int whocalled) {
 	return 1;
 }
 
-int udp_header(GtkButton *button, int whocalled) {
-
+static int udp_header(int whocalled) {
 	int i, j;
 	char tmp[31000];
 
@@ -1456,21 +1460,21 @@ int udp_header(GtkButton *button, int whocalled) {
 	remain = remain - 8;
 
 	/* source port */
-	insint(button, "entry56", ptrf, 4);
+	insint("entry56", ptrf, 4);
 	
 	/* destination port */
-	insint(button, "entry41", ptrf, 4);
+	insint("entry41", ptrf, 4);
 
 	/* length */
 	w1 = lookup_widget("checkbutton3");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-	//insint(button, "entry42", ptrf, 4);
+	//insint("entry42", ptrf, 4);
 	ptrf = ptrf + 4;
 
 	/* checksum */
 	w1 = lookup_widget("checkbutton4");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-	//inspar(button, "entry43", "", 4);
+	//inspar("entry43", "", 4);
 	ptrf = ptrf + 4;
 
 	/* get access to buffer of the text field */
@@ -1509,8 +1513,7 @@ int udp_header(GtkButton *button, int whocalled) {
 }
 
 
-int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
-
+static int ipv4_header(int whocalled, struct clist_hdr *clptr) {
 	char tmp[5];
 	int x, header_l, prot;
 
@@ -1545,18 +1548,18 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 
 	if (whocalled==1) {
 		/* insert version */
-		inspar(button, "entry26", ptrf, 1);
+		inspar("entry26", ptrf, 1);
 
 		/* insert header length */
-		inspar(button, "entry27", ptrf, 1);
+		inspar("entry27", ptrf, 1);
 
 		/* insert tos */
-		inspar(button, "entry28", ptrf, 2);
+		inspar("entry28", ptrf, 2);
 
 		/* insert total length */
 		w1 = lookup_widget("checkbutton21");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		//insint(button, "entry29", ptrf, 4);
+		//insint("entry29", ptrf, 4);
 	}
 	else
 		ptrf = ptrf+4;
@@ -1565,7 +1568,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 
 	if (whocalled==1) {
 		/* insert identification */
-		inspar(button, "entry30", ptrf, 4);
+		inspar("entry30", ptrf, 4);
 	}
 	else
 		ptrf = ptrf+4;
@@ -1593,10 +1596,10 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	strncpy(tmp+1, ptrf+1, 3);
 
 	if (whocalled==1) {
-		insint(button, "entry32", tmp, 4);
-	
+		insint("entry32", tmp, 4);
+
 		/* insert ttl */
-		insint(button, "entry44", ptrf, 2);
+		insint("entry44", ptrf, 2);
 	}
 	else
 		ptrf = ptrf+6;
@@ -1605,12 +1608,12 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 
 	if (whocalled==1) {
 		/* insert protocol */
-		insint(button, "entry34", ptrf, 2);
+		insint("entry34", ptrf, 2);
 
 		/* insert header checksum */
 		w1 = lookup_widget("ip_header_cks_cbt");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-		//inspar(button, "entry35", ptrf, 4);
+		//inspar("entry35", ptrf, 4);
 	}
 	else
 		ptrf = ptrf+2;
@@ -1667,7 +1670,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	/* insert ipv4 options 
 	 * header_l * 4 == total header length, - 20 for standard header == options length in bytes*/
 	if (whocalled==1)
-		inspar(button, "entry39", ptrf, ( (header_l*4) - 20) * 2);
+		inspar("entry39", ptrf, ( (header_l*4) - 20) * 2);
 
 	remain = remain - (header_l * 4);
 	
@@ -1675,7 +1678,7 @@ int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 }
 
 
-int ethernet_8023(GtkButton *button, int whocalled) {
+static int ethernet_8023(int whocalled) {
 
 	int dsap, lsap, ctrl;
 	long pid;
@@ -1699,7 +1702,7 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 	//gtk_notebook_set_current_page(GTK_NOTEBOOK(w3), 1);
 
 	w1 = lookup_widget("entry5");
-	//inspar(button, "entry5", ptrf, 4);
+	//inspar("entry5", ptrf, 4);
 	ptrf = ptrf + 4;
 	gtk_widget_set_sensitive (w1, FALSE);
 
@@ -1713,11 +1716,11 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 		OUI  == 0x000000 
 	*/
 	dsap = char2x(ptrf);	
-	inspar(button, "L_dsap", ptrf, 2);
+	inspar("L_dsap", ptrf, 2);
 	lsap = char2x(ptrf);	
-	inspar(button, "L_ssap", ptrf, 2);
+	inspar("L_ssap", ptrf, 2);
 	ctrl = char2x(ptrf);	
-	inspar(button, "L_ctrl", ptrf, 2);
+	inspar("L_ctrl", ptrf, 2);
 
 	/* in case dsap != ssap != 0xAA or ctrl != 0x03 or remain length < 5 bytes, we have only 
 	 * LLC without SNAP and we return value for user defined next layer */
@@ -1753,7 +1756,7 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
 
 	/* insert 0x00 into oui field */
-	inspar(button, "L_oui", ptrf, 6);
+	inspar("L_oui", ptrf, 6);
 	pid = char2x(ptrf)*256 + char2x(ptrf+2);
 
 	ptrf = ptrf + 4;
@@ -1762,7 +1765,7 @@ int ethernet_8023(GtkButton *button, int whocalled) {
 }
 
 
-int ethernet_verII(GtkButton *button, int whocalled) {
+static int ethernet_verII(int whocalled) {
 
 	int pid;
 	
@@ -1784,13 +1787,12 @@ int ethernet_verII(GtkButton *button, int whocalled) {
 
 /* this one inserts (length) characters from (char *from) into entry named (char *entry). It adds \0 
 at the end and in moves pointer ptrf (this one points the the next "data" to be inserted) by length */
-void inspar(GtkButton *button, char *entry, char *from, int length) {
-
+static void inspar(const char *entry, const char *from, int length) {
 	GtkWidget *widg;
 	//char tmp[81];
 	char *ptr;
 
-	ptr = malloc(length * sizeof(char) + 1);	
+	ptr = malloc(length * sizeof(char) + 1);
 
 	widg = lookup_widget(entry);
 
@@ -1800,14 +1802,13 @@ void inspar(GtkButton *button, char *entry, char *from, int length) {
 	ptrf = ptrf + length;
 
 	free(ptr);
-} 
+}
 
 
 /* this one reads (length) characters strating at (char *from), converts them to int and inserts them 
 into field (*entry) as integer. f.e: 0x56 == (int)86 => writes into (*entry) 86 
 note that max size for length is 10!!! when calling this routine */
-void insint(GtkButton *button, char *entry, char *from, int length) {
-
+static void insint(const char *entry, const char *from, int length) {
 	GtkWidget *widg;
 	char tmp[11];
 	unsigned long value = 0;
@@ -1836,7 +1837,7 @@ void insint(GtkButton *button, char *entry, char *from, int length) {
 
 
 /* from a character return int */
-signed int retint(char *ch) {
+static signed int retint(const char *ch) {
 
 	unsigned char x;
 
@@ -1855,8 +1856,7 @@ signed int retint(char *ch) {
 
 
 /* this one reads (length) characters strating at (*from), and returns integer (max 10 char length) */
-unsigned long retint2(char *from, int length) {
-
+static unsigned long retint2(const char *from, int length) {
 	unsigned long value = 0;
 	int i;
 	unsigned char x = 0;
@@ -1876,13 +1876,12 @@ unsigned long retint2(char *from, int length) {
 	return value;
 } 
 
-
+#if 0
 /* i have newer really understood the endians... help appreciated... 
  * this routines just converts the contents of a char field of size 8 chars 
  * it works also, if destination and source are the same field*/
 
-void convert8field(char *to, char *from) {
-
+static void convert8field(char *to, const char *from) {
 	char f1[8];
 
 	/* we copy first the source contents */
@@ -1897,9 +1896,9 @@ void convert8field(char *to, char *from) {
 	memcpy(to+6, f1+0,1);
 	memcpy(to+7, f1+1,1);
 }
+#endif
 
-int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
-
+static int ipv6_header(int whocalled, struct clist_hdr *clptr) {
         //char tmp[5];
         //int x; 
 	int prot, header_l=0;
@@ -1914,42 +1913,42 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
                 return -1;
         }
 
-        if (whocalled==1) {
-                /* insert version */
-                inspar(button, "entry195", ptrf, 1);
+	if (whocalled==1) {
+		/* insert version */
+		inspar("entry195", ptrf, 1);
 
-                /* insert traffic class */
-                inspar(button, "entry196", ptrf, 2);
+		/* insert traffic class */
+		inspar("entry196", ptrf, 2);
 
-                /* insert tos */
-                inspar(button, "entry197", ptrf, 5);
+		/* insert tos */
+		inspar("entry197", ptrf, 5);
 
-                /* insert total length */
-                w1 = lookup_widget("checkbutton43");
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-                //insint(button, "entry29", ptrf, 4);
-        }
-        else
-        	ptrf = ptrf + 8;
+		/* insert total length */
+		w1 = lookup_widget("checkbutton43");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+		//insint("entry29", ptrf, 4);
+	}
+	else
+		ptrf = ptrf + 8;
 
-       	ptrf = ptrf + 4;
+	ptrf = ptrf + 4;
 
 
 	prot = char2x(ptrf);
 
-        if (whocalled==1) {
-                /* insert next header */
-                inspar(button, "entry199", ptrf, 2);
-        }
-        else
-                ptrf = ptrf+2;
+	if (whocalled==1) {
+		/* insert next header */
+		inspar("entry199", ptrf, 2);
+	}
+	else
+		ptrf = ptrf+2;
 
 	 if (whocalled==1) {
-                /* insert hop limit */
-                insint(button, "entry200", ptrf, 2);
+		/* insert hop limit */
+		insint("entry200", ptrf, 2);
 	}
-        else
-                ptrf = ptrf+2;
+	else
+		ptrf = ptrf+2;
 
 	/*insert source ip */
         ptrt = temp6;
@@ -1998,8 +1997,7 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
 	while ( (prot==0) || (prot==43) || (prot==44) || (prot==51) || (prot==50) || (prot==60) ) {
 		prot = char2x(ptrf);
 		header_l = retint2(ptrf+2, 2);
-		inspar(button, "entry203", ptrf, header_l);
-
+		inspar("entry203", ptrf, header_l);
 	}
 
 	remain = remain - 40 - header_l;
@@ -2007,8 +2005,7 @@ int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr ) {
         return prot;
 }
 
-int icmpv6_header(GtkButton *button, int whocalled) {
-
+static int icmpv6_header(int whocalled) {
 	//char tmp5[5];
 
 	if (whocalled==2) {
@@ -2024,41 +2021,39 @@ int icmpv6_header(GtkButton *button, int whocalled) {
 
 	remain = remain -4;
 
-	inspar(button, "entry215", ptrf, 2);
+	inspar("entry215", ptrf, 2);
 
-	inspar(button, "entry216", ptrf, 2);
+	inspar("entry216", ptrf, 2);
 
 	w1 = lookup_widget("checkbutton48");
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-        ptrf = ptrf + 4;
-    
-    //if (remain >=511)	{
-	//	inspar(button, "entry214", ptrf, 1024);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+	ptrf = ptrf + 4;
+
+	//if (remain >=511)	{
+	//	inspar("entry214", ptrf, 1024);
 	//	//remain = remain -4;
 	//}
 	//else if (remain > 0) {
-	//	inspar(button, "entry214", ptrf, remain*2);
+	//	inspar("entry214", ptrf, remain*2);
 	//}
 	if (remain > 0) {
-		inspar(button, "entry214", ptrf, remain*2);
+		inspar("entry214", ptrf, remain*2);
 	}
 	else
 		return 1;
 	
 	/*if (remain > 0) {
-                w1 = lookup_widget("checkbutton47");
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
-         	inspar(button, "entry212", ptrf, 2);
-         	sprintf(tmp5, "%d", remain);
-         	inspar(button, "entry213", tmp5, 4);
-         }
-         else {
-                w1 = lookup_widget("checkbutton47");
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
-         } */
+		w1 = lookup_widget("checkbutton47");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), TRUE);
+		inspar("entry212", ptrf, 2);
+		sprintf(tmp5, "%d", remain);
+		inspar("entry213", tmp5, 4);
+	}
+	else {
+		w1 = lookup_widget("checkbutton47");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w1), FALSE);
+	} */
 
 
 	return 1;
-
 }
-

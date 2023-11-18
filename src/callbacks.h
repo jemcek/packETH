@@ -18,12 +18,14 @@
  *
  *
  */
+
+#ifndef __CALLBACKS_H__
+#define __CALLBACKS_H__
+
 #include <gtk/gtk.h>
+
 // moj del:
-//GtkWidget *clist1;
-void selection_dialog_show(GtkButton *button, gpointer user_data);
-void on_optionmenu7_clicked(GtkComboBox *combo_box, gpointer user_data);
-void error(gchar *error_type);
+void error(const gchar *error_type);
 //
 
 void
@@ -459,6 +461,10 @@ on_rtp_ok_bt_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
 void
+on_optionmenu7_clicked                 (GtkComboBox     *combo_box,
+                                        gpointer         user_data);
+
+void
 on_fileselection3_destroy              (GtkWidget       *object,
                                         gpointer         user_data);
 
@@ -800,3 +806,5 @@ on_checkbutton66_toggled               (GtkToggleButton *togglebutton,
 void
 on_checkbutton67_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+#endif /* __CALLBACKS_H__ */

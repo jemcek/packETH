@@ -18,6 +18,11 @@
  *
  */
 
-int packet_go_on_the_link(unsigned char *packet, int number);
+#ifndef __FUNCTION_SEND_H__
+#define __FUNCTION_SEND_H__
+
+int packet_go_on_the_link(const unsigned char *packet, int number);
 void* sendbuilt (void *);
 void* sendsequence (void *);
+
+#endif /* __FUNCTION_SEND_H__ */
