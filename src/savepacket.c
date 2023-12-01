@@ -71,10 +71,10 @@ int save_gen_b(GtkButton *button, FILE *file_p) {
 	long count = 0, del = 0;
         int timeflag = 0/*, index = 0*/;
 
-	//bt2 = lookup_widget(GTK_WIDGET (button), "optionmenu9");
-	bt3 = lookup_widget(GTK_WIDGET (button), "entry109");
-	bt4 = lookup_widget(GTK_WIDGET (button), "entry110");
-	bt5 = lookup_widget(GTK_WIDGET(button), "checkbutton35");
+	//bt2 = lookup_widget("optionmenu9");
+	bt3 = lookup_widget("entry109");
+	bt4 = lookup_widget("entry110");
+	bt5 = lookup_widget("checkbutton35");
 
 	bt1_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt3));
 	bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt4));
@@ -137,11 +137,11 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
         long int partable[10][5];
 	char buff4[101];
 
-	bt1 = lookup_widget(GTK_WIDGET (button), "radiobutton36");
-	bt2 = lookup_widget(GTK_WIDGET (button), "radiobutton37");
-	bt5 = lookup_widget(GTK_WIDGET (button), "checkbutton36");
-	bt6 = lookup_widget(GTK_WIDGET (button), "entry151");
-	bt7 = lookup_widget(GTK_WIDGET (button), "entry152");
+	bt1 = lookup_widget("radiobutton36");
+	bt2 = lookup_widget("radiobutton37");
+	bt5 = lookup_widget("checkbutton36");
+	bt6 = lookup_widget("entry151");
+	bt7 = lookup_widget("entry152");
 
 	bt1_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt6));
 	bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt7));
@@ -190,7 +190,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 
 		/* name of the packet and packet contents */
 		snprintf(buff4, 100, "entry%d", 111+i);
-		bt1 = lookup_widget(GTK_WIDGET (button), buff4);
+		bt1 = lookup_widget(buff4);
 		bt1_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt1));
 
 		/* if there is no name, skip it */
@@ -205,7 +205,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 
 		/* number of packets to send */
 		snprintf(buff4, 100, "entry%d", 121+i);
-		bt2 = lookup_widget(GTK_WIDGET (button), buff4);
+		bt2 = lookup_widget(buff4);
 		bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt2));
 		snprintf(buff4, 100, "Error: Number of packets field in row %d", i+1);
 		if (check_digit(bt2_t,strlen(bt2_t), buff4) == -1)
@@ -222,7 +222,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 
 		/* delay between packets */
 		snprintf(buff4, 100, "entry%d", 131+i);
-		bt2 = lookup_widget(GTK_WIDGET (button), buff4);
+		bt2 = lookup_widget(buff4);
 		bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt2));
 		snprintf(buff4, 100, "Error: Delay between packets field in row %d", i+1);
 		if (check_digit(bt2_t,strlen(bt2_t), buff4) == -1)
@@ -239,7 +239,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 
 		/* delay to next sequence */
 		snprintf(buff4, 100, "entry%d", 141+i);
-		bt2 = lookup_widget(GTK_WIDGET (button), buff4);
+		bt2 = lookup_widget(buff4);
 		bt2_t = (char *) gtk_entry_get_text(GTK_ENTRY(bt2));
 		snprintf(buff4, 100, "Error: Delay to next value in row %d", i+1);
 		if (check_digit(bt2_t,strlen(bt2_t), buff4) == -1)
@@ -256,7 +256,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 
 		  /* enable or disable */
 		snprintf(buff4, 100, "checkbutton%d", 25+i);
-		bt1 = lookup_widget(GTK_WIDGET(button), buff4);
+		bt1 = lookup_widget(buff4);
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(bt1)))
 			partable[i][4] = 0;
 		else
