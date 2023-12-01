@@ -126,9 +126,26 @@ struct params {
 	long long ramp_speed;
 } params1;              
 
+static int ipv6_get(void);
+static int ipv4_get(void);
+static int udp_get(guint32 pseudo_header_sum);
+static int tcp_get(guint32 pseudo_header_sum);
+static int igmp_get(void);
+static int icmp_get(void);
+static int arp_get(void);
+static int get_network_payload(int length, int max, const gchar *entry);
+static int link_level_get(void);
+static int get_8023(void);
+static int get_8021q(void);
+static int get_mac_from_string(void);
+static unsigned char linear2alaw(int pcm_val);
+static unsigned char linear2ulaw(short pcm_val);
+static short search(int val, short *table, int size);
+static int icmpv6_get(guint32 pseudo_header_sum);
+
 /* this function is called every second insiede the main gtk loop */
-int gtk_timer(GtkButton *button) {
-	
+static int gtk_timer(G_GNUC_UNUSED gpointer user_data)
+{
 	GtkWidget *statusbar;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *button7;
 	gint context_id;
@@ -235,7 +252,7 @@ int gtk_timer(GtkButton *button) {
  * more than in the last packet[number] = ... line */
 
 /* send button was pressed */
-int send_packet(GtkButton *button, gpointer user_data)
+int send_packet(void)
 {
 	GtkWidget *statusbar, *notebk, *reltime, *en5, *en6;
 	GtkWidget *en1, *en2, *en3, *en4, *ckbt1, *ckbt2, *ckbt3, *ckbt4, *ckbt5, *xoptm, *yoptm;
@@ -269,14 +286,14 @@ int send_packet(GtkButton *button, gpointer user_data)
 	/* do we have the rights to do that? */
 	if (getuid() && geteuid()) {
 		snprintf(buff, 100, "  Sorry but you need the su rights");
-		gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+		gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 		error("Sorry but you need the su rights!");
 		return -1;
 	}
 
 	if ( page == 0 ) { /* so we have the build notebook open, it means we send only one packet */   
 
-		if (make_packet(button, user_data) == -1) {
+		if (make_packet() == -1) {
 			//printf("problems with making packet!\n");
 			snprintf(buff, 100, "  Problems with making packet!");
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
@@ -328,7 +345,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 	
 	/* is it the generator that sends the build packets? */
 	else if (page == 1) { 
-		if (make_packet(button, user_data) == -1) {
+		if (make_packet() == -1) {
 			//printf("problems with making packet!\n");
 			snprintf(buff, 100, "  Problems with making packet!");
 			gtk_statusbar_push(GTK_STATUSBAR(statusbar), 
@@ -947,7 +964,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		li_packets_sent = 0;
 		li_last_packets_sent = 0;
 		count10 = 0;
-		g_timeout_add( 100, (GSourceFunc)gtk_timer, button);
+		g_timeout_add(100, gtk_timer, NULL);
 
 		pthread_create(&thread_id, NULL, &sendbuilt, &params1);
 
@@ -1196,7 +1213,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		if (params1.fd == -1) {
 			//printf("Error: Could not open socket!\n");
 			snprintf(buff, 100, "  Problems with sending");
-			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 			error("Error: Could not open socket!");
 			return -1;
 		}               
@@ -1209,7 +1226,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* does the interface exists? */
 		if (ioctl(params1.fd, SIOCGIFINDEX, &params1.ifr) == -1) {
 			snprintf(buff, 100, "  Problems with sending");
-			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 			snprintf(buff, 100, "No such interface: %s", iftext);
 			error(buff);
 			close(params1.fd);
@@ -1220,7 +1237,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		ioctl(params1.fd, SIOCGIFFLAGS, &params1.ifr);
 		if ( (params1.ifr.ifr_flags & IFF_UP) == 0) {
 			snprintf(buff, 100, "  Problems with sending");
-			gtk_statusbar_push(GTK_STATUSBAR(button), GPOINTER_TO_INT(context_id), buff);
+			gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
 			snprintf(buff, 100, "Interface %s is down", iftext);
 			error(buff);
 			close(params1.fd);
@@ -1247,7 +1264,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		li_packets_sent = 0;
 		li_last_packets_sent = 0;
 		count10 = 0;
-		g_timeout_add( 100, (GSourceFunc)gtk_timer, button);
+		g_timeout_add(100, gtk_timer, NULL);
 
 		snprintf(buff, 100, "  Starting stream generator...");
 		gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
@@ -1265,7 +1282,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 }
 
 
-int make_packet(GtkButton *button, gpointer user_data)
+int make_packet(void)
 {
 	GtkWidget *ipv4, *ipv6, *arp, *usedef;
 	GtkWidget *text_e;
@@ -1294,13 +1311,13 @@ int make_packet(GtkButton *button, gpointer user_data)
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ipv4))) {
 		
 		/* now we get the link layer info */
-		if (link_level_get(button, user_data) == -1) {
+		if (link_level_get() == -1) {
 			//printf("Error: problem on link layer with IPv4 packet\n");
 			return -1;
 		}
 
 		/* call the function that gets the ipv4 protocol information */
-		if (ipv4_get(button, user_data) == -1) {
+		if (ipv4_get() == -1) {
 			//printf("Error: problem with IPv4 information\n");
 			return -1;
 		}
@@ -1316,12 +1333,12 @@ int make_packet(GtkButton *button, gpointer user_data)
 	}
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ipv6))) {
 		/* now we get the link layer info */
-		if (link_level_get(button, user_data) == -1) {
+		if (link_level_get() == -1) {
 			return -1;
 		}
 
 		/* call the function that gets the ipv6 protocol information */
-		if (ipv6_get(button, user_data) == -1) {
+		if (ipv6_get() == -1) {
 			//printf("Error: problem with IPv6 information\n");
 			return -1;
 		}
@@ -1330,13 +1347,13 @@ int make_packet(GtkButton *button, gpointer user_data)
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(arp))) {
 	 
 		/* now we get the link layer info */
-		if (link_level_get(button, user_data) == -1) {
+		if (link_level_get() == -1) {
 			//printf("Error: problem on link layer with arp packet\n");
 			return -1;
 		}
 
 		/* call the function that gets the arp protocol information */
-		if (arp_get(button, user_data) == -1) {
+		if (arp_get() == -1) {
 			//printf("Error: problem with arp information\n");
 			return -1;
 		}
@@ -1351,7 +1368,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 	
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(usedef))) {
 		/* if usedef is active we will manually get the link layer info */
-		if (link_level_get(button, user_data) == -1) {
+		if (link_level_get() == -1) {
 			//printf("Error: problem on link layer\n");
 			return -1;
 		}
@@ -1365,7 +1382,7 @@ int make_packet(GtkButton *button, gpointer user_data)
 		gtk_text_buffer_get_bounds(buffer,&start,&end);
 		text = gtk_text_buffer_get_text(buffer,&start,&end,FALSE);      
 	
-		if (get_network_payload(button, user_data, length, max, text) == -1) {
+		if (get_network_payload(length, max, text) == -1) {
 			//printf("Error: problem with payload on network layer\n");
 			g_free(text);
 			return -1;
@@ -1389,7 +1406,8 @@ int make_packet(GtkButton *button, gpointer user_data)
 }
 
 
-int ipv6_get(GtkButton *button, gpointer user_data) {
+static int ipv6_get(void)
+{
 	GtkWidget *version, *tos, *flowlabel, *payloadlength, *nextheader, *hoplimit;
 	GtkWidget *src6ip, *dst6ip, *payloadlength_bt, *pay_text_e;
 	GtkWidget *extensionhdr/*, *exthdrbto*/;
@@ -1563,21 +1581,21 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 	/* so we came to the end of ip header. what is next? */
 	/* tcp, udp, icmp or manually attached payload? */
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(udp_bt))) {
-		if (udp_get(button, user_data, pseudo_header_sum) == -1) {
+		if (udp_get(pseudo_header_sum) == -1) {
 			//printf("Error: Problem with UDP information\n");
 			return -1;
 		}
 	}
 
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tcp_bt))) {
-		if (tcp_get(button, user_data, pseudo_header_sum) == -1) {
+		if (tcp_get(pseudo_header_sum) == -1) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
 	}
 
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(icmp6_bt))) {
-		if (icmpv6_get(button, user_data, pseudo_header_sum) == -1) {
+		if (icmpv6_get(pseudo_header_sum) == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
@@ -1601,7 +1619,7 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 		/* YYY 1514-number is not ok in case we use 802.1q!!! */
 		pay_max = 9900 - number;
 
-		if (get_network_payload(button, user_data, pay_length, pay_max, pay_text) == -1) {
+		if (get_network_payload(pay_length, pay_max, pay_text) == -1) {
 			//printf("Error: Problem with IPv4 payload\n");
 			g_free(pay_text);
 			return -1;
@@ -1626,7 +1644,8 @@ int ipv6_get(GtkButton *button, gpointer user_data) {
 }
 
 /* let's parse the IPv4 protokol information */
-int ipv4_get(GtkButton *button, gpointer user_data) {
+static int ipv4_get(void)
+{
 	GtkWidget *version, *header_length, *tos, *total_length, *identification, *flags;
 	GtkWidget *frag_offset, *ttl, *protocol, *header_cks, *header_cks_bt;
 	GtkWidget *src_ip, *dst_ip, *options, *total_length_bt;
@@ -1919,28 +1938,28 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	/* so we came to the end of ip header. what is next? */
 	/* tcp, udp, icmp or manually attached payload? */
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(udp_bt))) {
-		if (udp_get(button, user_data, pseudo_header_sum) == -1) {
+		if (udp_get(pseudo_header_sum) == -1) {
 			//printf("Error: Problem with UDP information\n");
 			return -1;
 		}
 	}
 
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tcp_bt))) {
-		if (tcp_get(button, user_data, pseudo_header_sum) == -1) {
+		if (tcp_get(pseudo_header_sum) == -1) {
 			//printf("Error: Problem with TCP information\n");
 			return -1;
 		}
 	}
 
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(icmp_bt))) {
-		if (icmp_get(button, user_data) == -1) {
+		if (icmp_get() == -1) {
 			//printf("Error: Problem with ICMP information\n");
 			return -1;
 		}
 	}
 
 	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(igmp_bt))) {
-		if (igmp_get(button, user_data) == -1) {
+		if (igmp_get() == -1) {
 			//printf("Error: Problem with IGMP information\n");
 			return -1;
 		}
@@ -1964,7 +1983,7 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 		/* YYY 1514-number is not ok in case we use 802.1q!!! */
 		pay_max = 9900 - number;
 
-		if (get_network_payload(button, user_data, pay_length, pay_max, pay_text) == -1) {
+		if (get_network_payload(pay_length, pay_max, pay_text) == -1) {
 			//printf("Error: Problem with IPv4 payload\n");
 			g_free(pay_text);
 			return -1;
@@ -1995,11 +2014,10 @@ int ipv4_get(GtkButton *button, gpointer user_data) {
 	
 	return 1;
 }
-	
 
-int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) 
+
+static int udp_get(guint32 pseudo_header_sum)
 {
-	
 	GtkWidget *srcport, *dstport, *length, *length_bt, *checksum, *checksum_bt;
 	GtkWidget *payload_bt, *payload;
 
@@ -2131,8 +2149,7 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 		//payload_t = (char *) malloc(payload_length + 1);
 		//payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
 		
-		if (get_network_payload(button, user_data, payload_length, 
-						9900, payload_t) == -1) {
+		if (get_network_payload(payload_length, 9900, payload_t) == -1) {
 			//printf("Error: Problem with udp payload\n");
 			g_free(payload_t);
 			return -1;
@@ -2189,9 +2206,9 @@ int udp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 	return 1;
 }
 
-	
-int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
-	
+
+static int tcp_get(guint32 pseudo_header_sum)
+{
 	GtkWidget *srcport, *dstport, *sequence_number, *ack_number, *header_length;
 	GtkWidget *flag_cwr, *flag_ecn;
 	GtkWidget *flag_urg, *flag_ack, *flag_psh, *flag_rst, *flag_syn, *flag_fin;
@@ -2471,8 +2488,7 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 		//payload_t = gtk_editable_get_chars(GTK_EDITABLE(payload),0,-1);
 		
 		/* YYY 1514-number is not ok in case we use 802.1q!!! */
-		if (get_network_payload(button, user_data, payload_length, 
-						9900-number, payload_t) == -1) {
+		if (get_network_payload(payload_length, 9900-number, payload_t) == -1) {
 			//printf("Error: Problem with tcp payload\n");
 			g_free(payload_t);
 			return -1;
@@ -2521,8 +2537,8 @@ int tcp_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
 	return 1;
 }
 
-int igmp_get(GtkButton *button, gpointer user_data) {
-	
+static int igmp_get(void)
+{
 	GtkWidget *type, *menux;
 
 	GtkWidget *maxresptime, *checksum, *cks_bt, *groupaddress, *resv, *nosf, *sourceaddresses;
@@ -2667,8 +2683,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 		/* source addresses */
 		payload_length = strlen(sourceaddresses_t);
 		
-		if (get_network_payload(button, user_data, payload_length, 
-					9900, sourceaddresses_t) == -1) {
+		if (get_network_payload(payload_length, 9900, sourceaddresses_t) == -1) {
 			//printf("problem with igmp reply payload\n");
 			return -1;
 		}
@@ -2733,8 +2748,7 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 		payload_length = strlen(sourceaddresses_t);
 		
 		/* YYY 1514-number is not ok in case we use 802.1q!!! */
-		if (get_network_payload(button, user_data, payload_length, 
-					9900, sourceaddresses_t) == -1) {
+		if (get_network_payload(payload_length, 9900, sourceaddresses_t) == -1) {
 			//printf("problem with igmp reply payload\n");
 			return -1;
 		}
@@ -2795,9 +2809,9 @@ int igmp_get(GtkButton *button, gpointer user_data) {
 	
 	return 1;
 }
-	
-int icmp_get(GtkButton *button, gpointer user_data) {
-	
+
+static int icmp_get(void)
+{
 	GtkWidget *type; 
 	GtkWidget *code, *checksum, *cks_bt, *identifier, *seq_nr, *unused;
 	GtkWidget *data_bt, *data, *datalen;
@@ -3318,9 +3332,9 @@ int icmp_get(GtkButton *button, gpointer user_data) {
 	}
 	return 1;
 }
-		
+
 /* we have to parse the arp protocol information */
-int arp_get(GtkButton *button, gpointer user_data)
+static int arp_get(void)
 {
 	GtkWidget *hwtype, *prottype, *hwsize, *protsize;
 	GtkWidget *rbt10, *rbt11, *rbt17, *en81;
@@ -3516,10 +3530,10 @@ int arp_get(GtkButton *button, gpointer user_data)
 
 
 /* user choosed to manually attach payload, so here we are */
-int get_network_payload(GtkButton *button, gpointer user_data, int length, int max, gchar *entry)
+static int get_network_payload(int length, int max, const gchar *entry)
 {
 	int i, stevec = 0;
-	gchar *ptr;
+	const gchar *ptr;
 
 	/* firs we check if total length without spaces is an even number */
 	ptr = entry;
@@ -3561,7 +3575,7 @@ int get_network_payload(GtkButton *button, gpointer user_data, int length, int m
 }
 
 
-int link_level_get(GtkButton *button, gpointer user_data)
+static int link_level_get(void)
 {
 	GtkWidget *ver2_tbt, *_801q_cbt, *_8023_tbt;
 	GtkWidget *ethtype_e;
@@ -3572,7 +3586,7 @@ int link_level_get(GtkButton *button, gpointer user_data)
 	_801q_cbt = lookup_widget("bt_8021q");
 
 	/* always we need first the dest and source mac address */
-	if (get_mac_from_string(button) == -1) {
+	if (get_mac_from_string() == -1) {
 		//printf("Error: mac address field\n");
 		error("Error: mac address field");
 		return -1;
@@ -3581,13 +3595,13 @@ int link_level_get(GtkButton *button, gpointer user_data)
 
 	/* is 802.1q active - do we need to add 4 or 8 bytes? */
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(_801q_cbt))) {
-		if (get_8021q(button) == -1) {
+		if (get_8021q() == -1) {
 			//printf("Error: 802.1q field\n");
 			return -1;
 		}
 	}
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(_8023_tbt))) { /* uporabimo ethernet vezije 802.3 */
-		if (get_8023(button) == -1) {
+		if (get_8023() == -1) {
 			//printf("Error: 802.3 field");
 			return -1;
 		}
@@ -3624,7 +3638,7 @@ int link_level_get(GtkButton *button, gpointer user_data)
 
 
 /* if we are in the 802.3 ethernet version */
-int get_8023(GtkButton *button)
+static int get_8023(void)
 {
 	GtkWidget *ethlength_e/*, *L8023llc_tbt*/, *L8023llcsnap_tbt, *Ldsap_e, *Lssap_e;
 	GtkWidget *Lctrl_e, *Loui_e, *Lpid_e, *autolength_bt;
@@ -3745,7 +3759,7 @@ int get_8023(GtkButton *button)
 
 
 /* function parses 802.1q field */
-int get_8021q(GtkButton *button)
+static int get_8021q(void)
 {
 	GtkWidget *vlan_e, *priority_m, *cfi1_rbt, *vlanid_e, *QinQ_bt, *QinQ, *QinQpvid;
 	gchar *vlan_t, *vlanid_t, *QinQ_t; 
@@ -3913,7 +3927,7 @@ guint16 get_checksum16(int cks_start, int cks_stop)
 	//return sum;
 }
 /*check ip address */
-int check_ip_address(gchar *ptr)
+int check_ip_address(const gchar *ptr)
 {
 	int i, j;
 	gchar tmp[4];
@@ -3939,11 +3953,11 @@ int check_ip_address(gchar *ptr)
 }
 
 /*check ipv6 address, if insert is==1, it means we insert the values, otherwise only check */
-int check_ipv6_address(gchar *ptr, int insert)
+int check_ipv6_address(const gchar *ptr, int insert)
 {
 	int stevec, dolzina, i=0, j=0, enojno=0, dvojno=-1;
 	gchar paket[8][4];
-	gchar *ptrstart;
+	const gchar *ptrstart;
 
 	ptrstart = ptr;
 
@@ -4070,7 +4084,7 @@ int check_ipv6_address(gchar *ptr, int insert)
 
 
 /* check mac address */
-int check_mac_address(gchar *ptr)
+int check_mac_address(const gchar *ptr)
 {
 	int i;
 
@@ -4091,7 +4105,7 @@ int check_mac_address(gchar *ptr)
 
 
 /* function parses mac address */
-int get_mac_from_string(GtkButton *button)
+static int get_mac_from_string(void)
 {
 	GtkWidget *dstmac_e, *srcmac_e;
 	gchar *dstmac_t, *srcmac_t;
@@ -4141,7 +4155,7 @@ int get_mac_from_string(GtkButton *button)
 
 
 /* function takes pointer to char and converts two chars to hex and returns signed int. If you want to use te return value as char, you need to cast back to (unsigned char) */
-signed int char2x(char *p) 
+signed int char2x(const char *p) 
 {
     unsigned char x=0;
 
@@ -4248,7 +4262,7 @@ int insert_frequency(int codec, int frequency, int length, GtkWidget *payload_en
 
 
 /* Following three routines are from Sun Microsystems, Inc. */
-unsigned char linear2alaw(int pcm_val)  /* 2's complement (16-bit range) */
+static unsigned char linear2alaw(int pcm_val)  /* 2's complement (16-bit range) */
 {
 	static short seg_aend[8] = {0x1F, 0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF};
 	int             mask; 
@@ -4282,7 +4296,7 @@ unsigned char linear2alaw(int pcm_val)  /* 2's complement (16-bit range) */
 }
 
 
-unsigned char linear2ulaw(short pcm_val)  /* 2's complement (16-bit range) */
+static unsigned char linear2ulaw(short pcm_val)  /* 2's complement (16-bit range) */
 {
 	static short seg_uend[8] = {0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF};
 	short           mask;
@@ -4317,7 +4331,7 @@ unsigned char linear2ulaw(short pcm_val)  /* 2's complement (16-bit range) */
 }
 
 
-short search(int val, short *table, int size)
+static short search(int val, short *table, int size)
 {
 	int i;
 
@@ -4329,7 +4343,7 @@ short search(int val, short *table, int size)
 }
 
 
-int check_digit(char *field, int length, char *text)
+int check_digit(const char *field, int length, const char *text)
 {
 	int i;
 	
@@ -4348,10 +4362,10 @@ int check_digit(char *field, int length, char *text)
 		}       
 	}
 	return 1;
-}       
+}
 
 
-int check_hex(char *field, int length, char *text)
+int check_hex(const char *field, int length, const char *text)
 {
 	int i;
 
@@ -4406,8 +4420,8 @@ int check_if_file_is_packet(FILE *file_p)
 }
 
 
-void statusbar_text(GtkButton *button, char *text) {
-
+void statusbar_text(const char *text)
+{
 	GtkWidget *statusbar;
 	gint context_id;
 	char buff[101];
@@ -4417,10 +4431,9 @@ void statusbar_text(GtkButton *button, char *text) {
 
 	snprintf(buff, strlen(text)+1, "%s", text );
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buff);
-
 }
 
-void gen_crc32_table()
+static void gen_crc32_table()
 {
 	unsigned long crc, poly;
 	int i, j;
@@ -4439,7 +4452,7 @@ void gen_crc32_table()
 }
 
 
-unsigned long get_crc32(unsigned char *p, int len)
+unsigned long get_crc32(const unsigned char *p, int len)
 {
 	register unsigned long crc;
 	int i;
@@ -4462,8 +4475,8 @@ unsigned long get_crc32(unsigned char *p, int len)
 }
 
 
-int icmpv6_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum) {
-
+static int icmpv6_get(guint32 pseudo_header_sum)
+{
 	GtkWidget *type, *code, *checksum, *cks_bt;
 	GtkWidget *msgbody, *data_bt, *datapat, *datalen;
 
@@ -4621,4 +4634,3 @@ int icmpv6_get(GtkButton *button, gpointer user_data, guint32 pseudo_header_sum)
 
 	return 1;
 }
-
