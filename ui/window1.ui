@@ -10207,7 +10207,7 @@ CRC
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">7</property>
+                                    <property name="top_attach">8</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10221,7 +10221,7 @@ CRC
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">9</property>
+                                    <property name="top_attach">10</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10235,7 +10235,7 @@ CRC
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">10</property>
+                                    <property name="top_attach">11</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10263,7 +10263,7 @@ CRC
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">5</property>
+                                    <property name="top_attach">6</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10277,7 +10277,7 @@ CRC
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">6</property>
+                                    <property name="top_attach">7</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10309,7 +10309,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">13</property>
+                                    <property name="top_attach">14</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10323,7 +10323,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">8</property>
+                                    <property name="top_attach">9</property>
                                     <property name="width">2</property>
                                   </packing>
                                 </child>
@@ -10356,7 +10356,7 @@ Adjust paremeters while sending</property>
                                     <property name="can_focus">False</property>
                                     <child>
                                       <object class="GtkCheckButton" id="checkbutton50">
-                                        <property name="label" translatable="yes">Set random source IPv4 address with mask/</property>
+                                        <property name="label" translatable="yes">Set random source IPv4 address with mask          /</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
@@ -10429,7 +10429,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">4</property>
+                                    <property name="top_attach">5</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10543,7 +10543,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">11</property>
+                                    <property name="top_attach">12</property>
                                     <property name="width">2</property>
                                   </packing>
                                 </child>
@@ -10658,7 +10658,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
-                                    <property name="top_attach">12</property>
+                                    <property name="top_attach">13</property>
                                     <property name="width">2</property>
                                   </packing>
                                 </child>
@@ -10687,7 +10687,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="top_attach">5</property>
+                                    <property name="top_attach">6</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10701,7 +10701,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="top_attach">6</property>
+                                    <property name="top_attach">7</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10715,7 +10715,7 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="top_attach">7</property>
+                                    <property name="top_attach">8</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -10730,8 +10730,52 @@ Adjust paremeters while sending</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
-                                    <property name="top_attach">9</property>
+                                    <property name="top_attach">10</property>
                                   </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="hbox1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkCheckButton" id="checkbutton900">
+                                        <property name="label" translatable="yes">Set random destination IPv4 address with mask  /</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="draw_indicator">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkEntry" id="entry900">
+                                        <property name="width_request">50</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="max_length">3</property>
+                                        <property name="invisible_char">•</property>
+                                        <property name="width_chars">3</property>
+                                        <property name="text" translatable="yes">0</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
                                 </child>
                                 <child>
                                   <placeholder/>
