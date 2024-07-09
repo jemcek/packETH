@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 
 extern char iftext[20];
+extern unsigned char packet[100001];
 
 signed int char2x(char *p);
 char c4(int value);

@@ -59,7 +59,6 @@ static	GtkWidget *tos_dialog_menu = NULL;
 static	GtkWidget *fragment_dialog_menu = NULL;
 static	GtkWidget *selection1_dialog = NULL;
 static	GtkWidget *udp_payload_dialog = NULL;
-extern unsigned char packet[9300];
 extern int number;
 extern int stop_flag;
 extern long desired_bw;
