@@ -47,7 +47,6 @@
 //#define 128 
 
 extern int number;
-//extern unsigned char packet[10000];
 extern gboolean stop_flag;
 extern long li_sentbytes;
 extern long li_packets_sent;
