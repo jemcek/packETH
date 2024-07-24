@@ -82,6 +82,7 @@ struct params  {
 	unsigned char pkttable[10][10000];
 	long long int partable[10][6];
 	int ipv4mask;
+	int ipv4mask_2;
 	int ipv6mask;
 	int ip_proto_in_use;
 	int l4_proto_in_use;
@@ -190,6 +191,7 @@ void* sendbuilt (void *parameters)
 	guint32 ipcks, pseudo_header=0, udpcksum, tcpcksum, icmpcksum;
 	guint32 *stevec32;
 	int maskv4[4];
+	int maskv4_2[4];
 	int maskv6[16];
 
 	struct params* p = (struct params*) parameters;
@@ -251,6 +253,14 @@ void* sendbuilt (void *parameters)
 			maskv4[i] = p->ipv4mask - (i*8);
 		else
 			maskv4[i] = 0;
+	}
+	for (i=3; i>=0; i--) {
+		if ((p->ipv4mask_2 - (i*8)) > 8) 
+			maskv4_2[i] = 8;
+		else if ((p->ipv4mask_2 - (i*8)) > 0)     
+			maskv4_2[i] = p->ipv4mask_2 - (i*8);
+		else
+			maskv4_2[i] = 0;
 	}
 	for (i=15; i>=0; i--) {
 		if ((p->ipv6mask - (i*8)) > 8) 
@@ -392,6 +402,7 @@ void* sendbuilt (void *parameters)
 	    //if ((gap >= (p->del)) || (p->del == 1)) {
 	    if ((gap >= (correction)) || (p->del == 1)) {
 
+
 			c = sendto(p->fd, packet, number, 0, (struct sockaddr *)&p->sa, sizeof (p->sa));
 			li++;
 
@@ -421,6 +432,13 @@ void* sendbuilt (void *parameters)
 				packet[p->ipv4start+13] = (packet[p->ipv4start+13] & ~(0xff>>maskv4[1])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4[1]));
 				packet[p->ipv4start+14] = (packet[p->ipv4start+14] & ~(0xff>>maskv4[2])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4[2]));
 				packet[p->ipv4start+15] = (packet[p->ipv4start+15] & ~(0xff>>maskv4[3])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4[3]));
+			}
+			/* change destination IP address */
+			if ( (p->inc & (1<<17)) && (p->ip_proto_in_use == 4)) {
+				packet[p->ipv4start+16] = (packet[p->ipv4start+16] & ~(0xff>>maskv4_2[0])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4_2[0]));
+				packet[p->ipv4start+17] = (packet[p->ipv4start+17] & ~(0xff>>maskv4_2[1])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4_2[1]));
+				packet[p->ipv4start+18] = (packet[p->ipv4start+18] & ~(0xff>>maskv4_2[2])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4_2[2]));
+				packet[p->ipv4start+19] = (packet[p->ipv4start+19] & ~(0xff>>maskv4_2[3])) + ((1+(int) (255.0*rand()/(RAND_MAX+1.0))) & (0xff>>maskv4_2[3]));
 			}
 			/* change source IPv6 address */
 			if ( (p->inc & (1<<2)) && (p->ip_proto_in_use == 6)) {

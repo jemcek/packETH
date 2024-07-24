@@ -110,6 +110,7 @@ struct params {
 	number of packets  [3] - gap between, [4] - gap to the next sequence, [5] - enable(1) / disable(0) */ 
 	long int partable[10][6]; 
 	int ipv4mask;
+	int ipv4mask_2;
 	int ipv6mask;
 	int ip_proto_in_use;
 	int l4_proto_in_use;
@@ -242,13 +243,13 @@ int send_packet(GtkButton *button, gpointer user_data)
 	GtkWidget *optm1, *optm2, *optm3, *stopbt;
 	GtkWidget *button1, *button2, *button3, *button4, *button5, *button6, *rndbt;
 	GtkWidget *ckbt61, *ckbt50, *ckbt51, *ckbt52, *ckbt53, *ckbt54, *ckbt55;
-	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66, *ckbt67;
+	GtkWidget *ckbt56, *ckbt57, *ckbt58, *ckbt59, *ckbt60, *ckbt62, *ckbt63, *ckbt64, *ckbt65, *ckbt66, *ckbt67, *ckbt900;
 	GtkWidget *en219, *en220, *en221, *rdbt85, *rdbt95, *rdbt89, *rdbt91;
-	GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230;
+	GtkWidget *en222, *en223, *en224, *en225, *en226, *en227, *en228, *en229, *en230, *en900;
 
 	int c, i, m, length, ramp_submode;
 	gchar *en1_t, *en2_t, *en3_t, *en4_t, *en5_t, *en6_t, *en219_t, *en220_t, *en221_t;
-	gchar *en222_t, *en223_t, *en224_t, *en225_t, *en226_t, *en227_t, *en228_t, *en229_t, *en230_t;
+	gchar *en222_t, *en223_t, *en224_t, *en225_t, *en226_t, *en227_t, *en228_t, *en229_t, *en230_t, *en900_t;
 	gint context_id;
 	char buff[100], buf2[80];
 	struct tm *ptr;
@@ -403,6 +404,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		en228 = lookup_widget("entry228");
 		en229 = lookup_widget("entry229");
 		en230 = lookup_widget("entry230");
+		en900 = lookup_widget("entry900");
 		ckbt1 = lookup_widget("checkbutton35");
 		ckbt2 = lookup_widget("radiobutton80");
 		ckbt3 = lookup_widget("radiobutton81");
@@ -431,6 +433,7 @@ int send_packet(GtkButton *button, gpointer user_data)
 		ckbt65 = lookup_widget ("checkbutton65");
 		ckbt66 = lookup_widget ("checkbutton66");
 		ckbt67 = lookup_widget ("checkbutton67");
+		ckbt900 = lookup_widget ("checkbutton900");
 
 		/* do we have to adjust any parameters while sending? */
 		params1.inc = 0;
@@ -501,6 +504,24 @@ int send_packet(GtkButton *button, gpointer user_data)
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt65)))  params1.inc = params1.inc + 32768;
 		// correct tcp checksum
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt67)))  params1.inc = params1.inc + 65536;
+                //change destination ipv6 address
+		if ((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ckbt900))) ) {
+			params1.inc = params1.inc + 131072;
+			//check what user has inserted for mask
+			en900_t = (char *)gtk_entry_get_text(GTK_ENTRY(en900));
+			length = strlen(en900_t);
+			for(m=0; m<length; m++) {
+				if (isdigit(*(en900_t+m)) == 0) {
+					error("Error: Wrong IPv4 destination mask entry!");
+					return -1;
+				}
+			}
+			params1.ipv4mask_2 = strtol(en900_t, (char **)NULL, 10);
+			if ( (params1.ipv4mask_2 < 0) || (params1.ipv4mask_2 > 32) ) {
+				error("Error: IPv4 destination mask must be between 0 and 32!");
+				return -1;
+			}
+		}
 
 		//printf("tokle je params1.inc %d\n", params1.inc);
 
@@ -526,6 +547,11 @@ int send_packet(GtkButton *button, gpointer user_data)
 		/* changing ip source address */
 		if ( ((params1.inc & (1<<1)) ) && (number < (ipv4_start + 20)) && (ip_proto_used == 4) ) {
 				error("Error: Packet is not long enough to change source IP address");
+				return -1;
+		}
+		/* changing ip destination address */
+		if ( ((params1.inc & (1<<16)) ) && (number < (ipv4_start + 20)) && (ip_proto_used == 4) ) {
+				error("Error: Packet is not long enough to change destination IP address");
 				return -1;
 		}
 		/* ipv6 source address */
