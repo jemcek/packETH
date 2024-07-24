@@ -16,11 +16,12 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * function.c - all routines except callbacks and routines for sending
- *
  */
 
-#include <gtk/gtk.h>
+#ifndef __HEADERS_H__
+#define __HEADERS_H__
+
+#include <glib.h>
 
 /*----------------------------------------------------------------------
  * Stuff for writing a PCap file
@@ -50,15 +51,15 @@ struct pcaprec_hdr {
 struct clist_hdr {
 	gint16 pnrb;	/* packet number */
 	gint32 time;	/* delay since previous packet */
-	gint16 plen; 	/* packet length */
+	gint16 plen;	/* packet length */
 	char src[40];
 	char dst[40];
 	gchar info[21];
 };
-	
+
 
 typedef enum {
-        ETH_II,
+	ETH_II,
 	ETH_802_3,
 	ARP,
 	IPv4,
@@ -70,4 +71,4 @@ typedef enum {
 	ICMPv6
 } protocol_type;
 
-	
+#endif /* __HEADERS_H__ */
