@@ -13,7 +13,7 @@ Some more information about installation, usage, GUI and CLI version and FAQ can
 ### OCT&NOV 2023
 
 - migrated to GTK3 (many thanks to @qarkai) 
-- vlan id field now accepts interger instead of HEX value
+- vlan id field now accepts integer instead of HEX value
 
 ### JUL 2019  
 
