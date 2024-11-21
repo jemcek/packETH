@@ -19,7 +19,6 @@
  */
 
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "savepacket.h"
@@ -34,9 +33,8 @@ extern int number;
 static unsigned long pcap_link_type = 1;   /* Default is DLT-EN10MB */
 
 /* this one saves the paremeters from builder window into a file */
-int save_packet(GtkButton *button, gpointer user_data, FILE *file_p) {
-
-	if (make_packet(button, user_data) == -1) {
+int save_packet(FILE *file_p) {
+	if (make_packet() == -1) {
 		return -1;
 	}
 
@@ -63,8 +61,7 @@ int save_packet(GtkButton *button, gpointer user_data, FILE *file_p) {
 }
 
 
-int save_gen_b(GtkButton *button, FILE *file_p) {
-
+int save_gen_b(FILE *file_p) {
 	GtkWidget /**bt2,*/ *bt3, *bt4, *bt5 /*,*bt7, *bt8*/;
 	gchar *bt1_t, *bt2_t;
 	long count = 0, del = 0;
@@ -125,8 +122,7 @@ int save_gen_b(GtkButton *button, FILE *file_p) {
 }
 
 
-int save_gen_s(GtkButton *button, FILE *file_p) {
-
+int save_gen_s(FILE *file_p) {
 	GtkWidget *bt1, *bt2, *bt5, *bt6, *bt7;
 	gchar *bt1_t, *bt2_t;
 	long count = 0, del = 0;
@@ -280,8 +276,7 @@ int save_gen_s(GtkButton *button, FILE *file_p) {
 }
 
 
-int save_gen_pcap(GtkButton *button, FILE *file_p) {
-
+int save_gen_pcap(G_GNUC_UNUSED FILE *file_p) {
 	error("Nothing to save here!");
 
 	return 1;

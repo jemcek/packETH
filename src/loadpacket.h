@@ -18,34 +18,19 @@
  *
  */
 
+#ifndef __LOADPACKET_H__
+#define __LOADPACKET_H__
+
+#include <stdio.h>
+
 #include "headers.h"
 
-int load_gen_p_data(GtkButton *button, GtkTreeModel *model, char *, struct pcaprec_hdr *, int, struct clist_hdr *clptri,
-                                                               double timediff, double timebeg);
-int load_packet_disector(GtkButton *button, char *, int whocalled, struct clist_hdr *clptr, int);
-int ipv4_header(GtkButton *button, int whocalled, struct clist_hdr *clptr);
-int ipv6_header(GtkButton *button, int whocalled, struct clist_hdr *clptr);
+int load_packet_disector(char *, int whocalled, struct clist_hdr *clptr, int);
 
 
 
-int load_data(GtkButton *button, FILE *file_p, int whocalled, int howmanypackets);
-//int load_packet_disector(GtkButton *button, FILE *);
-int load_gen_b_data(GtkButton *button, FILE *);
-int load_gen_s_data(GtkButton *button, FILE *);
-//int load_gen_p_data(GtkButton *button, char *, pcaprec_hdr *);
-int ethernet_8023(GtkButton *button, int whocalled);
-int ethernet_verII(GtkButton *button, int whocalled);
-//int ipv4_header(GtkButton *button, int whocalled);
-int arp_header(GtkButton *button, int whocalled);
-int userdef2_field(GtkButton *button, int whocalled);
-void inspar(GtkButton *button, char *entry, char *from, int length);
-void insint(GtkButton *button, char *entry, char *from, int length);
-signed int retint(char *ch);
-unsigned long retint2(char *ch, int length);
-int tcp_header(GtkButton *button, int whocalled);
-int udp_header(GtkButton *button, int whocalled);
-int igmp_header(GtkButton *button, int whocalled);
-int icmp_header(GtkButton *button, int whocalled);
-int icmpv6_header(GtkButton *button, int whocalled);
-int usedef_insert(GtkButton *button, char *entry, int whocalled);
-void convert8field(char *to, char *from);
+int load_data(FILE *file_p, int whocalled, int howmanypackets);
+int load_gen_b_data(FILE *file_p);
+int load_gen_s_data(FILE *file_p);
+
+#endif /* __LOADPACKET_H__ */
