@@ -57,7 +57,8 @@ yum install dbus-x11
 
 ```sh
 sudo apt-get install build-essential  
-sudo apt-get install autoconf  
+sudo apt-get install autoconf
+sudo apt-get install automake 
 sudo apt-get install pkg-config  
 sudo apt-get install libgtk-3-dev
 sudo apt-get install dbus-x11
