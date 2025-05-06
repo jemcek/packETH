@@ -1465,7 +1465,7 @@ on_Gen_button_clicked                    (GtkButton       *button,
 	else {
 		/* copy data to tmp field */
 		for (i=0, j=0, m=1; j < number; m++, j++) {
-			snprintf(&tmp[i], 31000, "%02x", packet[j]);
+			snprintf(&tmp[i], 31000-i, "%02x", packet[j]);
 			i++; i++;
 			/* we allow only 16 bytes in each row - looks nicer */
 			if ((m % 16) == 0 && (m > 1)) {
