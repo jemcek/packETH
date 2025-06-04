@@ -18,7 +18,14 @@
  *
  */
 
-int save_packet(GtkButton *button, gpointer user_data, FILE *file_p);
-int save_gen_b(GtkButton *button, FILE *file_p);
-int save_gen_s(GtkButton *button, FILE *file_p);
-int save_gen_pcap(GtkButton *button, FILE *file_p);
+#ifndef __SAVEPACKET_H__
+#define __SAVEPACKET_H__
+
+#include <stdio.h>
+
+int save_packet(FILE *file_p);
+int save_gen_b(FILE *file_p);
+int save_gen_s(FILE *file_p);
+int save_gen_pcap(FILE *file_p);
+
+#endif /* __SAVEPACKET_H__ */

@@ -77,6 +77,8 @@ static gboolean MAC_yes = FALSE;
 static int load_select_nr = 0;
 int show_error_dialog = 1;
 
+static void selection_dialog_show(void);
+
 static char *ethernet_mactoa(struct sockaddr *addr) {
 	
 	static char buff[256];
@@ -378,22 +380,21 @@ on_ok_button1_clicked                  (GtkButton       *button,
 			notbk = lookup_widget("notebook1");
         		page =  gtk_notebook_get_current_page(GTK_NOTEBOOK(notbk));
 
-        		if (page == 0) { /* so we have the build notebook open */
-				
-				if (load_data(btx, file_p, 1, 1) == -1) {
+			if (page == 0) { /* so we have the build notebook open */
+				if (load_data(file_p, 1, 1) == -1) {
 					/* calling previous function with last argument =1 means loading for builder */
 					error("Error: wrong file format!");
 					fclose(file_p);
-			 		return;
+					return;
 				}
 				break;
 			}
 			else if (page == 1) { /* it is the send build generator */
 
-				if (load_gen_b_data(btx, file_p) == -1) {
+				if (load_gen_b_data(file_p) == -1) {
 					error("Error: wrong file format!");
 					fclose(file_p);
-			 		return;
+					return;
 				}
 				break;
 			}
@@ -401,19 +402,19 @@ on_ok_button1_clicked                  (GtkButton       *button,
 			/* page with sequence generator is open */
 			else if (page == 2) { /* it is the send build generator */
 
-				if (load_gen_s_data(btx, file_p) == -1) {
+				if (load_gen_s_data(file_p) == -1) {
 					error("Error: wrong file format!");
 					fclose(file_p);
-			 		return;
+					return;
 				}
 				break;
 			}
 			else if (page == 3) { /* it is the send pcap file generator */
 
-				if (load_data(btx, file_p, 2, MAXNUMLOADPACKETS) == -1) {
+				if (load_data(file_p, 2, MAXNUMLOADPACKETS) == -1) {
 					error("Error: wrong file format!");
 					fclose(file_p);
-			 		return;
+					return;
 				}
 				break;
 			}
@@ -430,7 +431,7 @@ on_ok_button1_clicked                  (GtkButton       *button,
 		case 10: 
 		case 11: {
 			//if (check_if_file_is_packet(file_p) == -1) {
-			if (load_data(btx, file_p, 1, 1) == -1) {
+			if (load_data(file_p, 1, 1) == -1) {
 				error("Error: wrong file format!");
 				fclose(file_p);
 				return;
@@ -444,11 +445,10 @@ on_ok_button1_clicked                  (GtkButton       *button,
 	fclose(file_p);
 
 	snprintf(buff, 100, "  Parameters loaded from file %s", fname);
-	statusbar_text(btx, buff);
+	statusbar_text(buff);
 
 	gtk_grab_remove(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 	gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-
 }
 
 
@@ -465,7 +465,7 @@ void
 on_Load_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-	statusbar_text(button, "");
+	statusbar_text("");
 
 	if (file_menu != NULL) {
 		gdk_window_show(gtk_widget_get_window(file_menu));
@@ -485,7 +485,7 @@ void
 on_Save_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-	statusbar_text(button, "");
+	statusbar_text("");
 
 	if (save_file_menu != NULL) {
 		gdk_window_show(gtk_widget_get_window(save_file_menu));
@@ -497,7 +497,6 @@ on_Save_button_clicked                 (GtkButton       *button,
 	gtk_widget_show(save_file_menu);
 
 	btx = button;
-
 }
 
 
@@ -545,34 +544,34 @@ on_ok_button2_clicked                  (GtkButton       *button,
 			//        return;
 		//}
 
-	        if (save_packet(btx, user_data, file_p) == -1) {
-	                fclose(file_p);
+		if (save_packet(file_p) == -1) {
+			fclose(file_p);
 			return;
-	        }
+		}
 	}
 
 	else if (page == 1) { /* it is the send_built page */
 
-	        if (save_gen_b(btx, file_p) == -1) {
-	                fclose(file_p);
+		if (save_gen_b(file_p) == -1) {
+			fclose(file_p);
 			return;
-	        }
+		}
 	}
 
 	else if (page == 2) {
 
-	        if (save_gen_s(btx, file_p) == -1) {
-	                fclose(file_p);
+		if (save_gen_s(file_p) == -1) {
+			fclose(file_p);
 			return;
-	        }
+		}
 	}
 
 	else if (page == 3) {
 
-	        if (save_gen_pcap(btx, file_p) == -1) {
-	                fclose(file_p);
+		if (save_gen_pcap(file_p) == -1) {
+			fclose(file_p);
 			return;
-	        }
+		}
 	}
 
 	else
@@ -580,7 +579,7 @@ on_ok_button2_clicked                  (GtkButton       *button,
 
 	fclose(file_p);
 	snprintf(buff4, 100, "  Parameters saved in file %s", fname);
-	statusbar_text(btx, buff4);
+	statusbar_text(buff4);
 
 	gtk_grab_remove(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 	//gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
@@ -872,7 +871,7 @@ on_L_dst_select_bt_clicked             (GtkButton       *button,
 	entry_field = lookup_widget("L_dst_mac");
 	IP_yes = FALSE;
 	MAC_yes = TRUE;
-	selection_dialog_show(button, user_data);
+	selection_dialog_show();
 }
 
 
@@ -883,15 +882,13 @@ on_L_src_select_bt_clicked             (GtkButton       *button,
 	entry_field = lookup_widget("L_src_mac");
 	IP_yes = FALSE;
 	MAC_yes = TRUE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 	
 /* this one shows the addresslist dialog. it tries to open a file with addresses. It should return an error in case of file error or if the contents of the file does not hold the specified structure */
-void
-selection_dialog_show			(GtkButton	*button,
-					gpointer user_data)
+static void
+selection_dialog_show                  (void)
 {
 	
 	FILE *fp;
@@ -1386,7 +1383,7 @@ on_Build_button_clicked                    (GtkButton       *button,
         nt1 = lookup_widget("Stop_button");
 	gtk_widget_set_sensitive(nt1, TRUE);
 
-	statusbar_text(button, "  Builder window opened");
+	statusbar_text("  Builder window opened");
 }
 
 
@@ -1449,7 +1446,7 @@ on_Gen_button_clicked                    (GtkButton       *button,
         nt1 = lookup_widget("Stop_button");
 	gtk_widget_set_sensitive(nt1, TRUE);
 
-	statusbar_text(button, "  Gen-b window opened.");
+	statusbar_text("  Gen-b window opened.");
 
 	/* get access to the buffer of text field */
 	text_e = lookup_widget("text5");
@@ -1457,11 +1454,11 @@ on_Gen_button_clicked                    (GtkButton       *button,
 
 	show_error_dialog = 0;
 
-	if (make_packet(button, user_data) == -1) {
-        	//error("Packet contents is not ok!\n");
+	if (make_packet() == -1) {
+		//error("Packet contents is not ok!\n");
 		snprintf(&tmp[0], 200, "\n\n                   Packet constructed in Builder is not ok!");
 		gtk_entry_set_text(GTK_ENTRY(crc_value), "");
-        }
+	}
 	else {
 		/* copy data to tmp field */
 		for (i=0, j=0, m=1; j < number; m++, j++) {
@@ -1589,7 +1586,7 @@ on_Gen_s_bt_clicked                    (GtkButton       *button,
         gtk_widget_set_sensitive(nt1, TRUE);
         nt1 = lookup_widget("Stop_button");
 	gtk_widget_set_sensitive(nt1, TRUE);
-	statusbar_text(button, "  Gen-s window opened");
+	statusbar_text("  Gen-s window opened");
 	//on_button87_clicked(button, user_data);
 }
 
@@ -1608,8 +1605,7 @@ void
 on_Send_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-
-	if (send_packet(button, user_data) == -1) {
+	if (send_packet() == -1) {
 		//printf("problems sending packet; send_packet() returned -1\n");
 		return;
 	}
@@ -1675,8 +1671,7 @@ on_button24_clicked                    (GtkButton       *button,
 	entry_field_ip = lookup_widget("entry38");
 	IP_yes = TRUE;
 	MAC_yes = FALSE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 
@@ -1687,8 +1682,7 @@ on_button25_clicked                    (GtkButton       *button,
 	entry_field_ip = lookup_widget("entry37");
 	IP_yes = TRUE;
 	MAC_yes = FALSE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 
@@ -1965,8 +1959,7 @@ on_button33_clicked                    (GtkButton       *button,
 	entry_field_ip = lookup_widget("A_senderip");
 	IP_yes = TRUE;
 	MAC_yes = TRUE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 
@@ -1993,8 +1986,7 @@ on_button35_clicked                    (GtkButton       *button,
 	entry_field_ip = lookup_widget("A_targetip");
 	IP_yes = TRUE;
 	MAC_yes = TRUE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 
@@ -2139,7 +2131,7 @@ on_Interface_button_clicked                    (GtkButton       *button,
 	char buff[1000];
 	char *ptr;
 
-	statusbar_text(button, "");
+	statusbar_text("");
 
 	if (interface_dialog_menu != NULL) {
 		gdk_window_show(gtk_widget_get_window(interface_dialog_menu));
@@ -2246,7 +2238,7 @@ on_error_dialog_destroy                (GtkWidget       *object,
 	error_dialog_menu = NULL;
 }
 
-void error(gchar *error_type)
+void error(const gchar *error_type)
 {
 	GtkWidget *label;
 	
@@ -3343,7 +3335,7 @@ on_Reset_button_clicked                (GtkButton       *button,
 	gint page;
 	FILE *file_p;
 
-	statusbar_text(button, "");
+	statusbar_text("");
 
 	notbk = lookup_widget("notebook1");
 	page =  gtk_notebook_get_current_page(GTK_NOTEBOOK(notbk));
@@ -3355,7 +3347,7 @@ on_Reset_button_clicked                (GtkButton       *button,
 			return;
 		}
 		
-		if (load_data(button, file_p, 1, 1) == -1) 
+		if (load_data(file_p, 1, 1) == -1)
 			;//error("Data in file \".defaultBuilder\" has wrong format");
 		fclose(file_p);
 	}
@@ -3366,7 +3358,7 @@ on_Reset_button_clicked                (GtkButton       *button,
 			return;
 		}
 		
-		if (load_gen_b_data(button, file_p) == -1) 
+		if (load_gen_b_data(file_p) == -1)
 			;//error("Data in file \".defaultGen-b\" has wrong format");
 		fclose(file_p);
 	}
@@ -3377,14 +3369,14 @@ on_Reset_button_clicked                (GtkButton       *button,
 			return;
 		}
 		
-		if (load_gen_s_data(button, file_p) == -1) 
+		if (load_gen_s_data(file_p) == -1)
 			//error("Data in file \".defaultGen-s\" has wrong format");
 			;
 		//fclose(file_p);
 		//YYY : the above line causes a crash, I don't know why...
 	}
 	
-	statusbar_text(button, "  Loaded default parameters");
+	statusbar_text("  Loaded default parameters");
 
 	return;
 }
@@ -3399,7 +3391,7 @@ on_button62_clicked                    (GtkButton       *button,
 	gint page;
 	FILE *file_p;
 
-	statusbar_text(button, "");
+	statusbar_text("");
 
 	notbk = lookup_widget("notebook1");
 	page =  gtk_notebook_get_current_page(GTK_NOTEBOOK(notbk));
@@ -3410,10 +3402,10 @@ on_button62_clicked                    (GtkButton       *button,
 			return;
 		}
 
-		if (save_packet(button, user_data, file_p) == -1) {
-                        fclose(file_p);
-                        return;
-                }
+		if (save_packet(file_p) == -1) {
+			fclose(file_p);
+			return;
+		}
 	}
 	
 	else if (page == 1) { /* we have the Gen-b notebook open */
@@ -3422,33 +3414,32 @@ on_button62_clicked                    (GtkButton       *button,
 			return;
 		}
 
-		if (save_gen_b(button, file_p) == -1) {
-                        fclose(file_p);
-                        return;
-                }
+		if (save_gen_b(file_p) == -1) {
+			fclose(file_p);
+			return;
+		}
 	}
-	
+
 	else if (page == 2) { /* we have the Gen-s notebook open */
 		if((file_p = fopen(".defaultGen-s", "w")) == NULL) {
 			error("Can't save parameters in file: \".defaultGen-s\"");
 			return;
 		}
 
-		if (save_gen_s(button, file_p) == -1) {
-                        fclose(file_p);
-                        return;
-                }
+		if (save_gen_s(file_p) == -1) {
+			fclose(file_p);
+			return;
+		}
 	}
-	
+
 	else
 		return;
 
 	fclose(file_p);
 
-	statusbar_text(button, "  Parameters set as default parameters");
+	statusbar_text("  Parameters set as default parameters");
 
 	return;
-
 }
 
 
@@ -3625,8 +3616,7 @@ on_Gen_p_clicked                       (GtkButton       *button,
         nt1 = lookup_widget("Stop_button");
 	gtk_widget_set_sensitive(nt1, FALSE);
 
-	statusbar_text(button, "  Open a Pcap file. Selected packet will be shown in Builder!");
-
+	statusbar_text("  Open a Pcap file. Selected packet will be shown in Builder!");
 }
 
 
@@ -3656,7 +3646,7 @@ on_clist2_selection_changed            (GtkTreeSelection *treeselection,
 	memccpy(tmp, length_text, 32, 4);
 	length = strtol(tmp, (char **)NULL, 10);
 
-	load_packet_disector(btx, text, 1, NULL, length);
+	load_packet_disector(text, 1, NULL, length);
 }
 
 
@@ -4444,8 +4434,7 @@ on_button88_clicked                    (GtkButton       *button,
 	IPv6_yes = TRUE;
 	IP_yes = FALSE;
 	MAC_yes = FALSE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 
@@ -4457,8 +4446,7 @@ on_button89_clicked                    (GtkButton       *button,
 	IPv6_yes = TRUE;
 	IP_yes = FALSE;
 	MAC_yes = FALSE;
-	selection_dialog_show(button, user_data);
-
+	selection_dialog_show();
 }
 
 

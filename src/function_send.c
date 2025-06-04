@@ -102,7 +102,7 @@ struct params  {
 
 
 /* when you press Send inside the builder, one packet is sent  */
-int packet_go_on_the_link(unsigned char *pkt, int nr)
+int packet_go_on_the_link(const unsigned char *pkt, int nr)
 {
 	int c, fd;
 	struct sockaddr_ll sa;
